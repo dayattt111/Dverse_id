@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "private": true,
   "author": {
-    "name": "Riski (hiriski)",
-    "email": "hi@riski.me",
-    "url": "https://github.com/hiriski"
+    "name": "Muhammad Amin Hidayat (Dayat)",
+    "email": "awdayaa1@gmail.com",
+    "url": "https://github.com/dayattt111"
   },
   "scripts": {
     "dev": "next dev",
@@ -18,28 +18,28 @@
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/server": "^11.11.0",
-    "@emotion/styled": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.6",
-    "@mui/material": "^7.1.0",
-    "@mui/material-nextjs": "^7.1.0",
+    "@mui/material": "^7.3.6",
+    "@mui/material-nextjs": "^7.3.6",
     "@svgr/webpack": "^8.1.0",
     "dotenv": "^17.2.3",
     "firebase": "^12.7.0",
-    "framer-motion": "^12.15.0",
+    "framer-motion": "^12.23.26",
     "next": "15.3.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "react-scroll": "^1.9.3",
     "react-use": "^17.6.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@eslint/eslintrc": "^3.3.3",
+    "@types/node": "^20.19.27",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@types/react-scroll": "^1.8.10",
-    "eslint": "^9",
+    "eslint": "^9.39.2",
     "eslint-config-next": "15.3.2",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }

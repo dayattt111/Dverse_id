@@ -23,6 +23,8 @@ export interface IContributor {
   linkedinUrl?: string
 }
 
+export type PublicImagePath = `/${string}`
+
 // Community Program
 export interface ICommunityProgram {
   id: number
@@ -30,12 +32,12 @@ export interface ICommunityProgram {
   slug: string
   description: string
   icon?: string
-  image?: string
+  image?: PublicImagePath
   status: 'active' | 'upcoming' | 'completed'
   participants?: number
   startDate?: string
   endDate?: string
-  registrationDeadline?: string // ISO date string for countdown
+  registrationDeadline?: string
   category: 'bootcamp' | 'study-group' | 'event' | 'workshop' | 'competition'
 }
 
