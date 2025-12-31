@@ -48,6 +48,10 @@ const categoryIcons: Record<CategoryFilter, string> = {
 const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
   const theme = useTheme()
 
+  // Determine the primary link (prefer demo, then github, then fallback to detail page)
+  const primaryLink = project.links?.demo || project.links?.github || `/portfolio/${project.slug || ''}`
+  const isExternalLink = project.links?.demo || project.links?.github
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,6 +68,7 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
           border: '1px solid',
           borderColor: 'divider',
           overflow: 'hidden',
+          cursor: 'pointer',
           '&:hover': {
             transform: 'translateY(-8px)',
             boxShadow:
@@ -71,6 +76,13 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
                 ? '0 12px 40px rgba(152, 15, 90, 0.25)'
                 : '0 12px 40px rgba(152, 15, 90, 0.15)',
           },
+        }}
+        onClick={() => {
+          if (isExternalLink) {
+            window.open(primaryLink, '_blank', 'noopener,noreferrer')
+          } else {
+            window.location.href = primaryLink
+          }
         }}
       >
         {/* Project Image */}
@@ -216,11 +228,13 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
             {/* Social Links */}
             <Box sx={{ display: 'flex', gap: 0.5 }}>
               {project.creator?.github && (
-                <Tooltip title="GitHub">
+                <Tooltip title="GitHub Profile">
                   <IconButton
                     size="small"
-                    href={project.creator.github}
-                    target="_blank"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      window.open(project.creator?.github, '_blank', 'noopener,noreferrer')
+                    }}
                     sx={{ color: 'text.secondary' }}
                   >
                     <Typography sx={{ fontSize: 16 }}>🔗</Typography>
@@ -231,8 +245,10 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
                 <Tooltip title="Live Demo">
                   <IconButton
                     size="small"
-                    href={project.links.demo}
-                    target="_blank"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      window.open(project.links?.demo, '_blank', 'noopener,noreferrer')
+                    }}
                     sx={{ color: 'primary.main' }}
                   >
                     <Typography sx={{ fontSize: 16 }}>🚀</Typography>
@@ -242,25 +258,27 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
             </Box>
           </Box>
 
-          {/* View Details Button */}
-          <Button
-            fullWidth
-            variant="outlined"
+          {/* Primary Action Label */}
+          <Box
             sx={{
               mt: 2,
-              textTransform: 'none',
-              fontWeight: 600,
-              borderColor: 'primary.main',
-              color: 'primary.main',
-              '&:hover': {
-                borderColor: 'primary.dark',
-                backgroundColor: 'rgba(152, 15, 90, 0.05)',
-              },
+              pt: 2,
+              borderTop: '1px solid',
+              borderColor: 'divider',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1,
             }}
-            href={`/portfolio/${project.slug || ''}`}
           >
-            Lihat Detail
-          </Button>
+            <Typography 
+              variant="body2" 
+              color="primary.main" 
+              fontWeight={600}
+            >
+              {isExternalLink ? '🌐 Lihat Project' : '📄 Lihat Detail'}
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
     </motion.div>
