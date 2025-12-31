@@ -37,6 +37,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/config'
 import { IJobPosting } from '@/types/career'
+import ImageUpload from '@/components/admin/image-upload'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
@@ -359,6 +360,13 @@ export default function AdminCareerPage() {
                 fullWidth
               />
             </Box>
+            <ImageUpload
+              value={formData.companyLogo}
+              onChange={(url) => setFormData({ ...formData, companyLogo: url })}
+              folder="career/logos"
+              label="Company Logo"
+              helperText="Upload logo perusahaan (Maksimal 5MB)"
+            />
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField
                 label="Location"

@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check file size (max 5MB)
+    function isValidSize() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+    
+    // Helper function to check if file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // Portfolio images
+    match /portfolio/{imageId} {
+      // Anyone can read
+      allow read: if true;
+      // Only authenticated users can upload/delete
+      allow write: if isAuthenticated() && isImage() && isValidSize();
+    }
+    
+    // Career/Company logos
+    match /career/logos/{imageId} {
+      // Anyone can read
+      allow read: if true;
+      // Only authenticated users can upload/delete
+      allow write: if isAuthenticated() && isImage() && isValidSize();
+    }
+    
+    // Programs images
+    match /programs/{imageId} {
+      // Anyone can read
+      allow read: if true;
+      // Only authenticated users can upload/delete
+      allow write: if isAuthenticated() && isImage() && isValidSize();
+    }
+    
+    // Generic images folder
+    match /images/{imageId} {
+      // Anyone can read
+      allow read: if true;
+      // Only authenticated users can upload/delete
+      allow write: if isAuthenticated() && isImage() && isValidSize();
+    }
+    
+    // Deny all other paths by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

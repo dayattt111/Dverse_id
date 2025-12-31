@@ -35,6 +35,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/config'
 import { ICommunityProgram } from '@/types/community'
+import ImageUpload from '@/components/admin/image-upload'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
@@ -331,12 +332,12 @@ export default function AdminProgramsPage() {
               multiline
               rows={3}
             />
-            <TextField
-              label="Image URL"
+            <ImageUpload
               value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              fullWidth
-              placeholder="/icons/mobile-app.png"
+              onChange={(url) => setFormData({ ...formData, image: url })}
+              folder="programs"
+              label="Program Image"
+              helperText="Upload gambar program (Maksimal 5MB)"
             />
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField

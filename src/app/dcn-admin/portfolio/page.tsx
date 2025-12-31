@@ -37,6 +37,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase/config'
 import { IPortfolioProject } from '@/types/portfolio'
+import ImageUpload from '@/components/admin/image-upload'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
@@ -333,6 +334,13 @@ export default function AdminPortfolioPage() {
               fullWidth
               multiline
               rows={3}
+            />
+            <ImageUpload
+              value={formData.image}
+              onChange={(url) => setFormData({ ...formData, image: url })}
+              folder="portfolio"
+              label="Project Image"
+              helperText="Upload gambar project (Maksimal 5MB)"
             />
             <Box sx={{ display: 'flex', gap: 2 }}>
               <TextField
