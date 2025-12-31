@@ -10,8 +10,7 @@ import Chip from '@mui/material/Chip'
 import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
-import { getLeaderboard } from '@/lib/supabase/leaderboard'
-import { ILeaderboardUser } from '@/types/app'
+import { getLeaderboard, ILeaderboardUser } from '@/lib/supabase/leaderboard'
 
 const getLevelColor = (level: string) => {
   switch (level.toLowerCase()) {
@@ -260,7 +259,7 @@ export default function LeaderboardPageContent() {
                       </Box>
                       {user.badges && user.badges.length > 0 && (
                         <Box sx={{ display: 'flex', gap: 0.5, mt: 1 }}>
-                          {user.badges.slice(0, 5).map((badge, i) => (
+                          {user.badges.slice(0, 5).map((badge: string, i: number) => (
                             <Typography key={i} sx={{ fontSize: '1.25rem' }}>
                               {badge}
                             </Typography>
