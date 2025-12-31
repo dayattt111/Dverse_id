@@ -388,8 +388,18 @@ export default function ProgramsPageContent() {
           ) : (
             <Grid size={{ xs: 12 }}>
               <Box sx={{ textAlign: 'center', py: 8 }}>
-                <Typography variant='h6' color='text.secondary'>
-                  Belum ada program untuk kategori ini
+                <Typography variant='h4' sx={{ mb: 2, opacity: 0.5 }}>
+                  🎓
+                </Typography>
+                <Typography variant='h6' color='text.secondary' sx={{ mb: 1 }}>
+                  {programs.length === 0
+                    ? 'Belum ada program komunitas'
+                    : 'Belum ada program untuk kategori ini'}
+                </Typography>
+                <Typography variant='body2' color='text.secondary'>
+                  {programs.length === 0
+                    ? 'Tambahkan program pertama melalui admin panel'
+                    : 'Coba pilih kategori lainnya'}
                 </Typography>
               </Box>
             </Grid>

@@ -474,13 +474,20 @@ export default function CareerPageContent() {
         </Grid>
 
         {/* Empty State */}
-        {filteredJobs.length === 0 && (
+        {!loading && filteredJobs.length === 0 && (
           <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography variant='h4' sx={{ mb: 2, opacity: 0.5 }}>
+              💼
+            </Typography>
             <Typography variant='h6' color='text.secondary' sx={{ mb: 2 }}>
-              Tidak ada lowongan yang sesuai
+              {jobPostings.length === 0
+                ? 'Belum ada lowongan pekerjaan'
+                : 'Tidak ada lowongan yang sesuai'}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Coba ubah filter atau kata kunci pencarian
+              {jobPostings.length === 0
+                ? 'Tambahkan lowongan pertama melalui admin panel'
+                : 'Coba ubah filter atau kata kunci pencarian'}
             </Typography>
           </Box>
         )}

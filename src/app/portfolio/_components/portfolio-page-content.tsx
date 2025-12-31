@@ -475,6 +475,25 @@ export default function PortfolioPageContent() {
                 </Card>
               </Grid>
             ))
+          ) : filteredProjects.length === 0 ? (
+            // Empty State
+            <Grid size={{ xs: 12 }}>
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h4" sx={{ mb: 2, opacity: 0.5 }}>
+                  📦
+                </Typography>
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+                  {portfolioProjects.length === 0
+                    ? 'Belum ada portfolio project'
+                    : 'Belum ada project untuk kategori ini'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {portfolioProjects.length === 0
+                    ? 'Tambahkan portfolio pertama melalui admin panel'
+                    : 'Coba pilih kategori lainnya'}
+                </Typography>
+              </Box>
+            </Grid>
           ) : (
             filteredProjects.map((project) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={project.id}>
