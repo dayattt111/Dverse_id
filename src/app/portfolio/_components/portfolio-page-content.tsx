@@ -88,29 +88,40 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
         {/* Project Image */}
         <CardMedia
           sx={{
-            height: 200,
             position: 'relative',
+            height: 200,
             backgroundColor: 'background.default',
+            overflow: 'hidden',
           }}
         >
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background:
-                theme.palette.mode === 'dark'
-                  ? 'linear-gradient(135deg, rgba(152, 15, 90, 0.3) 0%, rgba(76, 0, 39, 0.3) 100%)'
-                  : 'linear-gradient(135deg, rgba(152, 15, 90, 0.1) 0%, rgba(255, 245, 248, 0.5) 100%)',
-            }}
-          >
-            <Typography variant="h4" sx={{ opacity: 0.3 }}>
-              {categoryIcons[project.category]}
-            </Typography>
-          </Box>
-          <Box sx={{ position: 'absolute', top: 12, left: 12 }}>
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              style={{ objectFit: 'cover' }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background:
+                  theme.palette.mode === 'dark'
+                    ? 'linear-gradient(135deg, rgba(152, 15, 90, 0.3) 0%, rgba(76, 0, 39, 0.3) 100%)'
+                    : 'linear-gradient(135deg, rgba(152, 15, 90, 0.1) 0%, rgba(255, 245, 248, 0.5) 100%)',
+              }}
+            >
+              <Typography variant="h4" sx={{ opacity: 0.3 }}>
+                {categoryIcons[project.category]}
+              </Typography>
+            </Box>
+          )}
+          <Box sx={{ position: 'absolute', top: 12, left: 12, zIndex: 1 }}>
             <Chip
               label={categoryLabels[project.category]}
               size="small"

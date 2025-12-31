@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -141,15 +142,34 @@ const HomePortfolio = () => {
                 >
                   <Box
                     sx={{
+                      position: 'relative',
                       height: 200,
                       background: `linear-gradient(135deg, ${palette.primary.main}40 0%, ${palette.secondary.main}40 100%)`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '3rem',
+                      overflow: 'hidden',
                     }}
                   >
-                    {project.image || '📱'}
+                    {project.image ? (
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '3rem',
+                        }}
+                      >
+                        📱
+                      </Box>
+                    )}
                   </Box>
                   <Box sx={{ p: 3 }}>
                     <Typography variant="h6" fontWeight={700} gutterBottom>
