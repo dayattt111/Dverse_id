@@ -10,6 +10,7 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import Divider from '@mui/material/Divider'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { IJobPosting } from '@/types/career'
 import CountdownTimer from '@/components/core/countdown-timer'
@@ -144,9 +145,20 @@ export default function JobDetailContent({ job }: JobDetailContentProps) {
                           justifyContent: 'center',
                           bgcolor: 'background.paper',
                           fontSize: '32px',
+                          position: 'relative',
                         }}
                       >
-                        {job.companyLogo}
+                        {job.companyLogo.startsWith('http') ? (
+                          <Image
+                            src={job.companyLogo}
+                            alt={job.company}
+                            fill
+                            sizes="64px"
+                            style={{ objectFit: 'cover' }}
+                          />
+                        ) : (
+                          job.companyLogo
+                        )}
                       </Box>
                     )}
                     <Box>

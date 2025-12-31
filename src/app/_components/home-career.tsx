@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
+import Image from 'next/image'
 import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
@@ -114,9 +115,63 @@ const HomeCareer = () => {
           </Box>
         </motion.div>
 
-        <Grid container spacing={3}>
-          {featuredJobs.map((job, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={job.id}>
+        {loading ? (
+          <Grid container spacing={3}>
+            {[1, 2, 3].map((item) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item}>
+                <Box
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    height: 280,
+                  }}
+                >
+                  <Box sx={{ display: 'flex', gap: 2, mb: 2.5 }}>
+                    <Skeleton variant="rounded" width={56} height={56} />
+                    <Box sx={{ flex: 1 }}>
+                      <Skeleton variant="text" width="80%" height={28} />
+                      <Skeleton variant="text" width="60%" height={20} />
+                    </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1, mb: 2.5 }}>
+                    <Skeleton variant="rounded" width={80} height={24} />
+                    <Skeleton variant="rounded" width={100} height={24} />
+                  </Box>
+                  <Skeleton variant="text" height={20} />
+                  <Skeleton variant="text" height={20} />
+                  <Skeleton variant="text" width="60%" height={20} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        ) : featuredJobs.length === 0 ? (
+          <Box
+            sx={{
+              textAlign: 'center',
+              py: 8,
+              px: 3,
+              borderRadius: 3,
+              border: '1px dashed',
+              borderColor: 'divider',
+              bgcolor: palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)',
+            }}
+          >
+            <Typography variant="h4" sx={{ mb: 1, fontSize: '2.5rem' }}>
+              💼
+            </Typography>
+            <Typography variant="h6" sx={{ mb: 1, fontWeight: 700 }}>
+              Belum ada lowongan pekerjaan
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Tambahkan lowongan pekerjaan melalui admin panel
+            </Typography>
+          </Box>
+        ) : (
+          <Grid container spacing={3}>
+            {featuredJobs.map((job, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={job.id}>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -164,9 +219,21 @@ const HomeCareer = () => {
                           fontSize: '28px',
                           flexShrink: 0,
                           background: palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'white',
+                          overflow: 'hidden',
+                          position: 'relative',
                         }}
                       >
-                        {job.companyLogo}
+                        {job.companyLogo.startsWith('http') ? (
+                          <Image
+                            src={job.companyLogo}
+                            alt={job.company}
+                            fill
+                            sizes="56px"
+                            style={{ objectFit: 'cover' }}
+                          />
+                        ) : (
+                          job.companyLogo
+                        )}
                       </Box>
                     )}
                     <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -275,6 +342,7 @@ const HomeCareer = () => {
             </Grid>
           ))}
         </Grid>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
