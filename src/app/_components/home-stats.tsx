@@ -13,8 +13,8 @@ import { SectionTitle } from '@/components/core'
 // hooks
 import { useTheme } from '@mui/material/styles'
 
-// firebase
-import { getStats } from '@/lib/firebase/community'
+// supabase
+import { getCommunityStats } from '@/lib/supabase/settings'
 import type { ICommunityStats } from '@/types/community'
 
 // motion
@@ -94,7 +94,7 @@ const HomeStats = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await getStats()
+        const data = await getCommunityStats()
         setStats(data)
       } catch (error) {
         console.error('Error fetching stats:', error)

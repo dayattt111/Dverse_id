@@ -10,8 +10,8 @@ import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
 
-// firebase
-import { getLeaderboard, type ILeaderboardUser } from '@/lib/firebase/community'
+// supabase
+import { getLeaderboard, type ILeaderboardUser } from '@/lib/supabase/leaderboard'
 
 const HomeLeaderboard = () => {
   const { palette } = useTheme()

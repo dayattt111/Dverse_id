@@ -11,9 +11,8 @@ import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
 import Grid from '@mui/material/Grid'
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
 import { ICommunityStats } from '@/types/community'
+import { getCommunityStats, updateCommunityStats, initializeCommunityStats } from '@/lib/supabase/settings'
 
 // Emoji icons
 const SaveIcon = () => <span>💾</span>
@@ -45,10 +44,8 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const docRef = doc(db, 'settings', STATS_DOC_ID)
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          const data = docSnap.data() as ICommunityStats
+        const data = await getCommunityStats()
+        if (data) {
           setStats({
             totalMembers: data.totalMembers || 0,
             totalClassesCompleted: data.totalClassesCompleted || 0,
@@ -69,11 +66,12 @@ export default function AdminSettingsPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const docRef = doc(db, 'settings', STATS_DOC_ID)
-      await setDoc(docRef, {
-        ...stats,
-        updatedAt: Timestamp.now(),
-      })
+      const existingStats = await getCommunityStats()
+      if (existingStats) {
+        await updateCommunityStats(existingStats.id, stats)
+      } else {
+        await initializeCommunityStats()
+      }
       setSnackbar({ open: true, message: 'Statistik berhasil disimpan', severity: 'success' })
     } catch (error) {
       console.error('Error saving stats:', error)

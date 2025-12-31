@@ -7,8 +7,10 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Skeleton from '@mui/material/Skeleton'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getPortfolioProjects } from '@/lib/supabase/portfolio'
+import { getActiveJobs } from '@/lib/supabase/career'
+import { getPrograms } from '@/lib/supabase/programs'
+import { getLeaderboard } from '@/lib/supabase/leaderboard'
 
 // Emoji icons
 const SchoolIcon = () => <span style={{ fontSize: '1.5rem' }}>📚</span>
@@ -79,18 +81,18 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [programsSnap, portfolioSnap, careerSnap, leaderboardSnap] = await Promise.all([
-          getDocs(collection(db, 'programs')),
-          getDocs(collection(db, 'portfolio')),
-          getDocs(collection(db, 'career')),
-          getDocs(collection(db, 'leaderboard')),
+        const [programs, portfolio, career, leaderboard] = await Promise.all([
+          getPrograms(),
+          getPortfolioProjects(),
+          getActiveJobs(),
+          getLeaderboard(1000), // Get all for count
         ])
 
         setStats({
-          programs: programsSnap.size,
-          portfolio: portfolioSnap.size,
-          career: careerSnap.size,
-          leaderboard: leaderboardSnap.size,
+          programs: programs.length,
+          portfolio: portfolio.length,
+          career: career.length,
+          leaderboard: leaderboard.length,
         })
       } catch (error) {
         console.error('Error fetching stats:', error)

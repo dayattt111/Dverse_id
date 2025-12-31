@@ -17,8 +17,8 @@ import { useTheme } from '@mui/material/styles'
 // types
 import { ICommunityProgram } from '@/types/community'
 
-// firebase
-import { getActivePrograms } from '@/lib/firebase/programs'
+// supabase
+import { getPrograms } from '@/lib/supabase/programs'
 
 // configs
 import { AppConfig } from '@/configs'
@@ -135,7 +135,7 @@ const HomePrograms = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const data = await getActivePrograms()
+        const data = await getPrograms()
         setPrograms(data.slice(0, 6)) // Limit to 6 programs for homepage
       } catch (error) {
         console.error('Error fetching programs:', error)

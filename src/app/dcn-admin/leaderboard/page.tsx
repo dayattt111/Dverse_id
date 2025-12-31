@@ -22,17 +22,12 @@ import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
 import {
-  collection,
-  getDocs,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  Timestamp,
-  query,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+  getLeaderboard,
+  addLeaderboardEntry,
+  updateLeaderboardEntry,
+  deleteLeaderboardEntry,
+  type ILeaderboardUser,
+} from '@/lib/supabase/leaderboard'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
@@ -64,34 +59,31 @@ const getRankMedal = (rank: number) => {
   }
 }
 
-const initialFormData: Omit<LeaderboardUser, 'id' | 'docId'> = {
+const initialFormData: Omit<ILeaderboardUser, 'id'> = {
   rank: 1,
   name: '',
   avatar: '',
   points: 0,
-  badges: 0,
-  completedCourses: 0,
+  level: 'Beginner',
+  badges: [],
+  achievements: 0,
+  projectsCompleted: 0,
 }
 
 export default function AdminLeaderboardPage() {
-  const [users, setUsers] = useState<LeaderboardUser[]>([])
+  const [users, setUsers] = useState<ILeaderboardUser[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<LeaderboardUser | null>(null)
-  const [deletingUser, setDeletingUser] = useState<LeaderboardUser | null>(null)
+  const [editingUser, setEditingUser] = useState<ILeaderboardUser | null>(null)
+  const [deletingUser, setDeletingUser] = useState<ILeaderboardUser | null>(null)
   const [formData, setFormData] = useState(initialFormData)
   const [saving, setSaving] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' })
 
   const fetchUsers = async () => {
     try {
-      const q = query(collection(db, 'leaderboard'), orderBy('rank', 'asc'))
-      const snapshot = await getDocs(q)
-      const data = snapshot.docs.map((doc) => ({
-        docId: doc.id,
-        ...doc.data(),
-      })) as LeaderboardUser[]
+      const data = await getLeaderboard(1000)
       setUsers(data)
     } catch (error) {
       console.error('Error fetching leaderboard:', error)
@@ -137,22 +129,11 @@ export default function AdminLeaderboardPage() {
 
     setSaving(true)
     try {
-      if (editingUser && editingUser.docId) {
-        await updateDoc(doc(db, 'leaderboard', editingUser.docId), {
-          ...formData,
-          updatedAt: Timestamp.now(),
-        })
+      if (editingUser && editingUser.id) {
+        await updateLeaderboardEntry(editingUser.id, formData)
         setSnackbar({ open: true, message: 'User berhasil diupdate', severity: 'success' })
       } else {
-        const snapshot = await getDocs(collection(db, 'leaderboard'))
-        const nextId = snapshot.size + 1
-        const docId = `user_${nextId}`
-        await setDoc(doc(db, 'leaderboard', docId), {
-          ...formData,
-          id: nextId,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        })
+        await addLeaderboardEntry(formData)
         setSnackbar({ open: true, message: 'User berhasil ditambahkan', severity: 'success' })
       }
       handleCloseDialog()
@@ -166,11 +147,11 @@ export default function AdminLeaderboardPage() {
   }
 
   const handleDelete = async () => {
-    if (!deletingUser || !deletingUser.docId) return
+    if (!deletingUser || !deletingUser.id) return
 
     setSaving(true)
     try {
-      await deleteDoc(doc(db, 'leaderboard', deletingUser.docId))
+      await deleteLeaderboardEntry(deletingUser.id)
       setSnackbar({ open: true, message: 'User berhasil dihapus', severity: 'success' })
       setDeleteDialogOpen(false)
       setDeletingUser(null)

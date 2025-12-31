@@ -11,7 +11,7 @@ import Button from '@mui/material/Button'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import { getPrograms } from '@/lib/firebase/programs'
+import { getPrograms } from '@/lib/supabase/programs'
 import { ICommunityProgram } from '@/types/community'
 import { AppConfig } from '@/configs'
 

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { collection, query, where, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getJobBySlug } from '@/lib/supabase/career'
 import { AppConfig } from '@/configs'
 import { IJobPosting } from '@/types/career'
 import JobDetailContent from './_components/job-detail-content'

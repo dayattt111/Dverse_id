@@ -13,8 +13,8 @@ import Skeleton from '@mui/material/Skeleton'
 import { SectionTitle } from '@/components/core'
 import { styled, useMediaQuery, useTheme } from '@mui/material'
 
-// firebase
-import { getStats } from '@/lib/firebase/community'
+// supabase
+import { getCommunityStats } from '@/lib/supabase/settings'
 import type { ICommunityStats } from '@/types/community'
 
 const HomeOurMotivation = () => {
@@ -26,7 +26,7 @@ const HomeOurMotivation = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await getStats()
+        const data = await getCommunityStats()
         setStats(data)
       } catch (error) {
         console.error('Error fetching stats:', error)
