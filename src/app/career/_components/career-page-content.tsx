@@ -422,7 +422,12 @@ export default function CareerPageContent() {
                 fontSize: { xs: 13, md: 15 },
                 minHeight: 48,
                 '&.Mui-selected': {
-                  color: 'primary.main',s.length})`} value='all' />
+                  color: 'primary.main',
+                },
+              },
+            }}
+          >
+            <Tab label={`${workTypeLabels.all} (${jobs.length})`} value='all' />
             <Tab
               label={`${workTypeLabels.remote} (${jobs.filter(j => j.workType === 'remote').length})`}
               value='remote'
@@ -432,12 +437,7 @@ export default function CareerPageContent() {
               value='onsite'
             />
             <Tab
-              label={`${workTypeLabels.hybrid} (${job
-              label={`${workTypeLabels.onsite} (${jobPostings.filter(j => j.workType === 'onsite').length})`}
-              value='onsite'
-            />
-            <Tab
-              label={`${workTypeLabels.hybrid} (${jobPostings.filter(j => j.workType === 'hybrid').length})`}
+              label={`${workTypeLabels.hybrid} (${jobs.filter(j => j.workType === 'hybrid').length})`}
               value='hybrid'
             />
           </Tabs>
