@@ -60,6 +60,8 @@ const ImageUpload = ({
       const filename = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`
       const storageRef = ref(storage, `${folder}/${filename}`)
 
+      console.log('Uploading to:', `${folder}/${filename}`)
+
       // Upload file
       const uploadTask = uploadBytesResumable(storageRef, file)
 
@@ -68,23 +70,31 @@ const ImageUpload = ({
         (snapshot) => {
           const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           setProgress(prog)
+          console.log('Upload progress:', prog)
         },
         (error) => {
           console.error('Upload error:', error)
-          setError('Gagal upload gambar. Silakan coba lagi.')
+          setError(`Gagal upload gambar: ${error.message}`)
           setUploading(false)
         },
         async () => {
-          // Get download URL
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-          onChange(downloadURL)
-          setUploading(false)
-          setProgress(0)
+          try {
+            // Get download URL
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
+            console.log('Download URL:', downloadURL)
+            onChange(downloadURL)
+            setUploading(false)
+            setProgress(0)
+          } catch (error: any) {
+            console.error('Error getting download URL:', error)
+            setError(`Gagal mendapatkan URL: ${error.message}`)
+            setUploading(false)
+          }
         }
       )
-    } catch (error) {
+    } catch (error: any) {
       console.error('Upload error:', error)
-      setError('Gagal upload gambar. Silakan coba lagi.')
+      setError(`Gagal upload gambar: ${error.message}`)
       setUploading(false)
     }
   }
