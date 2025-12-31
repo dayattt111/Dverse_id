@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getJobBySlug } from '@/lib/supabase/career'
+import { getJobBySlug, getActiveJobs } from '@/lib/supabase/career'
 import { AppConfig } from '@/configs'
 import { IJobPosting } from '@/types/career'
 import JobDetailContent from './_components/job-detail-content'
@@ -11,14 +11,7 @@ type Props = {
 
 async function getJob(slug: string): Promise<IJobPosting | null> {
   try {
-    const q = query(collection(db, 'career'), where('slug', '==', slug))
-    const snapshot = await getDocs(q)
-    
-    if (snapshot.empty) {
-      return null
-    }
-    
-    return snapshot.docs[0].data() as IJobPosting
+    return await getJobBySlug(slug)
   } catch (error) {
     console.error('Error fetching job:', error)
     return null
@@ -27,8 +20,7 @@ async function getJob(slug: string): Promise<IJobPosting | null> {
 
 async function getAllJobs(): Promise<IJobPosting[]> {
   try {
-    const snapshot = await getDocs(collection(db, 'career'))
-    return snapshot.docs.map(doc => doc.data()) as IJobPosting[]
+    return await getActiveJobs()
   } catch (error) {
     console.error('Error fetching jobs:', error)
     return []

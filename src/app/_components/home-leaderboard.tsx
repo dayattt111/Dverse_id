@@ -324,7 +324,7 @@ const HomeLeaderboard = () => {
                                   color: 'text.primary',
                                 }}
                               >
-                                {user.badges}
+                                {user.projectsCompleted || 0}
                               </Typography>
                             </Box>
                             <Box>
@@ -343,7 +343,7 @@ const HomeLeaderboard = () => {
                                   color: 'text.primary',
                                 }}
                               >
-                                {user.completedCourses}
+                                {user.projectsCompleted || 0}
                               </Typography>
                             </Box>
                           </Box>
@@ -526,7 +526,7 @@ const HomeLeaderboard = () => {
                                   color: 'text.primary',
                                 }}
                               >
-                                {user.completedCourses}
+                                {user.projectsCompleted || 0}
                               </Typography>
                             </Box>
                           </Box>
@@ -709,7 +709,7 @@ const HomeLeaderboard = () => {
                                   color: 'text.primary',
                                 }}
                               >
-                                {user.completedCourses}
+                                {user.projectsCompleted || 0}
                               </Typography>
                             </Box>
                           </Box>
@@ -873,7 +873,7 @@ const HomeLeaderboard = () => {
                               color: 'text.primary',
                             }}
                           >
-                            {user.completedCourses}
+                            {user.projectsCompleted || 0}
                           </Typography>
                         </Box>
                       </Box>

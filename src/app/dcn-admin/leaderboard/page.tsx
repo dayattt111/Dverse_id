@@ -35,17 +35,6 @@ const EditIcon = () => <span>✏️</span>
 const DeleteIcon = () => <span>🗑️</span>
 const EmojiEventsIcon = () => <span style={{ fontSize: '3rem' }}>🏆</span>
 
-interface LeaderboardUser {
-  docId?: string
-  id: number
-  rank: number
-  name: string
-  avatar?: string
-  points: number
-  badges: number
-  completedCourses: number
-}
-
 const getRankMedal = (rank: number) => {
   switch (rank) {
     case 1:
@@ -96,7 +85,7 @@ export default function AdminLeaderboardPage() {
     fetchUsers()
   }, [])
 
-  const handleOpenDialog = (user?: LeaderboardUser) => {
+  const handleOpenDialog = (user?: ILeaderboardUser) => {
     if (user) {
       setEditingUser(user)
       setFormData({
@@ -104,8 +93,10 @@ export default function AdminLeaderboardPage() {
         name: user.name,
         avatar: user.avatar || '',
         points: user.points,
-        badges: user.badges,
-        completedCourses: user.completedCourses,
+        level: user.level,
+        badges: user.badges || [],
+        achievements: user.achievements || 0,
+        projectsCompleted: user.projectsCompleted || 0,
       })
     } else {
       setEditingUser(null)
@@ -220,7 +211,7 @@ export default function AdminLeaderboardPage() {
                 users.map((user) => {
                   const medal = getRankMedal(user.rank)
                   return (
-                    <TableRow key={user.docId} hover>
+                    <TableRow key={user.id} hover>
                       <TableCell>
                         <Box
                           sx={{
@@ -251,8 +242,8 @@ export default function AdminLeaderboardPage() {
                           {user.points.toLocaleString()}
                         </Typography>
                       </TableCell>
-                      <TableCell align="center">{user.badges}</TableCell>
-                      <TableCell align="center">{user.completedCourses}</TableCell>
+                      <TableCell align="center">{user.badges?.length || 0}</TableCell>
+                      <TableCell align="center">{user.projectsCompleted || 0}</TableCell>
                       <TableCell align="right">
                         <IconButton color="primary" onClick={() => handleOpenDialog(user)}>
                           <EditIcon />
@@ -315,18 +306,19 @@ export default function AdminLeaderboardPage() {
                 fullWidth
               />
               <TextField
-                label="Badges"
-                type="number"
-                value={formData.badges}
-                onChange={(e) => setFormData({ ...formData, badges: parseInt(e.target.value) || 0 })}
+                label="Badges (comma-separated)"
+                type="text"
+                value={Array.isArray(formData.badges) ? formData.badges.join(', ') : ''}
+                onChange={(e) => setFormData({ ...formData, badges: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
                 fullWidth
+                placeholder="Badge1, Badge2, Badge3"
               />
               <TextField
                 label="Courses"
                 type="number"
-                value={formData.completedCourses}
+                value={formData.projectsCompleted}
                 onChange={(e) =>
-                  setFormData({ ...formData, completedCourses: parseInt(e.target.value) || 0 })
+                  setFormData({ ...formData, projectsCompleted: parseInt(e.target.value) || 0 })
                 }
                 fullWidth
               />

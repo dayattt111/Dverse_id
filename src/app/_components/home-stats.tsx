@@ -188,22 +188,22 @@ const HomeStats = () => {
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <StatItem
-                  value={stats.totalClassesCompleted}
-                  label='Classes Completed'
+                  value={stats.activeProjects}
+                  label='Active Projects'
                   delay={0.2}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <StatItem
-                  value={stats.totalEvents}
-                  label='Events'
+                  value={stats.yearsExperience}
+                  label='Years Experience'
                   delay={0.3}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <StatItem
-                  value={stats.activeLearners}
-                  label='Active Learners'
+                  value={stats.successRate}
+                  label='Success Rate (%)'
                   delay={0.4}
                 />
               </Grid>

@@ -25,17 +25,17 @@ const STATS_DOC_ID = 'community_stats'
 
 const statFields = [
   { key: 'totalMembers', label: 'Total Members', icon: <PeopleIcon />, color: '#980f5a' },
-  { key: 'totalClassesCompleted', label: 'Total Classes Completed', icon: <SchoolIcon />, color: '#2196f3' },
-  { key: 'totalEvents', label: 'Total Events', icon: <EventIcon />, color: '#4caf50' },
-  { key: 'activeLearners', label: 'Active Learners', icon: <TrendingUpIcon />, color: '#ff9800' },
+  { key: 'activeProjects', label: 'Active Projects', icon: <SchoolIcon />, color: '#2196f3' },
+  { key: 'yearsExperience', label: 'Years Experience', icon: <EventIcon />, color: '#4caf50' },
+  { key: 'successRate', label: 'Success Rate (%)', icon: <TrendingUpIcon />, color: '#ff9800' },
 ]
 
 export default function AdminSettingsPage() {
   const [stats, setStats] = useState<ICommunityStats>({
     totalMembers: 0,
-    totalClassesCompleted: 0,
-    totalEvents: 0,
-    activeLearners: 0,
+    activeProjects: 0,
+    successRate: 0,
+    yearsExperience: 0,
   })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -48,9 +48,9 @@ export default function AdminSettingsPage() {
         if (data) {
           setStats({
             totalMembers: data.totalMembers || 0,
-            totalClassesCompleted: data.totalClassesCompleted || 0,
-            totalEvents: data.totalEvents || 0,
-            activeLearners: data.activeLearners || 0,
+            activeProjects: data.activeProjects || 0,
+            successRate: data.successRate || 0,
+            yearsExperience: data.yearsExperience || 0,
           })
         }
       } catch (error) {
@@ -67,7 +67,7 @@ export default function AdminSettingsPage() {
     setSaving(true)
     try {
       const existingStats = await getCommunityStats()
-      if (existingStats) {
+      if (existingStats && existingStats.id) {
         await updateCommunityStats(existingStats.id, stats)
       } else {
         await initializeCommunityStats()
