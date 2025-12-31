@@ -66,12 +66,7 @@ export default function AdminSettingsPage() {
   const handleSave = async () => {
     setSaving(true)
     try {
-      const existingStats = await getCommunityStats()
-      if (existingStats && existingStats.id) {
-        await updateCommunityStats(existingStats.id, stats)
-      } else {
-        await initializeCommunityStats()
-      }
+      await updateCommunityStats(stats)
       setSnackbar({ open: true, message: 'Statistik berhasil disimpan', severity: 'success' })
     } catch (error) {
       console.error('Error saving stats:', error)

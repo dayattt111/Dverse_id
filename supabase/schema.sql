@@ -100,13 +100,14 @@ CREATE INDEX idx_programs_created_at ON programs(created_at DESC);
 CREATE TABLE IF NOT EXISTS settings (
   id TEXT PRIMARY KEY,
   data JSONB NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Insert default community stats
+-- Insert default community stats with correct field names
 INSERT INTO settings (id, data) VALUES (
   'community_stats',
-  '{"totalMembers": 0, "totalClassesCompleted": 0, "totalEvents": 0, "activeLearners": 0}'
+  '{"totalMembers": 100, "activeProjects": 50, "successRate": 95, "yearsExperience": 5}'::jsonb
 ) ON CONFLICT (id) DO NOTHING;
 
 -- =============================================
@@ -149,6 +150,9 @@ CREATE TRIGGER update_career_updated_at BEFORE UPDATE ON career
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_programs_updated_at BEFORE UPDATE ON programs
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings

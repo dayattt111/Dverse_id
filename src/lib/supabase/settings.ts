@@ -1,39 +1,14 @@
 import { supabase } from './config'
 import type { ICommunityStats } from '@/types/community'
 
-// Transform from snake_case (database) to camelCase (app)
-function transformStatsFromDB(dbStats: any): ICommunityStats {
-  return {
-    id: dbStats.id,
-    totalMembers: dbStats.total_members,
-    activeProjects: dbStats.active_projects,
-    successRate: dbStats.success_rate,
-    yearsExperience: dbStats.years_experience,
-    createdAt: dbStats.created_at,
-    updatedAt: dbStats.updated_at,
-  }
-}
-
-// Transform from camelCase (app) to snake_case (database)
-function transformStatsToDB(stats: Partial<ICommunityStats>): any {
-  const dbStats: any = {}
-  
-  if (stats.totalMembers !== undefined) dbStats.total_members = stats.totalMembers
-  if (stats.activeProjects !== undefined) dbStats.active_projects = stats.activeProjects
-  if (stats.successRate !== undefined) dbStats.success_rate = stats.successRate
-  if (stats.yearsExperience !== undefined) dbStats.years_experience = stats.yearsExperience
-  
-  return dbStats
-}
-
 /**
- * Get community stats (usually only one record)
+ * Get community stats (stored in settings table as JSONB)
  */
 export async function getCommunityStats(): Promise<ICommunityStats | null> {
   const { data, error } = await supabase
     .from('settings')
     .select('*')
-    .limit(1)
+    .eq('id', 'community_stats')
     .single()
 
   if (error) {
@@ -41,22 +16,48 @@ export async function getCommunityStats(): Promise<ICommunityStats | null> {
     return null
   }
 
-  return data ? transformStatsFromDB(data) : null
+  if (!data) return null
+
+  // Data is stored in the 'data' JSONB column
+  const stats = data.data as any
+  
+  return {
+    id: data.id,
+    totalMembers: stats.totalMembers || 0,
+    activeProjects: stats.activeProjects || 0,
+    successRate: stats.successRate || 0,
+    yearsExperience: stats.yearsExperience || 0,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  }
 }
 
 /**
  * Update community stats
  */
 export async function updateCommunityStats(
-  id: string,
   updates: Partial<ICommunityStats>
 ): Promise<ICommunityStats | null> {
-  const dbUpdates = transformStatsToDB(updates)
+  // First get current data
+  const current = await getCommunityStats()
+  
+  if (!current) {
+    // Initialize if doesn't exist
+    return initializeCommunityStats(updates)
+  }
+
+  // Merge updates with current data
+  const updatedData = {
+    totalMembers: updates.totalMembers ?? current.totalMembers,
+    activeProjects: updates.activeProjects ?? current.activeProjects,
+    successRate: updates.successRate ?? current.successRate,
+    yearsExperience: updates.yearsExperience ?? current.yearsExperience,
+  }
 
   const { data, error } = await supabase
     .from('settings')
-    .update(dbUpdates)
-    .eq('id', id)
+    .update({ data: updatedData })
+    .eq('id', 'community_stats')
     .select()
     .single()
 
@@ -65,23 +66,40 @@ export async function updateCommunityStats(
     throw error
   }
 
-  return data ? transformStatsFromDB(data) : null
+  if (!data) return null
+
+  const stats = data.data as any
+  
+  return {
+    id: data.id,
+    totalMembers: stats.totalMembers || 0,
+    activeProjects: stats.activeProjects || 0,
+    successRate: stats.successRate || 0,
+    yearsExperience: stats.yearsExperience || 0,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  }
 }
 
 /**
  * Initialize community stats if not exists
  */
-export async function initializeCommunityStats(): Promise<ICommunityStats | null> {
+export async function initializeCommunityStats(
+  initialData?: Partial<ICommunityStats>
+): Promise<ICommunityStats | null> {
   const defaultStats = {
-    total_members: 100,
-    active_projects: 50,
-    success_rate: 95,
-    years_experience: 5,
+    totalMembers: initialData?.totalMembers ?? 100,
+    activeProjects: initialData?.activeProjects ?? 50,
+    successRate: initialData?.successRate ?? 95,
+    yearsExperience: initialData?.yearsExperience ?? 5,
   }
 
   const { data, error } = await supabase
     .from('settings')
-    .insert(defaultStats)
+    .upsert({
+      id: 'community_stats',
+      data: defaultStats,
+    })
     .select()
     .single()
 
@@ -90,5 +108,17 @@ export async function initializeCommunityStats(): Promise<ICommunityStats | null
     throw error
   }
 
-  return data ? transformStatsFromDB(data) : null
+  if (!data) return null
+
+  const stats = data.data as any
+  
+  return {
+    id: data.id,
+    totalMembers: stats.totalMembers || 0,
+    activeProjects: stats.activeProjects || 0,
+    successRate: stats.successRate || 0,
+    yearsExperience: stats.yearsExperience || 0,
+    createdAt: data.created_at,
+    updatedAt: data.updated_at,
+  }
 }
