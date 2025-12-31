@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
@@ -14,10 +14,12 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
+import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
+import { collection, getDocs, query, orderBy, where } from 'firebase/firestore'
+import { db } from '@/lib/firebase/config'
 
-import { jobPostings } from '@/constants/career'
 import { IJobPosting, WorkTypeFilter } from '@/types/career'
 
 const workTypeLabels: Record<WorkTypeFilter, string> = {
@@ -245,9 +247,31 @@ export default function CareerPageContent() {
   const theme = useTheme()
   const [selectedWorkType, setSelectedWorkType] = useState<WorkTypeFilter>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [jobPostings, setJobPostings] = useState<IJobPosting[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const q = query(
+          collection(db, 'career'),
+          where('status', '==', 'active'),
+          orderBy('id', 'desc')
+        )
+        const snapshot = await getDocs(q)
+        const data = snapshot.docs.map((doc) => doc.data()) as IJobPosting[]
+        setJobPostings(data)
+      } catch (error) {
+        console.error('Error fetching jobs:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJobs()
+  }, [])
 
   const filteredJobs = jobPostings
-    .filter((job) => job.status === 'active')
     .filter((job) => (selectedWorkType === 'all' ? true : job.workType === selectedWorkType))
     .filter(
       (job) =>
@@ -397,17 +421,17 @@ export default function CareerPageContent() {
               },
             }}
           >
-            <Tab label={`${workTypeLabels.all} (${jobPostings.filter(j => j.status === 'active').length})`} value='all' />
+            <Tab label={`${workTypeLabels.all} (${jobPostings.length})`} value='all' />
             <Tab
-              label={`${workTypeLabels.remote} (${jobPostings.filter(j => j.workType === 'remote' && j.status === 'active').length})`}
+              label={`${workTypeLabels.remote} (${jobPostings.filter(j => j.workType === 'remote').length})`}
               value='remote'
             />
             <Tab
-              label={`${workTypeLabels.onsite} (${jobPostings.filter(j => j.workType === 'onsite' && j.status === 'active').length})`}
+              label={`${workTypeLabels.onsite} (${jobPostings.filter(j => j.workType === 'onsite').length})`}
               value='onsite'
             />
             <Tab
-              label={`${workTypeLabels.hybrid} (${jobPostings.filter(j => j.workType === 'hybrid' && j.status === 'active').length})`}
+              label={`${workTypeLabels.hybrid} (${jobPostings.filter(j => j.workType === 'hybrid').length})`}
               value='hybrid'
             />
           </Tabs>
@@ -415,11 +439,41 @@ export default function CareerPageContent() {
 
         {/* Jobs Grid */}
         <Grid container spacing={3}>
-          {filteredJobs.map((job) => (
-            <Grid size={{ xs: 12, md: 6 }} key={job.id}>
-              <JobCard job={job} />
-            </Grid>
-          ))}
+          {loading ? (
+            // Loading Skeletons
+            Array.from({ length: 4 }).map((_, index) => (
+              <Grid size={{ xs: 12, md: 6 }} key={index}>
+                <Card sx={{ height: 350, borderRadius: 3, p: 3 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                    <Skeleton variant='rounded' width={48} height={48} />
+                    <Box sx={{ flex: 1 }}>
+                      <Skeleton variant='text' width='60%' />
+                      <Skeleton variant='text' width='40%' />
+                    </Box>
+                  </Box>
+                  <Skeleton variant='text' height={32} width='80%' sx={{ mb: 2 }} />
+                  <Skeleton variant='text' height={20} width='100%' />
+                  <Skeleton variant='text' height={20} width='90%' sx={{ mb: 2 }} />
+                  <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                    <Skeleton variant='rounded' width={70} height={24} />
+                    <Skeleton variant='rounded' width={80} height={24} />
+                    <Skeleton variant='rounded' width={75} height={24} />
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                    <Skeleton variant='rounded' width={60} height={24} />
+                    <Skeleton variant='rounded' width={70} height={24} />
+                    <Skeleton variant='rounded' width={65} height={24} />
+                  </Box>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            filteredJobs.map((job) => (
+              <Grid size={{ xs: 12, md: 6 }} key={job.id}>
+                <JobCard job={job} />
+              </Grid>
+            ))
+          )}
         </Grid>
 
         {/* Empty State */}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
@@ -16,10 +16,12 @@ import CardMedia from '@mui/material/CardMedia'
 import Avatar from '@mui/material/Avatar'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
+import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { db } from '@/lib/firebase/config'
 
-import { portfolioProjects } from '@/constants/portfolio'
 import { IPortfolioProject } from '@/types/portfolio'
 
 type CategoryFilter = 'all' | IPortfolioProject['category']
@@ -214,7 +216,7 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
 
             {/* Social Links */}
             <Box sx={{ display: 'flex', gap: 0.5 }}>
-              {project.creator.github && (
+              {project.creator?.github && (
                 <Tooltip title="GitHub">
                   <IconButton
                     size="small"
@@ -226,7 +228,7 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
                   </IconButton>
                 </Tooltip>
               )}
-              {project.links.demo && (
+              {project.links?.demo && (
                 <Tooltip title="Live Demo">
                   <IconButton
                     size="small"
@@ -269,6 +271,25 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
 export default function PortfolioPageContent() {
   const theme = useTheme()
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all')
+  const [portfolioProjects, setPortfolioProjects] = useState<IPortfolioProject[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const q = query(collection(db, 'portfolio'), orderBy('id', 'desc'))
+        const snapshot = await getDocs(q)
+        const data = snapshot.docs.map((doc) => doc.data()) as IPortfolioProject[]
+        setPortfolioProjects(data)
+      } catch (error) {
+        console.error('Error fetching portfolio projects:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProjects()
+  }, [])
 
   const filteredProjects =
     selectedCategory === 'all'
@@ -431,11 +452,39 @@ export default function PortfolioPageContent() {
 
         {/* Projects Grid */}
         <Grid container spacing={3}>
-          {filteredProjects.map((project) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={project.id}>
-              <ProjectCard project={project} />
-            </Grid>
-          ))}
+          {loading ? (
+            // Loading Skeletons
+            Array.from({ length: 6 }).map((_, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <Card sx={{ height: 500, borderRadius: 3 }}>
+                  <Skeleton variant="rectangular" height={200} />
+                  <CardContent>
+                    <Skeleton variant="text" height={32} width="80%" />
+                    <Skeleton variant="text" height={20} width="100%" sx={{ mt: 1 }} />
+                    <Skeleton variant="text" height={20} width="90%" />
+                    <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                      <Skeleton variant="rounded" width={60} height={20} />
+                      <Skeleton variant="rounded" width={70} height={20} />
+                      <Skeleton variant="rounded" width={65} height={20} />
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 3 }}>
+                      <Skeleton variant="circular" width={32} height={32} />
+                      <Box sx={{ flex: 1 }}>
+                        <Skeleton variant="text" width="60%" />
+                        <Skeleton variant="text" width="40%" />
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          ) : (
+            filteredProjects.map((project) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={project.id}>
+                <ProjectCard project={project} />
+              </Grid>
+            ))
+          )}
         </Grid>
 
         {/* Empty State */}

@@ -1,19 +1,46 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
+import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
-import { jobPostings } from '@/constants/career'
+import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
+import { db } from '@/lib/firebase/config'
+import { IJobPosting } from '@/types/career'
 
 const HomeCareer = () => {
   const { palette } = useTheme()
-  const featuredJobs = jobPostings.filter((j) => j.featured && j.status === 'active').slice(0, 3)
+  const [featuredJobs, setFeaturedJobs] = useState<IJobPosting[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFeaturedJobs = async () => {
+      try {
+        const q = query(
+          collection(db, 'career'),
+          where('featured', '==', true),
+          where('status', '==', 'active'),
+          orderBy('id', 'desc'),
+          limit(3)
+        )
+        const snapshot = await getDocs(q)
+        const jobs = snapshot.docs.map(doc => doc.data()) as IJobPosting[]
+        setFeaturedJobs(jobs)
+      } catch (error) {
+        console.error('Error fetching featured jobs:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeaturedJobs()
+  }, [])
 
   const getWorkTypeColor = (type: string) => {
     switch (type) {

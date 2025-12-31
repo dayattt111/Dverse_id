@@ -1,19 +1,45 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
 import Link from 'next/link'
+import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
-import { portfolioProjects } from '@/constants/portfolio'
+import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
+import { db } from '@/lib/firebase/config'
+import { IPortfolioProject } from '@/types/portfolio'
 
 const HomePortfolio = () => {
   const { palette } = useTheme()
-  const featuredProjects = portfolioProjects.filter((p) => p.featured).slice(0, 3)
+  const [featuredProjects, setFeaturedProjects] = useState<IPortfolioProject[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchFeaturedProjects = async () => {
+      try {
+        const q = query(
+          collection(db, 'portfolio'),
+          where('featured', '==', true),
+          orderBy('id', 'desc'),
+          limit(3)
+        )
+        const snapshot = await getDocs(q)
+        const projects = snapshot.docs.map(doc => doc.data()) as IPortfolioProject[]
+        setFeaturedProjects(projects)
+      } catch (error) {
+        console.error('Error fetching featured projects:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchFeaturedProjects()
+  }, [])
 
   return (
     <Box
