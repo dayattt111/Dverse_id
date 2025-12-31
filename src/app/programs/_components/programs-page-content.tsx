@@ -16,7 +16,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 
-import { getPrograms } from '@/lib/firebase/programs'
+import { getPrograms } from '@/lib/supabase/programs'
 import { ICommunityProgram } from '@/types/community'
 import CountdownTimer from '@/components/core/countdown-timer'
 
