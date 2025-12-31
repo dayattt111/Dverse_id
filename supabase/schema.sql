@@ -115,21 +115,21 @@ INSERT INTO settings (id, data) VALUES (
 -- =============================================
 CREATE TABLE IF NOT EXISTS leaderboard (
   id BIGSERIAL PRIMARY KEY,
-  contributor_name TEXT NOT NULL,
-  contributor_role TEXT NOT NULL,
-  contributor_avatar TEXT,
-  total_classes INTEGER DEFAULT 0,
+  rank INTEGER DEFAULT 0,
+  name TEXT NOT NULL,
+  points INTEGER DEFAULT 0,
+  level TEXT DEFAULT 'Beginner',
+  avatar TEXT,
   badges JSONB DEFAULT '[]',
-  github_url TEXT,
-  linkedin_url TEXT,
-  rank INTEGER,
-  last_update TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  achievements INTEGER DEFAULT 0,
+  projects_completed INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Index for leaderboard
 CREATE INDEX idx_leaderboard_rank ON leaderboard(rank);
-CREATE INDEX idx_leaderboard_total_classes ON leaderboard(total_classes DESC);
+CREATE INDEX idx_leaderboard_points ON leaderboard(points DESC);
 
 -- =============================================
 -- AUTO UPDATE TIMESTAMP FUNCTION
@@ -153,6 +153,9 @@ CREATE TRIGGER update_programs_updated_at BEFORE UPDATE ON programs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_leaderboard_updated_at BEFORE UPDATE ON leaderboard
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_settings_updated_at BEFORE UPDATE ON settings

@@ -154,10 +154,16 @@ const HomeLeaderboard = () => {
                 </Box>
               ))}
             </Box>
-          ) : topUsers.length < 3 ? (
+          ) : topUsers.length === 0 ? (
             <Box sx={{ textAlign: 'center', py: 8 }}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography variant="h4" sx={{ mb: 2, opacity: 0.5 }}>
+                🏆
+              </Typography>
+              <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
                 Belum ada data leaderboard
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Tambahkan data leaderboard melalui admin panel
               </Typography>
             </Box>
           ) : (

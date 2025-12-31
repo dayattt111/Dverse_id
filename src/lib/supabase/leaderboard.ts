@@ -54,6 +54,7 @@ export async function getLeaderboard(limit: number = 10): Promise<ILeaderboardUs
   const { data, error } = await supabase
     .from('leaderboard')
     .select('*')
+    .order('points', { ascending: false })
     .order('rank', { ascending: true })
     .limit(limit)
 
