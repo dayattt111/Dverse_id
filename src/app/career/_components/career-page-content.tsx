@@ -113,7 +113,7 @@ const JobCard = ({ job }: { job: IJobPosting }) => {
               >
                 <Image
                   src={job.companyLogo}
-                  alt={job.company}
+                  alt={job.company || 'Company'}
                   width={40}
                   height={40}
                   style={{ objectFit: 'contain' }}
@@ -230,12 +230,14 @@ const JobCard = ({ job }: { job: IJobPosting }) => {
                 💰 {job.salaryRange}
               </Typography>
             )}
-            <Typography variant='caption' color='text.secondary'>
-              {new Date(job.postedDate).toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'short',
-              })}
-            </Typography>
+            {job.postedDate && (
+              <Typography variant='caption' color='text.secondary'>
+                {new Date(job.postedDate).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                })}
+              </Typography>
+            )}
           </Box>
         </CardContent>
       </Card>
