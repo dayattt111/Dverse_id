@@ -22,17 +22,16 @@ const HomePortfolio = () => {
   useEffect(() => {
     const fetchFeaturedProjects = async () => {
       try {
-        const q = query(
-          collection(db, 'portfolio'),
-          where('featured', '==', true),
-          orderBy('id', 'desc'),
-          limit(3)
-        )
+        // Fetch all projects, then filter in memory to avoid composite index
+        const q = query(collection(db, 'portfolio'), orderBy('id', 'desc'))
         const snapshot = await getDocs(q)
-        const projects = snapshot.docs.map(doc => doc.data()) as IPortfolioProject[]
-        setFeaturedProjects(projects)
+        const allProjects = snapshot.docs.map(doc => doc.data()) as IPortfolioProject[]
+        // Filter featured projects, limit to 3
+        const featured = allProjects.filter(project => project.featured === true).slice(0, 3)
+        setFeaturedProjects(featured)
       } catch (error) {
         console.error('Error fetching featured projects:', error)
+        setFeaturedProjects([])
       } finally {
         setLoading(false)
       }
@@ -96,8 +95,28 @@ const HomePortfolio = () => {
         </motion.div>
 
         <Grid container spacing={3}>
-          {featuredProjects.map((project, index) => (
-            <Grid size={{ xs: 12, md: 4 }} key={project.id}>
+          {loading ? (
+            // Loading Skeletons
+            Array.from({ length: 3 }).map((_, index) => (
+              <Grid size={{ xs: 12, md: 4 }} key={index}>
+                <Box sx={{ borderRadius: 3, overflow: 'hidden', border: '1px solid', borderColor: 'divider' }}>
+                  <Skeleton variant="rectangular" height={200} />
+                  <Box sx={{ p: 3 }}>
+                    <Skeleton variant="text" height={32} width="80%" />
+                    <Skeleton variant="text" height={20} width="100%" sx={{ mt: 1 }} />
+                    <Skeleton variant="text" height={20} width="90%" />
+                    <Box sx={{ display: 'flex', gap: 0.5, mt: 2 }}>
+                      <Skeleton variant="rounded" width={60} height={24} />
+                      <Skeleton variant="rounded" width={70} height={24} />
+                      <Skeleton variant="rounded" width={65} height={24} />
+                    </Box>
+                  </Box>
+                </Box>
+              </Grid>
+            ))
+          ) : featuredProjects.length > 0 ? (
+            featuredProjects.map((project, index) => (
+              <Grid size={{ xs: 12, md: 4 }} key={project.id}>
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -157,7 +176,7 @@ const HomePortfolio = () => {
                       {project.description}
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {project.techStack.slice(0, 3).map((tech) => (
+                      {project.techStack?.slice(0, 3).map((tech) => (
                         <Box
                           key={tech}
                           sx={{
@@ -181,7 +200,20 @@ const HomePortfolio = () => {
                 </Box>
               </motion.div>
             </Grid>
-          ))}
+          ))
+          ) : (
+            // Empty State
+            <Grid size={{ xs: 12 }}>
+              <Box sx={{ textAlign: 'center', py: 8 }}>
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  Belum ada portfolio featured
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Project akan segera ditampilkan di sini
+                </Typography>
+              </Box>
+            </Grid>
+          )}
         </Grid>
 
         <motion.div
