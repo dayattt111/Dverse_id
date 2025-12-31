@@ -185,7 +185,7 @@ const JobCard = ({ job }: { job: IJobPosting }) => {
 
           {/* Skills */}
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 3 }}>
-            {job.skills.slice(0, 4).map((skill) => (
+            {job.skills?.slice(0, 4).map((skill) => (
               <Chip
                 key={skill}
                 label={skill}
@@ -201,9 +201,9 @@ const JobCard = ({ job }: { job: IJobPosting }) => {
                 }}
               />
             ))}
-            {job.skills.length > 4 && (
+            {(job.skills?.length || 0) > 4 && (
               <Chip
-                label={`+${job.skills.length - 4}`}
+                label={`+${(job.skills?.length || 0) - 4}`}
                 size='small'
                 sx={{
                   fontSize: 10,
@@ -253,16 +253,17 @@ export default function CareerPageContent() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const q = query(
-          collection(db, 'career'),
-          where('status', '==', 'active'),
-          orderBy('id', 'desc')
-        )
+        // Fetch all jobs first, then filter in memory to avoid index requirement
+        const q = query(collection(db, 'career'), orderBy('id', 'desc'))
         const snapshot = await getDocs(q)
-        const data = snapshot.docs.map((doc) => doc.data()) as IJobPosting[]
-        setJobPostings(data)
+        const allJobs = snapshot.docs.map((doc) => doc.data()) as IJobPosting[]
+        // Filter only active jobs
+        const activeJobs = allJobs.filter((job) => job.status === 'active')
+        setJobPostings(activeJobs)
       } catch (error) {
         console.error('Error fetching jobs:', error)
+        // Set empty array on error to prevent hydration mismatch
+        setJobPostings([])
       } finally {
         setLoading(false)
       }
@@ -275,10 +276,10 @@ export default function CareerPageContent() {
     .filter((job) => (selectedWorkType === 'all' ? true : job.workType === selectedWorkType))
     .filter(
       (job) =>
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.skills.some((skill) => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+        job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.skills?.some((skill) => skill.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
   const handleWorkTypeChange = (_event: React.SyntheticEvent, newValue: WorkTypeFilter) => {

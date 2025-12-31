@@ -22,18 +22,18 @@ const HomeCareer = () => {
   useEffect(() => {
     const fetchFeaturedJobs = async () => {
       try {
-        const q = query(
-          collection(db, 'career'),
-          where('featured', '==', true),
-          where('status', '==', 'active'),
-          orderBy('id', 'desc'),
-          limit(3)
-        )
+        // Fetch all jobs, then filter in memory to avoid composite index
+        const q = query(collection(db, 'career'), orderBy('id', 'desc'))
         const snapshot = await getDocs(q)
-        const jobs = snapshot.docs.map(doc => doc.data()) as IJobPosting[]
-        setFeaturedJobs(jobs)
+        const allJobs = snapshot.docs.map(doc => doc.data()) as IJobPosting[]
+        // Filter featured and active jobs, limit to 3
+        const featured = allJobs
+          .filter(job => job.featured === true && job.status === 'active')
+          .slice(0, 3)
+        setFeaturedJobs(featured)
       } catch (error) {
         console.error('Error fetching featured jobs:', error)
+        setFeaturedJobs([])
       } finally {
         setLoading(false)
       }

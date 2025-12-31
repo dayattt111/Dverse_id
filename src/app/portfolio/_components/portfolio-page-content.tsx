@@ -149,7 +149,7 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
 
           {/* Tech Stack */}
           <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {project.techStack.slice(0, 4).map((tech, index) => (
+            {project.techStack?.slice(0, 4).map((tech, index) => (
               <Chip
                 key={index}
                 label={tech}
@@ -165,9 +165,9 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
                 }}
               />
             ))}
-            {project.techStack.length > 4 && (
+            {(project.techStack?.length || 0) > 4 && (
               <Chip
-                label={`+${project.techStack.length - 4}`}
+                label={`+${(project.techStack?.length || 0) - 4}`}
                 size="small"
                 sx={{
                   fontSize: 10,
@@ -196,17 +196,17 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <Avatar
-                src={project.creator.avatar}
-                alt={project.creator.name}
+                src={project.creator?.avatar}
+                alt={project.creator?.name || 'Creator'}
                 sx={{ width: 32, height: 32 }}
               >
-                {project.creator.name.charAt(0)}
+                {project.creator?.name?.charAt(0) || '?'}
               </Avatar>
               <Box>
                 <Typography variant="body2" fontWeight={600} sx={{ lineHeight: 1.2 }}>
-                  {project.creator.name}
+                  {project.creator?.name || 'Unknown'}
                 </Typography>
-                {project.creator.role && (
+                {project.creator?.role && (
                   <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.2 }}>
                     {project.creator.role}
                   </Typography>
@@ -258,7 +258,7 @@ const ProjectCard = ({ project }: { project: IPortfolioProject }) => {
                 backgroundColor: 'rgba(152, 15, 90, 0.05)',
               },
             }}
-            href={`/portfolio/${project.slug}`}
+            href={`/portfolio/${project.slug || ''}`}
           >
             Lihat Detail
           </Button>
