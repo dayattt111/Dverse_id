@@ -24,27 +24,19 @@ import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  Timestamp,
-  query,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
 import { IJobPosting } from '@/types/career'
 import ImageUpload from '@/components/admin/image-upload'
+import {
+  getActiveJobs,
+  addJob,
+  updateJob,
+  deleteJob,
+} from '@/lib/supabase/career'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
 const EditIcon = () => <span>✏️</span>
 const DeleteIcon = () => <span>🗑️</span>
-
-type JobWithDocId = IJobPosting & { docId: string }
 
 const workTypeColors: Record<string, string> = {
   remote: '#10b981',
@@ -81,12 +73,12 @@ const initialFormData: Omit<IJobPosting, 'id'> = {
 }
 
 export default function AdminCareerPage() {
-  const [jobs, setJobs] = useState<JobWithDocId[]>([])
+  const [jobs, setJobs] = useState<IJobPosting[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editingJob, setEditingJob] = useState<JobWithDocId | null>(null)
-  const [deletingJob, setDeletingJob] = useState<JobWithDocId | null>(null)
+  const [editingJob, setEditingJob] = useState<IJobPosting | null>(null)
+  const [deletingJob, setDeletingJob] = useState<IJobPosting | null>(null)
   const [formData, setFormData] = useState(initialFormData)
   const [requirementsInput, setRequirementsInput] = useState('')
   const [responsibilitiesInput, setResponsibilitiesInput] = useState('')
@@ -97,12 +89,7 @@ export default function AdminCareerPage() {
 
   const fetchJobs = async () => {
     try {
-      const q = query(collection(db, 'career'), orderBy('id', 'desc'))
-      const snapshot = await getDocs(q)
-      const data = snapshot.docs.map((doc) => ({
-        docId: doc.id,
-        ...doc.data(),
-      })) as JobWithDocId[]
+      const data = await getActiveJobs()
       setJobs(data)
     } catch (error) {
       console.error('Error fetching jobs:', error)
@@ -115,7 +102,7 @@ export default function AdminCareerPage() {
     fetchJobs()
   }, [])
 
-  const handleOpenDialog = (job?: JobWithDocId) => {
+  const handleOpenDialog = (job?: IJobPosting) => {
     if (job) {
       setEditingJob(job)
       setFormData({
@@ -193,20 +180,10 @@ export default function AdminCareerPage() {
       }
 
       if (editingJob) {
-        await updateDoc(doc(db, 'career', editingJob.docId), {
-          ...dataToSave,
-          updatedAt: Timestamp.now(),
-        })
+        await updateJob(editingJob.id, dataToSave)
         setSnackbar({ open: true, message: 'Job berhasil diupdate', severity: 'success' })
       } else {
-        const snapshot = await getDocs(collection(db, 'career'))
-        const nextId = snapshot.size + 1
-        await addDoc(collection(db, 'career'), {
-          ...dataToSave,
-          id: nextId,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        })
+        await addJob(dataToSave)
         setSnackbar({ open: true, message: 'Job berhasil ditambahkan', severity: 'success' })
       }
       handleCloseDialog()
@@ -224,7 +201,7 @@ export default function AdminCareerPage() {
 
     setSaving(true)
     try {
-      await deleteDoc(doc(db, 'career', deletingJob.docId))
+      await deleteJob(deletingJob.id)
       setSnackbar({ open: true, message: 'Job berhasil dihapus', severity: 'success' })
       setDeleteDialogOpen(false)
       setDeletingJob(null)
@@ -290,7 +267,7 @@ export default function AdminCareerPage() {
                 </TableRow>
               ) : (
                 jobs.map((job) => (
-                  <TableRow key={job.docId} hover>
+                  <TableRow key={job.id} hover>
                     <TableCell>{job.id}</TableCell>
                     <TableCell>
                       <Typography fontWeight={600}>{job.title}</Typography>

@@ -24,27 +24,19 @@ import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  Timestamp,
-  query,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
 import { IPortfolioProject } from '@/types/portfolio'
 import ImageUpload from '@/components/admin/image-upload'
+import {
+  getPortfolioProjects,
+  addPortfolioProject,
+  updatePortfolioProject,
+  deletePortfolioProject,
+} from '@/lib/supabase/portfolio'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
 const EditIcon = () => <span>✏️</span>
 const DeleteIcon = () => <span>🗑️</span>
-
-type ProjectWithDocId = IPortfolioProject & { docId: string }
 
 const categoryLabels: Record<string, string> = {
   web: 'Web',
@@ -71,12 +63,12 @@ const initialFormData: Omit<IPortfolioProject, 'id'> = {
 }
 
 export default function AdminPortfolioPage() {
-  const [projects, setProjects] = useState<ProjectWithDocId[]>([])
+  const [projects, setProjects] = useState<IPortfolioProject[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editingProject, setEditingProject] = useState<ProjectWithDocId | null>(null)
-  const [deletingProject, setDeletingProject] = useState<ProjectWithDocId | null>(null)
+  const [editingProject, setEditingProject] = useState<IPortfolioProject | null>(null)
+  const [deletingProject, setDeletingProject] = useState<IPortfolioProject | null>(null)
   const [formData, setFormData] = useState(initialFormData)
   const [techStackInput, setTechStackInput] = useState('')
   const [tagsInput, setTagsInput] = useState('')
@@ -85,12 +77,7 @@ export default function AdminPortfolioPage() {
 
   const fetchProjects = async () => {
     try {
-      const q = query(collection(db, 'portfolio'), orderBy('id', 'desc'))
-      const snapshot = await getDocs(q)
-      const data = snapshot.docs.map((doc) => ({
-        docId: doc.id,
-        ...doc.data(),
-      })) as ProjectWithDocId[]
+      const data = await getPortfolioProjects()
       setProjects(data)
     } catch (error) {
       console.error('Error fetching projects:', error)
@@ -103,7 +90,7 @@ export default function AdminPortfolioPage() {
     fetchProjects()
   }, [])
 
-  const handleOpenDialog = (project?: ProjectWithDocId) => {
+  const handleOpenDialog = (project?: IPortfolioProject) => {
     if (project) {
       setEditingProject(project)
       setFormData({
@@ -164,20 +151,10 @@ export default function AdminPortfolioPage() {
       }
 
       if (editingProject) {
-        await updateDoc(doc(db, 'portfolio', editingProject.docId), {
-          ...dataToSave,
-          updatedAt: Timestamp.now(),
-        })
+        await updatePortfolioProject(editingProject.id, dataToSave)
         setSnackbar({ open: true, message: 'Project berhasil diupdate', severity: 'success' })
       } else {
-        const snapshot = await getDocs(collection(db, 'portfolio'))
-        const nextId = snapshot.size + 1
-        await addDoc(collection(db, 'portfolio'), {
-          ...dataToSave,
-          id: nextId,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        })
+        await addPortfolioProject(dataToSave)
         setSnackbar({ open: true, message: 'Project berhasil ditambahkan', severity: 'success' })
       }
       handleCloseDialog()
@@ -195,7 +172,7 @@ export default function AdminPortfolioPage() {
 
     setSaving(true)
     try {
-      await deleteDoc(doc(db, 'portfolio', deletingProject.docId))
+      await deletePortfolioProject(deletingProject.id)
       setSnackbar({ open: true, message: 'Project berhasil dihapus', severity: 'success' })
       setDeleteDialogOpen(false)
       setDeletingProject(null)
@@ -261,7 +238,7 @@ export default function AdminPortfolioPage() {
                 </TableRow>
               ) : (
                 projects.map((project) => (
-                  <TableRow key={project.docId} hover>
+                  <TableRow key={project.id} hover>
                     <TableCell>{project.id}</TableCell>
                     <TableCell>
                       <Typography fontWeight={600}>{project.title}</Typography>

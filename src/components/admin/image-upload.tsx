@@ -7,8 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import Alert from '@mui/material/Alert'
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage'
-import { storage } from '@/lib/firebase/config'
+import { supabase } from '@/lib/supabase/config'
 
 interface ImageUploadProps {
   value: string
@@ -57,41 +56,42 @@ const ImageUpload = ({
     try {
       // Create unique filename
       const timestamp = Date.now()
-      const filename = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`
-      const storageRef = ref(storage, `${folder}/${filename}`)
+      const fileExt = file.name.split('.').pop()
+      const filename = `${timestamp}_${Math.random().toString(36).substring(7)}.${fileExt}`
+      const filePath = `${folder}/${filename}`
 
-      console.log('Uploading to:', `${folder}/${filename}`)
+      console.log('Uploading to Supabase Storage:', filePath)
 
-      // Upload file
-      const uploadTask = uploadBytesResumable(storageRef, file)
+      // Upload file to Supabase Storage
+      const { data, error: uploadError } = await supabase.storage
+        .from('images') // bucket name
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+        })
 
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const prog = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          setProgress(prog)
-          console.log('Upload progress:', prog)
-        },
-        (error) => {
-          console.error('Upload error:', error)
-          setError(`Gagal upload gambar: ${error.message}`)
-          setUploading(false)
-        },
-        async () => {
-          try {
-            // Get download URL
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref)
-            console.log('Download URL:', downloadURL)
-            onChange(downloadURL)
-            setUploading(false)
-            setProgress(0)
-          } catch (error: any) {
-            console.error('Error getting download URL:', error)
-            setError(`Gagal mendapatkan URL: ${error.message}`)
-            setUploading(false)
-          }
-        }
-      )
+      if (uploadError) {
+        console.error('Upload error:', uploadError)
+        setError(`Gagal upload gambar: ${uploadError.message}`)
+        setUploading(false)
+        return
+      }
+
+      console.log('Upload success:', data)
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath)
+
+      console.log('Public URL:', urlData.publicUrl)
+      
+      onChange(urlData.publicUrl)
+      setUploading(false)
+      setProgress(100)
+      
+      // Reset progress after a short delay
+      setTimeout(() => setProgress(0), 500)
     } catch (error: any) {
       console.error('Upload error:', error)
       setError(`Gagal upload gambar: ${error.message}`)
@@ -103,10 +103,19 @@ const ImageUpload = ({
     if (!value) return
 
     try {
-      // Delete from storage if it's a Firebase Storage URL
-      if (value.includes('firebasestorage.googleapis.com')) {
-        const storageRef = ref(storage, value)
-        await deleteObject(storageRef)
+      // Extract file path from Supabase URL
+      if (value.includes('supabase')) {
+        const urlParts = value.split('/storage/v1/object/public/images/')
+        if (urlParts.length > 1) {
+          const filePath = urlParts[1]
+          const { error } = await supabase.storage
+            .from('images')
+            .remove([filePath])
+          
+          if (error) {
+            console.error('Delete error:', error)
+          }
+        }
       }
       onChange('')
     } catch (error) {

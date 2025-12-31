@@ -22,27 +22,19 @@ import MenuItem from '@mui/material/MenuItem'
 import Alert from '@mui/material/Alert'
 import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  Timestamp,
-  query,
-  orderBy,
-} from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
 import { ICommunityProgram } from '@/types/community'
 import ImageUpload from '@/components/admin/image-upload'
+import {
+  getPrograms,
+  addProgram,
+  updateProgram,
+  deleteProgram,
+} from '@/lib/supabase/programs'
 
 // Emoji icons
 const AddIcon = () => <span>➕</span>
 const EditIcon = () => <span>✏️</span>
 const DeleteIcon = () => <span>🗑️</span>
-
-type ProgramWithDocId = ICommunityProgram & { docId: string }
 
 const statusColors: Record<string, 'success' | 'warning' | 'default'> = {
   active: 'success',
@@ -72,24 +64,19 @@ const initialFormData: Omit<ICommunityProgram, 'id'> = {
 }
 
 export default function AdminProgramsPage() {
-  const [programs, setPrograms] = useState<ProgramWithDocId[]>([])
+  const [programs, setPrograms] = useState<ICommunityProgram[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [editingProgram, setEditingProgram] = useState<ProgramWithDocId | null>(null)
-  const [deletingProgram, setDeletingProgram] = useState<ProgramWithDocId | null>(null)
+  const [editingProgram, setEditingProgram] = useState<ICommunityProgram | null>(null)
+  const [deletingProgram, setDeletingProgram] = useState<ICommunityProgram | null>(null)
   const [formData, setFormData] = useState(initialFormData)
   const [saving, setSaving] = useState(false)
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' })
 
   const fetchPrograms = async () => {
     try {
-      const q = query(collection(db, 'programs'), orderBy('id', 'asc'))
-      const snapshot = await getDocs(q)
-      const data = snapshot.docs.map((doc) => ({
-        docId: doc.id,
-        ...doc.data(),
-      })) as ProgramWithDocId[]
+      const data = await getPrograms()
       setPrograms(data)
     } catch (error) {
       console.error('Error fetching programs:', error)
@@ -102,7 +89,7 @@ export default function AdminProgramsPage() {
     fetchPrograms()
   }, [])
 
-  const handleOpenDialog = (program?: ProgramWithDocId) => {
+  const handleOpenDialog = (program?: ICommunityProgram) => {
     if (program) {
       setEditingProgram(program)
       setFormData({
@@ -158,21 +145,11 @@ export default function AdminProgramsPage() {
     try {
       if (editingProgram) {
         // Update existing
-        await updateDoc(doc(db, 'programs', editingProgram.docId), {
-          ...formData,
-          updatedAt: Timestamp.now(),
-        })
+        await updateProgram(editingProgram.id, formData)
         setSnackbar({ open: true, message: 'Program berhasil diupdate', severity: 'success' })
       } else {
         // Add new
-        const snapshot = await getDocs(collection(db, 'programs'))
-        const nextId = snapshot.size + 1
-        await addDoc(collection(db, 'programs'), {
-          ...formData,
-          id: nextId,
-          createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now(),
-        })
+        await addProgram(formData)
         setSnackbar({ open: true, message: 'Program berhasil ditambahkan', severity: 'success' })
       }
       handleCloseDialog()
@@ -190,7 +167,7 @@ export default function AdminProgramsPage() {
 
     setSaving(true)
     try {
-      await deleteDoc(doc(db, 'programs', deletingProgram.docId))
+      await deleteProgram(deletingProgram.id)
       setSnackbar({ open: true, message: 'Program berhasil dihapus', severity: 'success' })
       setDeleteDialogOpen(false)
       setDeletingProgram(null)
@@ -259,7 +236,7 @@ export default function AdminProgramsPage() {
                 </TableRow>
               ) : (
                 programs.map((program) => (
-                  <TableRow key={program.docId} hover>
+                  <TableRow key={program.id} hover>
                     <TableCell>{program.id}</TableCell>
                     <TableCell>
                       <Typography fontWeight={600}>{program.title}</Typography>

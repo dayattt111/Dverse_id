@@ -114,47 +114,104 @@ bun run migrate:firebase-to-supabase
 
 ### 4.2 Create Admin User
 
+**Cara 1: Via SQL Editor (Recommended)**
+
 ```sql
--- Via SQL Editor
-INSERT INTO auth.users (email, encrypted_password, email_confirmed_at)
-VALUES (
-  'admin@dcn-undipa.com',
+-- Insert admin user dengan UUID
+INSERT INTO auth.users (
+  instance_id,
+  id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  recovery_sent_at,
+  last_sign_in_at,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at,
+  confirmation_token,
+  email_change,
+  email_change_token_new,
+  recovery_token
+) VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  gen_random_uuid(),
+  'authenticated',
+  'authenticated',
+  'dayatdcn@dcnundipa.com',
   crypt('dcn-undipa-the-best-2025', gen_salt('bf')),
-  NOW()
+  NOW(),
+  NOW(),
+  NOW(),
+  '{"provider":"email","providers":["email"]}',
+  '{}',
+  NOW(),
+  NOW(),
+  '',
+  '',
+  '',
+  ''
 );
 ```
 
-Atau gunakan Supabase Dashboard > Authentication > Add User
+**Cara 2: Via Supabase Dashboard (Lebih Mudah)**
+
+1. Buka **Authentication** > **Users**
+2. Klik **Add User** > **Create new user**
+3. Isi:
+   - Email: `dayatdcn@dcnundipa.com`
+   - Password: `dcn-undipa-the-best-2025`
+   - Auto Confirm User: ✅ (centang)
+4. Klik **Create User**
 
 ## 💾 Step 5: Setup Storage
 
-### 5.1 Create Storage Buckets
+### 5.1 Create Storage Bucket
 
 1. Supabase Dashboard > **Storage**
-2. Buat buckets:
-   - `portfolio`
-   - `career-logos`
-   - `programs`
+2. Klik **New Bucket**
+3. Buat bucket dengan nama: **`images`**
+4. **Public bucket**: ✅ (centang, agar gambar bisa diakses publik)
+5. Klik **Create Bucket**
 
 ### 5.2 Configure Bucket Policies
 
-Untuk setiap bucket:
-```sql
--- Public read access
-CREATE POLICY "Public Access"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'portfolio');
+Bucket sudah public, tapi perlu policy untuk upload/delete:
 
--- Authenticated upload
+1. Klik bucket **images** > **Policies** tab
+2. Klik **New Policy**
+
+**Policy 1: Public Read** (Already enabled for public buckets)
+
+**Policy 2: Authenticated Upload**
+```sql
 CREATE POLICY "Authenticated users can upload"
 ON storage.objects FOR INSERT
-WITH CHECK (bucket_id = 'portfolio' AND auth.role() = 'authenticated');
+TO authenticated
+WITH CHECK (bucket_id = 'images');
+```
 
--- Authenticated delete
+**Policy 3: Authenticated Delete**  
+```sql
 CREATE POLICY "Authenticated users can delete"
 ON storage.objects FOR DELETE
-USING (bucket_id = 'portfolio' AND auth.role() = 'authenticated');
+TO authenticated
+USING (bucket_id = 'images');
 ```
+
+**Policy 4: Authenticated Update**
+```sql
+CREATE POLICY "Authenticated users can update"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'images')
+WITH CHECK (bucket_id = 'images');
+```
+
+> **Note:** Untuk development, Anda bisa buat bucket public dengan "Allow public access" agar tidak perlu authentication untuk upload. Tapi untuk production, sebaiknya gunakan RLS policies seperti di atas.
 
 ## 🔧 Step 6: Update Code
 

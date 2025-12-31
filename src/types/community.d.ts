@@ -5,10 +5,13 @@
 
 // Community Stats
 export interface ICommunityStats {
+  id?: string
   totalMembers: number
-  totalClassesCompleted: number
-  totalEvents: number
-  activeLearners: number
+  activeProjects: number
+  successRate: number
+  yearsExperience: number
+  createdAt?: string
+  updatedAt?: string
 }
 
 // Contributor

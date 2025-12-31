@@ -10,8 +10,7 @@ import Link from 'next/link'
 import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getFeaturedPortfolioProjects } from '@/lib/supabase/portfolio'
 import { IPortfolioProject } from '@/types/portfolio'
 
 const HomePortfolio = () => {
@@ -22,12 +21,7 @@ const HomePortfolio = () => {
   useEffect(() => {
     const fetchFeaturedProjects = async () => {
       try {
-        // Fetch all projects, then filter in memory to avoid composite index
-        const q = query(collection(db, 'portfolio'), orderBy('id', 'desc'))
-        const snapshot = await getDocs(q)
-        const allProjects = snapshot.docs.map(doc => doc.data()) as IPortfolioProject[]
-        // Filter featured projects, limit to 3
-        const featured = allProjects.filter(project => project.featured === true).slice(0, 3)
+        const featured = await getFeaturedPortfolioProjects(3)
         setFeaturedProjects(featured)
       } catch (error) {
         console.error('Error fetching featured projects:', error)

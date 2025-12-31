@@ -10,8 +10,7 @@ import Link from 'next/link'
 import Skeleton from '@mui/material/Skeleton'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
-import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getFeaturedJobs } from '@/lib/supabase/career'
 import { IJobPosting } from '@/types/career'
 
 const HomeCareer = () => {
@@ -22,14 +21,7 @@ const HomeCareer = () => {
   useEffect(() => {
     const fetchFeaturedJobs = async () => {
       try {
-        // Fetch all jobs, then filter in memory to avoid composite index
-        const q = query(collection(db, 'career'), orderBy('id', 'desc'))
-        const snapshot = await getDocs(q)
-        const allJobs = snapshot.docs.map(doc => doc.data()) as IJobPosting[]
-        // Filter featured and active jobs, limit to 3
-        const featured = allJobs
-          .filter(job => job.featured === true && job.status === 'active')
-          .slice(0, 3)
+        const featured = await getFeaturedJobs(3)
         setFeaturedJobs(featured)
       } catch (error) {
         console.error('Error fetching featured jobs:', error)

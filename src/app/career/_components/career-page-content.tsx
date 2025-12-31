@@ -17,8 +17,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import { collection, getDocs, query, orderBy, where } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getActiveJobs } from '@/lib/supabase/career'
 
 import { IJobPosting, WorkTypeFilter } from '@/types/career'
 
@@ -255,12 +254,7 @@ export default function CareerPageContent() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Fetch all jobs first, then filter in memory to avoid index requirement
-        const q = query(collection(db, 'career'), orderBy('id', 'desc'))
-        const snapshot = await getDocs(q)
-        const allJobs = snapshot.docs.map((doc) => doc.data()) as IJobPosting[]
-        // Filter only active jobs
-        const activeJobs = allJobs.filter((job) => job.status === 'active')
+        const activeJobs = await getActiveJobs()
         setJobPostings(activeJobs)
       } catch (error) {
         console.error('Error fetching jobs:', error)

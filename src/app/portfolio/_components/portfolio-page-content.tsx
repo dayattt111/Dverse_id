@@ -19,8 +19,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getPortfolioProjects } from '@/lib/supabase/portfolio'
 
 import { IPortfolioProject } from '@/types/portfolio'
 
@@ -277,9 +276,7 @@ export default function PortfolioPageContent() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const q = query(collection(db, 'portfolio'), orderBy('id', 'desc'))
-        const snapshot = await getDocs(q)
-        const data = snapshot.docs.map((doc) => doc.data()) as IPortfolioProject[]
+        const data = await getPortfolioProjects()
         setPortfolioProjects(data)
       } catch (error) {
         console.error('Error fetching portfolio projects:', error)
