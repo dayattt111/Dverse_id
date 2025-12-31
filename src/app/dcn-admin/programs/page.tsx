@@ -62,7 +62,7 @@ const initialFormData: Omit<ICommunityProgram, 'id'> = {
   title: '',
   slug: '',
   description: '',
-  image: '',
+  image: undefined,
   status: 'upcoming',
   participants: 0,
   category: 'bootcamp',
@@ -109,7 +109,7 @@ export default function AdminProgramsPage() {
         title: program.title,
         slug: program.slug,
         description: program.description,
-        image: program.image || '',
+        image: program.image || undefined,
         status: program.status,
         participants: program.participants || 0,
         category: program.category,
@@ -333,8 +333,8 @@ export default function AdminProgramsPage() {
               rows={3}
             />
             <ImageUpload
-              value={formData.image}
-              onChange={(url) => setFormData({ ...formData, image: url })}
+              value={formData.image ?? ''}
+              onChange={(url) => setFormData({ ...formData, image: url || undefined })}
               folder="programs"
               label="Program Image"
               helperText="Upload gambar program (Maksimal 5MB)"

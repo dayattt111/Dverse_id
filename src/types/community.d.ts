@@ -32,7 +32,7 @@ export interface ICommunityProgram {
   slug: string
   description: string
   icon?: string
-  image?: PublicImagePath
+  image?: string // Support both local paths and Firebase Storage URLs
   status: 'active' | 'upcoming' | 'completed'
   participants?: number
   startDate?: string

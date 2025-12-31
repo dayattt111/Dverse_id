@@ -361,8 +361,8 @@ export default function AdminCareerPage() {
               />
             </Box>
             <ImageUpload
-              value={formData.companyLogo}
-              onChange={(url) => setFormData({ ...formData, companyLogo: url })}
+              value={formData.companyLogo ?? ''}
+              onChange={(url) => setFormData({ ...formData, companyLogo: url || undefined })}
               folder="career/logos"
               label="Company Logo"
               helperText="Upload logo perusahaan (Maksimal 5MB)"
