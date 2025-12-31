@@ -248,18 +248,22 @@ export default function CareerPageContent() {
   const theme = useTheme()
   const [selectedWorkType, setSelectedWorkType] = useState<WorkTypeFilter>('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [jobPostings, setJobPostings] = useState<IJobPosting[]>([])
+  const [jobs, setJobs] = useState<IJobPosting[]>([])
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const activeJobs = await getActiveJobs()
-        setJobPostings(activeJobs)
+        setJobs(activeJobs)
       } catch (error) {
         console.error('Error fetching jobs:', error)
-        // Set empty array on error to prevent hydration mismatch
-        setJobPostings([])
+        setJobs([])
       } finally {
         setLoading(false)
       }
@@ -268,7 +272,7 @@ export default function CareerPageContent() {
     fetchJobs()
   }, [])
 
-  const filteredJobs = jobPostings
+  const filteredJobs = jobs
     .filter((job) => (selectedWorkType === 'all' ? true : job.workType === selectedWorkType))
     .filter(
       (job) =>
@@ -280,6 +284,11 @@ export default function CareerPageContent() {
 
   const handleWorkTypeChange = (_event: React.SyntheticEvent, newValue: WorkTypeFilter) => {
     setSelectedWorkType(newValue)
+  }
+
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return null
   }
 
   return (
@@ -413,17 +422,17 @@ export default function CareerPageContent() {
                 fontSize: { xs: 13, md: 15 },
                 minHeight: 48,
                 '&.Mui-selected': {
-                  color: 'primary.main',
-                },
-              },
-            }}
-          >
-            <Tab label={`${workTypeLabels.all} (${jobPostings.length})`} value='all' />
+                  color: 'primary.main',s.length})`} value='all' />
             <Tab
-              label={`${workTypeLabels.remote} (${jobPostings.filter(j => j.workType === 'remote').length})`}
+              label={`${workTypeLabels.remote} (${jobs.filter(j => j.workType === 'remote').length})`}
               value='remote'
             />
             <Tab
+              label={`${workTypeLabels.onsite} (${jobs.filter(j => j.workType === 'onsite').length})`}
+              value='onsite'
+            />
+            <Tab
+              label={`${workTypeLabels.hybrid} (${job
               label={`${workTypeLabels.onsite} (${jobPostings.filter(j => j.workType === 'onsite').length})`}
               value='onsite'
             />
@@ -480,12 +489,12 @@ export default function CareerPageContent() {
               💼
             </Typography>
             <Typography variant='h6' color='text.secondary' sx={{ mb: 2 }}>
-              {jobPostings.length === 0
+              {jobs.length === 0
                 ? 'Belum ada lowongan pekerjaan'
                 : 'Tidak ada lowongan yang sesuai'}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              {jobPostings.length === 0
+              {jobs.length === 0
                 ? 'Tambahkan lowongan pertama melalui admin panel'
                 : 'Coba ubah filter atau kata kunci pencarian'}
             </Typography>

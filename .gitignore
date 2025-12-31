@@ -40,6 +40,9 @@ firestore.rules
 FIREBASE_SETUP.md
 nul
 
+# supaase
+suppabase/*
+
 # vercel
 .vercel
 
