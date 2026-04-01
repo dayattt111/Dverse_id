@@ -1,9 +1,8 @@
 'use client'
 
-import React, { FC, memo, ReactElement } from 'react'
+import React, { FC, memo, ReactElement, useCallback } from 'react'
 
 // components
-import Link from 'next/link'
 import Box from '@mui/material/Box'
 import MuiLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
@@ -11,24 +10,36 @@ import Typography from '@mui/material/Typography'
 // interfaces
 import { Theme } from '@mui/material/styles'
 
-// hooks
-import { usePathname } from 'next/navigation'
-
 // constants
 import { companyMenus } from '@/constants/menus'
 
-interface LinkItemProps extends Props {
+interface LinkItemProps {
   label: string
   path: string
   icon?: ReactElement
 }
 
 const LinkItem: FC<LinkItemProps> = ({ label, path, icon }: LinkItemProps) => {
-  const pathName = usePathname()
+  const isAnchor = path.startsWith('#')
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (isAnchor) {
+        e.preventDefault()
+        const id = path.replace('#', '')
+        const el = document.getElementById(id)
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' })
+        }
+      }
+    },
+    [isAnchor, path]
+  )
+
   return (
     <MuiLink
       href={path}
-      component={Link}
+      onClick={handleClick}
       sx={{
         py: 0.8,
         px: 1.8,
@@ -38,7 +49,7 @@ const LinkItem: FC<LinkItemProps> = ({ label, path, icon }: LinkItemProps) => {
         overflow: 'hidden',
         alignItems: 'center',
         position: 'relative',
-        color: 'text.primary',
+        color: 'rgba(255,255,255,0.8)',
         textDecoration: 'none',
         display: 'inline-block',
         // Icon
@@ -51,15 +62,9 @@ const LinkItem: FC<LinkItemProps> = ({ label, path, icon }: LinkItemProps) => {
             theme.transitions.create(['transform', 'margin']),
         },
 
-        // Styles for active menu
-        ...(pathName === path && {
-          backgroundColor: 'primary.main',
-          color: '#fbfbfb',
-        }),
-
         '&:hover': {
           backgroundColor: 'primary.main',
-          color: '#fbfbfb',
+          color: '#fff',
           '& svg': {
             transform: 'translateX(0px)',
           },
@@ -88,9 +93,7 @@ const LinkItem: FC<LinkItemProps> = ({ label, path, icon }: LinkItemProps) => {
 }
 const MemoizedLinkItem = memo(LinkItem)
 
-interface Props {}
-
-const AppBarNavigation: FC<Props> = () => {
+const AppBarNavigation: FC = () => {
   return (
     <Box sx={{ mx: 'auto' }}>
       <Box

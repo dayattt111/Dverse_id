@@ -11,19 +11,22 @@ const HomeHero = dynamic(() => import('./_components/home-hero'), {
 const HomeAbout = dynamic(() => import('./_components/home-about'), {
   loading: () => <PageLoader />,
 })
-const HomeLeaderboard = dynamic(() => import('./_components/home-leaderboard'), {
+const HomeProblemStatement = dynamic(() => import('./_components/home-problem-statement'), {
   loading: () => <PageLoader />,
 })
-const HomeStats = dynamic(() => import('./_components/home-stats'), {
+const HomeTimeline = dynamic(() => import('./_components/home-timeline'), {
   loading: () => <PageLoader />,
 })
-const HomePrograms = dynamic(() => import('./_components/home-programs'), {
+const HomeRegistration = dynamic(() => import('./_components/home-registration'), {
   loading: () => <PageLoader />,
 })
-const HomePortfolio = dynamic(() => import('./_components/home-portfolio'), {
+const HomeBenefits = dynamic(() => import('./_components/home-benefits'), {
   loading: () => <PageLoader />,
 })
-const HomeCareer = dynamic(() => import('./_components/home-career'), {
+const HomeFAQ = dynamic(() => import('./_components/home-faq'), {
+  loading: () => <PageLoader />,
+})
+const HomeContactSection = dynamic(() => import('./_components/home-contact-section'), {
   loading: () => <PageLoader />,
 })
 const HomeCTA = dynamic(() => import('./_components/home-cta'), {
@@ -35,11 +38,12 @@ const HomePage = (): JSX.Element => {
     <Stack component='main' direction='column'>
       <HomeHero />
       <HomeAbout />
-      <HomeLeaderboard />
-      <HomeStats />
-      <HomePrograms />
-      <HomePortfolio />
-      <HomeCareer />
+      <HomeProblemStatement />
+      <HomeTimeline />
+      <HomeRegistration />
+      <HomeBenefits />
+      <HomeFAQ />
+      <HomeContactSection />
       <HomeCTA />
     </Stack>
   )

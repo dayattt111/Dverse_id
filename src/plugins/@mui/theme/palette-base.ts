@@ -1,23 +1,23 @@
 import { PaletteOptions } from '@mui/material'
 
-// DCN UNDIPA Color Scheme
-// Primary: Magenta (#980f5a) - Warna utama
-// Secondary: Maroon/Burgundy (#4c0027) - Warna sekunder
+// Dverse GreenTech Color Scheme
+// Primary: Fresh Green (#2e7d32) - Nature/GreenTech accent
+// Secondary: Navy Blue (#0f172a) - Deep Ocean / Professional base
 const paletteBase: Partial<PaletteOptions> = {
   primary: {
-    light: '#b8336e',      // Lighter magenta
-    main: '#980f5a',       // Main magenta (WARNA UTAMA)
-    dark: '#4c0027',       // Darker to maroon
+    light: '#66bb6a',      // Fresh green (green-400)
+    main: '#2e7d32',       // Leaf green (green-800)
+    dark: '#1b5e20',       // Deep forest green (green-900)
     contrastText: '#ffffff',
   },
   secondary: {
-    light: '#7a1845',      // Lighter maroon
-    main: '#4c0027',       // Main maroon
-    dark: '#2d0017',       // Darker maroon
+    light: '#334155',      // Slate-700
+    main: '#0f172a',       // Navy / Slate-900
+    dark: '#020617',       // Deep navy / Slate-950
     contrastText: '#ffffff',
   },
   success: {
-    main: '#2e7d32',       // Green for badges/success states
+    main: '#16a34a',       // Green for success states
     contrastText: '#ffffff',
   },
   info: {

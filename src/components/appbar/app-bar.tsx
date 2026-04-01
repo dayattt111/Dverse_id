@@ -41,8 +41,8 @@ const AppBar: FC = () => {
   const backgroundColor = useMemo(() => {
     if (shouldFloating) {
       return theme.palette.mode === 'light'
-        ? 'rgb(255 255 255 / 80%)'
-        : 'rgb(0 0 0 / 80%)'
+        ? 'rgba(15, 23, 42, 0.88)'
+        : 'rgba(2, 6, 23, 0.88)'
     } else {
       return 'transparent'
     }
@@ -125,6 +125,7 @@ const AppBar: FC = () => {
                 width: 'auto',
                 cursor: 'pointer',
                 height: shouldFloating ? 32 : 40,
+                color: '#fff',
                 transition: (theme: Theme) =>
                   theme.transitions.create(['transform', 'height']),
               }}

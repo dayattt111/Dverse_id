@@ -88,7 +88,7 @@ const Footer: FC = () => {
                       fontSize: { xs: 17, md: 20 },
                     }}
                   >
-                    Your Company
+                    Dverse
                   </Typography>
                 </Stack>
                 <Stack sx={{ maxWidth: { xs: '100%', md: '70%' } }}>

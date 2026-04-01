@@ -1,18 +1,21 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
-import { AppConfig } from '@/configs'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useTheme } from '@mui/material/styles'
 
 const HomeCTA = () => {
   const { palette } = useTheme()
+
+  const handleScroll = useCallback((id: string) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }, [])
 
   return (
     <Box
@@ -24,8 +27,8 @@ const HomeCTA = () => {
         position: 'relative',
         background:
           palette.mode === 'dark'
-            ? 'linear-gradient(180deg, #1a0010 0%, #2d0017 100%)'
-            : 'linear-gradient(180deg, #ffffff 0%, #fff5f8 100%)',
+            ? 'linear-gradient(180deg, #020617 0%, #0f172a 100%)'
+            : 'linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%)',
       }}
     >
       <Container maxWidth="lg">
@@ -40,8 +43,8 @@ const HomeCTA = () => {
               borderRadius: 4,
               overflow: 'hidden',
               position: 'relative',
-              background: (theme) =>
-                `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              background:
+                'linear-gradient(135deg, #2e7d32 0%, #0f172a 100%)',
               p: { xs: 4, md: 8 },
               '&::before': {
                 content: '""',
@@ -69,7 +72,7 @@ const HomeCTA = () => {
                     mb: 2,
                   }}
                 >
-                  Siap Bergabung dengan Kami?
+                  Siap Jadi Bagian dari Dverse?
                 </Typography>
                 <Typography
                   variant="h6"
@@ -80,15 +83,14 @@ const HomeCTA = () => {
                     fontWeight: 400,
                   }}
                 >
-                  Mulai perjalanan belajarmu bersama {AppConfig.appName}. Dapatkan akses ke program bootcamp,
-                  workshop, dan komunitas developer yang supportif.
+                  Daftarkan dirimu sekarang di Dverse — Developer Universe. Ikuti seminar GreenTech,
+                  tantang dirimu di Hackathon 48 Jam, dan bangun solusi teknologi hijau bersama developer lainnya.
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <Button
-                    component={Link}
-                    href="/programs"
+                    onClick={() => handleScroll('home-registration')}
                     variant="contained"
                     size="large"
                     sx={{
@@ -98,7 +100,7 @@ const HomeCTA = () => {
                       fontWeight: 700,
                       borderRadius: 2,
                       bgcolor: 'white',
-                      color: 'primary.main',
+                      color: '#2e7d32',
                       textTransform: 'none',
                       '&:hover': {
                         bgcolor: 'rgba(255, 255, 255, 0.9)',
@@ -108,11 +110,10 @@ const HomeCTA = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Lihat Program
+                    Daftar Sekarang
                   </Button>
                   <Button
-                    component={Link}
-                    href="/about"
+                    onClick={() => handleScroll('home-about')}
                     variant="outlined"
                     size="large"
                     sx={{
@@ -134,7 +135,7 @@ const HomeCTA = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Tentang Kami
+                    Tentang Dverse
                   </Button>
                 </Box>
               </Grid>
@@ -151,10 +152,10 @@ const HomeCTA = () => {
         >
           <Grid container spacing={3} sx={{ mt: 6 }}>
             {[
-              { number: '150+', label: 'Anggota Aktif' },
-              { number: '50+', label: 'Program & Event' },
-              { number: '80+', label: 'Project Selesai' },
-              { number: '20+', label: 'Partner' },
+              { number: '2', label: 'Event Utama' },
+              { number: '500+', label: 'Target Peserta' },
+              { number: '10+', label: 'Speakers & Mentor' },
+              { number: '48 Jam', label: 'Hackathon Marathon' },
             ].map((stat, index) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Box sx={{ textAlign: 'center' }}>

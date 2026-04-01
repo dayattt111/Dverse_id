@@ -69,9 +69,9 @@ const FooterContactInfo: FC = () => {
     <Box sx={{ mb: { xs: 4, md: 0 } }}>
       <FooterSectionTitle title='Contact Info' />
       <ContactInfoItem
-        value='info@example.com'
+        value='dverse@pnup.ac.id'
         label='Response within 24hrs'
-        link='mailto:info@example.com'
+        link='mailto:dverse@pnup.ac.id'
         icon={
           <Box
             component={EmailIcon}
@@ -80,9 +80,9 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='+62 812000xxxx'
-        label='Sen - Jum / 9am - 5:30pm'
-        link='https://wa.me/62812000xxxx'
+        value='+62 851-xxxx-xxxx'
+        label='Sen - Jum / 9am - 5pm'
+        link='https://wa.me/6285100000000'
         icon={
           <Box
             component={PhoneIcon}
@@ -91,9 +91,9 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='123 Business St., Suite 456, City, State, ZIP Code, Country'
-        label='Office'
-        link='#'
+        value='Kampus PNUP, Jl. Perintis Kemerdekaan KM.10, Makassar'
+        label='Lokasi Event'
+        link='https://maps.google.com/?q=Politeknik+Negeri+Ujung+Pandang'
         icon={
           <Box
             component={LocationIcon}

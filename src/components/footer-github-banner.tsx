@@ -1,5 +1,4 @@
 'use client'
-import { useCallback, useMemo } from 'react'
 
 // components
 import Box from '@mui/material/Box'
@@ -9,40 +8,32 @@ import { useTheme } from '@mui/material'
 const Footer = () => {
   const { palette } = useTheme()
 
-  const footerBannerImg = useMemo(() => {
-    const paletteMode = palette.mode
-    return `https://github.com/hiriski/hiriski/raw/master/banners/banner-copyright-${paletteMode}(2025).png`
-  }, [palette])
-
-  const onClick = useCallback(() => {
-    window.open('https://github.com/hiriski', '_blank')
-  }, [])
   return (
     <Box
       sx={(theme) => ({
         width: '100%',
         backgroundColor:
-          palette.mode === 'dark' ? '#1c1b18' : 'background.default',
+          palette.mode === 'dark' ? '#020617' : '#f0fdf4',
         borderTop: `1px solid ${theme.palette.divider}`,
       })}
     >
       <Stack
         sx={{
-          py: 6,
+          py: 3,
           width: {
             xs: '90%',
             md: 820,
           },
           mx: 'auto',
+          alignItems: 'center',
         }}
       >
         <Box
-          onClick={onClick}
-          component='img'
-          src={footerBannerImg}
-          alt='Copyright'
-          sx={{ width: '100%', cursor: 'pointer' }}
-        />
+          component='p'
+          sx={{ fontSize: 13, color: 'text.secondary', textAlign: 'center', m: 0 }}
+        >
+          Dverse — Developer Universe by Dipanegara Computer Club &amp; HMIF PNUP
+        </Box>
       </Stack>
     </Box>
   )

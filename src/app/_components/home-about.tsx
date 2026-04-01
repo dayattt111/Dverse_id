@@ -1,9 +1,8 @@
 'use client'
 
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 // components
-import Image from 'next/image'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
@@ -13,91 +12,87 @@ import { SectionTitle } from '@/components/core'
 // hooks
 import { useTheme } from '@mui/material/styles'
 
-interface Data {
+// motion
+import { motion } from 'framer-motion'
+
+interface FeatureData {
   id: number
   title: string
-  icon?: ReactNode
+  description: string
+  icon: string
   color: string
 }
 
-export const data: Data[] = [
+const features: FeatureData[] = [
   {
     id: 1,
-    title: 'Bootcamp',
-    icon: null,
-    color: '#980f5a',    // Primary magenta
+    title: 'Seminar',
+    description: 'Tech talk dari para expert tentang Green Technology & inovasi berkelanjutan.',
+    icon: '🎤',
+    color: '#2e7d32',
   },
   {
     id: 2,
-    title: 'Study Group',
-    icon: null,
-    color: '#4c0027',    // Maroon
+    title: 'Hackathon',
+    description: 'Kompetisi membangun solusi teknologi untuk masalah lingkungan & keberlanjutan.',
+    icon: '💻',
+    color: '#0f172a',
   },
   {
     id: 3,
-    title: 'Event & Workshop',
-    icon: null,
-    color: '#ec407a',    // Light pink magenta
+    title: 'Networking',
+    description: 'Bertemu dan berjejaring dengan developer, mentor, dan profesional industri.',
+    icon: '🤝',
+    color: '#16a34a',
   },
   {
     id: 4,
-    title: 'Mentoring',
-    icon: null,
-    color: '#6b0a3f',    // Dark magenta
+    title: 'Workshop',
+    description: 'Hands-on session untuk mempelajari tools dan framework terkini.',
+    icon: '🛠️',
+    color: '#334155',
   },
 ]
 
 interface ItemProps {
-  item: {
-    id: number
-    title: string
-    icon?: ReactNode
-    color: string
-  }
+  item: FeatureData
+  index: number
 }
-const FeatureItem = ({ item }: ItemProps) => {
+
+const FeatureItem = ({ item, index }: ItemProps) => {
   return (
-    <Box
-      sx={{
-        mb: { xs: 3, md: 0 },
-        '&:hover': {
-          '& .circle': {
-            borderRadius: 2,
-          },
-        },
-      }}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
     >
       <Box
-        className='circle'
         sx={{
-          background: `linear-gradient(135deg, ${item.color} 0%, ${item.color}dd 100%)`,
-          color: 'primary.contrastText',
-          width: 44,
-          height: 44,
-          flex: 1,
-          borderRadius: '50%',
-          position: 'relative',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: `0 4px 12px ${item.color}40`,
-          transition: (theme) => theme.transitions.create(['border-radius', 'transform', 'box-shadow']),
+          mb: { xs: 3, md: 0 },
+          p: 2.5,
+          borderRadius: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          transition: 'all 0.3s',
           '&:hover': {
-            transform: 'scale(1.1)',
-            boxShadow: `0 6px 20px ${item.color}60`,
-          },
-
-          '& svg': {
-            fontSize: 22,
+            transform: 'translateY(-4px)',
+            boxShadow: `0 8px 24px ${item.color}20`,
+            borderColor: item.color,
           },
         }}
       >
-        {item.icon}
+        <Box sx={{ fontSize: 28, mb: 1.5 }}>
+          {item.icon}
+        </Box>
+        <Typography component='h6' variant='h6' sx={{ fontSize: 15, fontWeight: 700, mb: 0.5 }}>
+          {item.title}
+        </Typography>
+        <Typography sx={{ fontSize: 13, color: 'text.secondary', lineHeight: 1.6 }}>
+          {item.description}
+        </Typography>
       </Box>
-      <Typography component='h6' variant='h6' sx={{ fontSize: 13, mt: 1.7 }}>
-        {item.title}
-      </Typography>
-    </Box>
+    </motion.div>
   )
 }
 
@@ -108,19 +103,15 @@ const HomeAbout = () => {
       id='home-about'
       sx={{
         width: '100%',
-        py: {
-          xs: 10,
-          md: 14,
-          lg: 18,
-        },
+        py: { xs: 10, md: 14, lg: 18 },
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         position: 'relative',
         background: palette.mode === 'dark'
-          ? 'linear-gradient(to bottom, #1a0010 0%, #2d0017 50%, #1a0010 100%)'
-          : 'linear-gradient(to bottom, #ffffff 0%, #fff5f8 50%, #ffffff 100%)',
+          ? 'linear-gradient(to bottom, #020617 0%, #0f172a 50%, #020617 100%)'
+          : 'linear-gradient(to bottom, #ffffff 0%, #f0fdf4 50%, #ffffff 100%)',
         '&::before': {
           content: '""',
           position: 'absolute',
@@ -129,8 +120,8 @@ const HomeAbout = () => {
           width: '100%',
           height: '60%',
           background: palette.mode === 'dark'
-            ? 'radial-gradient(ellipse at left, rgba(152, 15, 90, 0.08) 0%, transparent 60%)'
-            : 'radial-gradient(ellipse at left, rgba(248, 187, 208, 0.2) 0%, transparent 60%)',
+            ? 'radial-gradient(ellipse at left, rgba(46, 125, 50, 0.08) 0%, transparent 60%)'
+            : 'radial-gradient(ellipse at left, rgba(187, 247, 208, 0.3) 0%, transparent 60%)',
           pointerEvents: 'none',
         },
       }}
@@ -139,13 +130,13 @@ const HomeAbout = () => {
         <Grid container spacing={{ xs: 4, md: 8 }}>
           <Grid size={{ xs: 12, md: 7 }} sx={{ pr: { xs: 0, md: 6 } }}>
             <Box sx={{ position: 'relative', width: '100%', maxWidth: { md: 500 } }}>
-              <SectionTitle>TENTANG KAMI</SectionTitle>
+              <SectionTitle>TENTANG EVENT</SectionTitle>
               <Typography
                 variant='h2'
                 component='h2'
                 sx={{ mb: { xs: 2, md: 3 }, fontWeight: '800', fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' } }}
               >
-                Dicoding Community Network UNDIPA
+                Dverse — Developer Universe
               </Typography>
             </Box>
             <Box sx={{ position: 'relative', zIndex: 2 }}>
@@ -158,7 +149,7 @@ const HomeAbout = () => {
                   lineHeight: 1.6,
                 }}
               >
-                Komunitas developer yang belajar dan berkembang bersama
+                Event teknologi bertema GreenTech untuk masa depan berkelanjutan
               </Typography>
               <Typography
                 sx={{
@@ -168,9 +159,10 @@ const HomeAbout = () => {
                   lineHeight: 1.8,
                 }}
               >
-                DCN UNDIPA adalah komunitas developer di Universitas Pendidikan Indonesia
-                yang berkolaborasi dengan <strong>Dicoding Indonesia</strong> untuk
-                memfasilitasi pembelajaran dan pengembangan skill programming.
+                <strong>Dverse (Developer Universe)</strong> adalah event yang menggabungkan
+                Seminar dan Hackathon bertema <strong>Green Technology</strong>. Diselenggarakan
+                oleh kolaborasi antara <strong>Dipanegara Computer Club</strong> dan{' '}
+                <strong>Himpunan Mahasiswa Informatika PNUP</strong>.
               </Typography>
               <Typography
                 sx={{
@@ -180,8 +172,9 @@ const HomeAbout = () => {
                   lineHeight: 1.8,
                 }}
               >
-                Melalui berbagai program seperti bootcamp, study group, dan workshop,
-                kami membantu anggota mencapai milestone dan membangun portofolio profesional.
+                Melalui event ini, kami mengajak para developer, mahasiswa, dan profesional
+                untuk berinovasi menciptakan solusi teknologi yang ramah lingkungan dan
+                berkelanjutan demi masa depan yang lebih hijau.
               </Typography>
             </Box>
             <Box>
@@ -195,16 +188,16 @@ const HomeAbout = () => {
                   color: 'primary.main',
                 }}
               >
-                Program Unggulan
+                Apa yang Kami Tawarkan
               </Typography>
               <Grid
                 container
                 spacing={2}
                 sx={{ position: 'relative', zIndex: 2 }}
               >
-                {data.map((item, index) => (
-                  <Grid key={String(item.id + index)} size={{ xs: 6, sm: 6, md: 3 }}>
-                    <FeatureItem item={item} />
+                {features.map((item, index) => (
+                  <Grid key={String(item.id)} size={{ xs: 6, sm: 6, md: 6 }}>
+                    <FeatureItem item={item} index={index} />
                   </Grid>
                 ))}
               </Grid>
@@ -214,131 +207,77 @@ const HomeAbout = () => {
             <Box
               sx={{
                 position: 'relative',
-                overflowX: { xs: 'hidden', md: 'unset' },
-                display: { xs: 'none', md: 'block' },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 minHeight: { md: 400 },
               }}
             >
-              <Box sx={{ position: 'absolute', top: -100, right: 132 }}>
-                <svg
-                  width='600'
-                  height='600'
-                  viewBox='0 0 1358 1089'
-                  fill='none'
-                  xmlns='http://www.w3.org/2000/svg'
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+              >
+                <Box
+                  sx={{
+                    p: { xs: 3, md: 4 },
+                    borderRadius: 3,
+                    background: palette.mode === 'dark'
+                      ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 78, 59, 0.4) 100%)'
+                      : 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
+                    border: '1px solid',
+                    borderColor: palette.mode === 'dark' ? 'rgba(74, 222, 128, 0.2)' : 'rgba(46, 125, 50, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: palette.mode === 'dark'
+                      ? '0 8px 32px rgba(0, 0, 0, 0.3)'
+                      : '0 8px 32px rgba(46, 125, 50, 0.1)',
+                  }}
                 >
-                  <defs>
-                    <linearGradient
-                      id='figure_moving'
-                      x1='0%'
-                      x2='86.603%'
-                      y1='50%'
-                      y2='0%'
-                    >
-                      <stop
-                        offset='0%'
-                        stopColor={
-                          palette.mode === 'dark'
-                            ? '#171717'
-                            : 'rgb(252,253,253)'
-                        }
-                        stopOpacity='1'
-                      ></stop>
-                      <stop
-                        offset='99%'
-                        stopColor={
-                          palette.mode === 'dark'
-                            ? '#171717'
-                            : 'rgb(248,250,251)'
-                        }
-                        stopOpacity='1'
-                      ></stop>
-                    </linearGradient>
-                  </defs>
-                  <path
-                    d='M1357.57 464.94C1357.57 605.537 1180.32 1063.16 848.987 1088.34C505.565 1088.34 591.877 719.737 426.004 719.737C311.195 719.737 0 831.507 0 525.037C0 218.566 368.288 0.336304 674.758 0.336304C981.229 0.336304 1357.57 158.47 1357.57 464.94Z'
-                    fill='url(#figure_moving)'
-                  ></path>
-                </svg>
-              </Box>
-              <Box
-                sx={{
-                  top: 24,
-                  right: 300,
-                  position: 'absolute',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  lineHeight: 0,
-                }}
-              >
-                <Image
-                  src='/images/dotted-1.png'
-                  width={125}
-                  height={125}
-                  quality={97}
-                  alt='about img'
-                />
-              </Box>
-              <Box
-                sx={{
-                  top: 252,
-                  right: -32,
-                  position: 'absolute',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  lineHeight: 0,
-                }}
-              >
-                <Image
-                  src='/images/shape-2-b.png'
-                  width={60}
-                  height={100}
-                  quality={97}
-                  alt='about img'
-                />
-              </Box>
-              <Box
-                sx={{
-                  top: -10,
-                  right: 0,
-                  position: 'absolute',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  lineHeight: 0,
-                  width: { xs: 250, md: 330 },
-                  height: { xs: 250, md: 330 },
-                }}
-              >
-                <Image
-                  src='/images/about-1.jpg'
-                  width={350}
-                  height={350}
-                  quality={100}
-                  alt='about img'
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  top: 120,
-                  right: 160,
-                  position: 'absolute',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  lineHeight: 0,
-                  width: { xs: 220, md: 290 },
-                  height: { xs: 220, md: 290 },
-                }}
-              >
-                <Image
-                  src='/images/about-2.jpg'
-                  width={330}
-                  height={330}
-                  quality={100}
-                  alt='about img'
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </Box>
+                  <Typography
+                    sx={{
+                      fontSize: 12,
+                      fontWeight: 700,
+                      textTransform: 'uppercase',
+                      letterSpacing: 2,
+                      color: 'primary.main',
+                      mb: 2,
+                    }}
+                  >
+                    Diselenggarakan oleh
+                  </Typography>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
+                      🖥️ Dipanegara Computer Club
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
+                      Organisasi mahasiswa di bidang teknologi informasi
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
+                      🎓 HMIF PNUP
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
+                      Himpunan Mahasiswa Informatika Politeknik Negeri Ujung Pandang
+                    </Typography>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      pt: 2,
+                      borderTop: '1px solid',
+                      borderColor: 'divider',
+                    }}
+                  >
+                    <Typography sx={{ fontWeight: 600, color: 'primary.main', fontSize: '0.95rem' }}>
+                      🌿 Tema: GreenTech — Teknologi untuk Masa Depan Hijau
+                    </Typography>
+                  </Box>
+                </Box>
+              </motion.div>
             </Box>
           </Grid>
         </Grid>

@@ -15,30 +15,25 @@ import Logo from '@/assets/logo.svg'
 // motion
 import { motion, AnimatePresence } from 'framer-motion'
 
-// configs
-// import { AppConfig } from '@/configs'
-
 const MotionTypography = motion(Typography)
 
-// untuk Pemusatan Komponen Hero di Home Page
 const HomeHeroContent = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  //untuk Coursel Tekss
-  const SERVICES_TEXTS = [
-    'Belajar Bersama',
-    'Berkembang Bersama',
-    'Raih Milestone Bersama',
-    'Bangun Karya Nyata',
-    'Komunitas Developer Profesional',
+  const TAGLINE_TEXTS = [
+    'Where Technology Meets Nature',
+    'Seminar & Hackathon GreenTech',
+    'Inovasi untuk Masa Depan Hijau',
+    'Build. Innovate. Sustain.',
+    'Developer Universe 2026',
   ]
-  // Carousel effect untuk layanan rong
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % SERVICES_TEXTS.length)
+      setCurrentIndex((prev) => (prev + 1) % TAGLINE_TEXTS.length)
     }, 3000)
     return () => clearInterval(interval)
-  }, [SERVICES_TEXTS.length])
+  }, [TAGLINE_TEXTS.length])
 
   return (
     <motion.div
@@ -113,7 +108,7 @@ const HomeHeroContent = () => {
                   color: theme.palette.primary.main,
                 })}
               >
-                {SERVICES_TEXTS[currentIndex]}
+                {TAGLINE_TEXTS[currentIndex]}
               </MotionTypography>
             </AnimatePresence>
           </Box>
@@ -128,9 +123,9 @@ const HomeHeroContent = () => {
               fontWeight: '800',
             }}
           >
-            Dicoding Community Network
+            Dverse
             <br />
-            UNDIPA
+            <Box component='span' sx={{ color: 'primary.main' }}>Developer Universe</Box>
           </Typography>
           <Typography
             component='p'
@@ -149,10 +144,10 @@ const HomeHeroContent = () => {
               px: { xs: 1, sm: 0 },
             }}
           >
-            Komunitas developer <strong>UNDIPA</strong> yang belajar dan berkembang bersama melalui{' '}
-            <strong>program Dicoding</strong>.
+            Event teknologi bertema <strong>GreenTech</strong> yang menggabungkan{' '}
+            <strong>Seminar</strong> dan <strong>Hackathon</strong>.
             <br />
-            Akses bootcamp, study group, dan raih milestone bersama ratusan developer lainnya.
+            Diselenggarakan oleh Dipanegara Computer Club & Himpunan Mahasiswa Informatika PNUP.
           </Typography>
           
           {/* CTA Buttons */}
@@ -170,11 +165,10 @@ const HomeHeroContent = () => {
           >
             <Box
               component='a'
-              href='#home-contact'
+              href='#home-registration'
               sx={{
                 px: { xs: 3, md: 4 },
                 py: { xs: 1.2, md: 1.5 },
-                // textAlign: 'center',
                 backgroundColor: 'primary.main',
                 color: 'primary.contrastText',
                 borderRadius: 2,
@@ -192,11 +186,11 @@ const HomeHeroContent = () => {
                 },
               }}
             >
-              Gabung Komunitas
+              Daftar Sekarang
             </Box>
             <Box
               component='a'
-              href='/leaderboard'
+              href='#home-timeline'
               sx={{
                 px: { xs: 3, md: 4 },
                 py: { xs: 1.2, md: 1.5 },
@@ -218,7 +212,7 @@ const HomeHeroContent = () => {
                 },
               }}
             >
-              Lihat Leaderboard
+              Lihat Timeline
             </Box>
           </Box>
           
@@ -243,10 +237,10 @@ const HomeHeroContent = () => {
                   lineHeight: 1,
                 }}
               >
-                150+
+                2
               </Typography>
               <Typography sx={{ fontSize: { xs: 12, md: 13 }, color: 'text.secondary', mt: 0.5 }}>
-                Members
+                Events
               </Typography>
             </Box>
             <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
@@ -258,10 +252,10 @@ const HomeHeroContent = () => {
                   lineHeight: 1,
                 }}
               >
-                520+
+                500+
               </Typography>
               <Typography sx={{ fontSize: { xs: 12, md: 13 }, color: 'text.secondary', mt: 0.5 }}>
-                Kelas Selesai
+                Target Peserta
               </Typography>
             </Box>
             <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
@@ -273,11 +267,64 @@ const HomeHeroContent = () => {
                   lineHeight: 1,
                 }}
               >
-                24+
+                10+
               </Typography>
               <Typography sx={{ fontSize: { xs: 12, md: 13 }, color: 'text.secondary', mt: 0.5 }}>
-                Event
+                Speakers
               </Typography>
+            </Box>
+          </Box>
+
+          {/* Sponsor Logos Area */}
+          <Box
+            sx={{
+              mt: { xs: 4, md: 6 },
+              textAlign: 'center',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: 2,
+                color: 'text.secondary',
+                mb: 2,
+                opacity: 0.7,
+              }}
+            >
+              Didukung oleh
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: { xs: 3, md: 5 },
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                opacity: 0.5,
+              }}
+            >
+              {/* Placeholder for sponsor logos - replace with actual <Image /> components */}
+              {['Sponsor 1', 'Sponsor 2', 'Sponsor 3'].map((sponsor) => (
+                <Box
+                  key={sponsor}
+                  sx={{
+                    width: { xs: 80, md: 100 },
+                    height: { xs: 32, md: 40 },
+                    borderRadius: 1,
+                    border: '1px dashed',
+                    borderColor: 'text.disabled',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography sx={{ fontSize: 10, color: 'text.disabled' }}>
+                    {sponsor}
+                  </Typography>
+                </Box>
+              ))}
             </Box>
           </Box>
         </Box>

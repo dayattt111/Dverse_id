@@ -1,27 +1,38 @@
 'use client'
 
-import React from 'react'
-import RouterLink from 'next/link'
+import React, { useCallback } from 'react'
 import Box from '@mui/material/Box'
 import MuiLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { Theme } from '@mui/material/styles'
 import { FooterSectionTitle } from '@/components/footer'
-import { services } from '@/constants/service'
 
 // icons
 import ArrowIcon from '@/assets/icons/material-symbols--call-made.svg'
 
+const eventLinks = [
+  { label: 'Seminar GreenTech', href: '#home-registration' },
+  { label: 'Hackathon 48 Jam', href: '#home-registration' },
+  { label: 'Timeline', href: '#home-timeline' },
+  { label: 'Benefits', href: '#home-benefits' },
+]
+
 const FooterServicesLink = () => {
+  const handleClick = useCallback((e: React.MouseEvent, href: string) => {
+    e.preventDefault()
+    const id = href.replace('#', '')
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
   return (
     <Box sx={{ textAlign: 'left' }}>
-      <FooterSectionTitle title='Services' />
-      {services.map((item, index) => (
+      <FooterSectionTitle title='Event' />
+      {eventLinks.map((item, index) => (
         <MuiLink
           key={String(index)}
-          component={RouterLink}
-          href={`/programs/${item.slug}`}
-          target='_blank'
+          href={item.href}
+          onClick={(e) => handleClick(e, item.href)}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -57,7 +68,7 @@ const FooterServicesLink = () => {
           }}
         >
           <Box component={ArrowIcon} sx={{ width: 18, height: 18 }} />
-          <Typography sx={{ fontWeight: '500' }}>{item.title}</Typography>
+          <Typography sx={{ fontWeight: '500' }}>{item.label}</Typography>
         </MuiLink>
       ))}
     </Box>
