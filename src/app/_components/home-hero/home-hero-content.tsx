@@ -11,6 +11,7 @@ import { Link } from 'react-scroll'
 // assets
 import MouseIcon from '@/assets/icons/iconamoon--mouse-light.svg'
 import Logo from '@/assets/logo.svg'
+import Image from 'next/image'
 
 // motion
 import { motion, AnimatePresence } from 'framer-motion'
@@ -302,29 +303,12 @@ const HomeHeroContent = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexWrap: 'wrap',
-                opacity: 0.5,
               }}
             >
-              {/* Placeholder for sponsor logos - replace with actual <Image /> components */}
-              {['Sponsor 1', 'Sponsor 2', 'Sponsor 3'].map((sponsor) => (
-                <Box
-                  key={sponsor}
-                  sx={{
-                    width: { xs: 80, md: 100 },
-                    height: { xs: 32, md: 40 },
-                    borderRadius: 1,
-                    border: '1px dashed',
-                    borderColor: 'text.disabled',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Typography sx={{ fontSize: 10, color: 'text.disabled' }}>
-                    {sponsor}
-                  </Typography>
-                </Box>
-              ))}
+              <Image src='/images/Logo/Organisasi/DccLogo.png' alt='DCC' width={56} height={56} style={{ objectFit: 'contain' }} />
+              <Image src='/images/Logo/Organisasi/himatik cuy.png' alt='HIMATIK PNUP' width={56} height={56} style={{ objectFit: 'contain' }} />
+              <Image src='/images/Logo/Campus/PNUP.png' alt='PNUP' width={56} height={56} style={{ objectFit: 'contain' }} />
+              <Image src='/images/Logo/Campus/UNDIPA.png' alt='UNDIPA' width={56} height={56} style={{ objectFit: 'contain' }} />
             </Box>
           </Box>
         </Box>

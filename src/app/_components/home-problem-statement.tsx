@@ -7,32 +7,33 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 const problems = [
   {
     id: 1,
-    icon: '🌍',
+    icon: '/images/Assets/Group.png',
     title: 'Perubahan Iklim',
     description:
       'Suhu global terus meningkat. Teknologi harus menjadi bagian dari solusi, bukan masalah.',
   },
   {
     id: 2,
-    icon: '⚡',
+    icon: '/images/Assets/Group3.png',
     title: 'Konsumsi Energi Digital',
     description:
       'Industri teknologi menyumbang jejak karbon yang signifikan. Diperlukan inovasi efisiensi energi.',
   },
   {
     id: 3,
-    icon: '🗑️',
+    icon: '/images/Assets/Group4.png',
     title: 'E-Waste & Polusi Digital',
     description:
       'Limbah elektronik terus bertambah. Solusi circular economy berbasis teknologi sangat dibutuhkan.',
   },
   {
     id: 4,
-    icon: '🌱',
+    icon: '/images/Assets/Group5.png',
     title: 'Kurangnya Kesadaran GreenTech',
     description:
       'Banyak developer belum menyadari peran mereka dalam menciptakan teknologi ramah lingkungan.',
@@ -127,7 +128,9 @@ const HomeProblemStatement = () => {
                     },
                   }}
                 >
-                  <Box sx={{ fontSize: 36, mb: 2 }}>{problem.icon}</Box>
+                  <Box sx={{ mb: 2, width: 48, height: 48, position: 'relative' }}>
+                    <Image src={problem.icon} alt={problem.title} width={48} height={48} style={{ objectFit: 'contain' }} />
+                  </Box>
                   <Typography
                     variant='h6'
                     sx={{

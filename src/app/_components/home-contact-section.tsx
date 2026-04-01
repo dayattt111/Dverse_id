@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import EmailIcon from '@/assets/icons/eva--email-outline.svg'
+import PhoneIcon from '@/assets/icons/eva--phone-outline.svg'
 import LocationIcon from '@/assets/icons/tdesign--location.svg'
 
 const HomeContactSection = () => {
@@ -153,7 +154,15 @@ const HomeContactSection = () => {
                   },
                 }}
               >
-                <Typography sx={{ fontSize: 40, mb: 1 }}>💬</Typography>
+                <Box
+                  component={PhoneIcon}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    color: 'primary.main',
+                    mb: 2,
+                  }}
+                />
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>WhatsApp</Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
                   +62 812 000 xxxx

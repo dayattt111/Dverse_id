@@ -7,41 +7,42 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 const benefits = [
   {
     id: 1,
-    icon: '🏆',
+    icon: '/images/Assets/Group.png',
     title: 'Hadiah Menarik',
     description: 'Hadiah jutaan rupiah untuk pemenang Hackathon dan doorprize untuk peserta Seminar.',
   },
   {
     id: 2,
-    icon: '📜',
+    icon: '/images/Assets/Group7.png',
     title: 'Sertifikat Resmi',
     description: 'Dapatkan sertifikat partisipasi yang bisa menambah nilai portfolio kamu.',
   },
   {
     id: 3,
-    icon: '🤝',
+    icon: '/images/Assets/Group4.png',
     title: 'Networking',
     description: 'Bertemu dengan developer, mentor, dan profesional industri dari berbagai perusahaan.',
   },
   {
     id: 4,
-    icon: '🧠',
+    icon: '/images/Assets/Group6.png',
     title: 'Ilmu & Insight',
     description: 'Pelajari tren terbaru GreenTech langsung dari praktisi dan pakar industri.',
   },
   {
     id: 5,
-    icon: '💼',
+    icon: '/images/Assets/Group3.png',
     title: 'Portfolio Project',
     description: 'Bangun project nyata selama Hackathon yang bisa ditambahkan ke portfolio profesionalmu.',
   },
   {
     id: 6,
-    icon: '🚀',
+    icon: '/images/Assets/Group5.png',
     title: 'Kesempatan Inkubasi',
     description: 'Tim pemenang berkesempatan mendapatkan program inkubasi untuk mengembangkan solusinya.',
   },
@@ -146,7 +147,9 @@ const HomeBenefits = () => {
                     },
                   }}
                 >
-                  <Box sx={{ fontSize: 40, mb: 2 }}>{benefit.icon}</Box>
+                  <Box sx={{ mb: 2, width: 52, height: 52, mx: 'auto', position: 'relative' }}>
+                    <Image src={benefit.icon} alt={benefit.title} width={52} height={52} style={{ objectFit: 'contain' }} />
+                  </Box>
                   <Typography
                     variant='h6'
                     sx={{

@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
 import { SectionTitle } from '@/components/core'
+import Image from 'next/image'
 
 // hooks
 import { useTheme } from '@mui/material/styles'
@@ -28,28 +29,28 @@ const features: FeatureData[] = [
     id: 1,
     title: 'Seminar',
     description: 'Tech talk dari para expert tentang Green Technology & inovasi berkelanjutan.',
-    icon: '🎤',
+    icon: '/images/Assets/Group.png',
     color: '#2e7d32',
   },
   {
     id: 2,
     title: 'Hackathon',
     description: 'Kompetisi membangun solusi teknologi untuk masalah lingkungan & keberlanjutan.',
-    icon: '💻',
+    icon: '/images/Assets/Group1.png',
     color: '#0f172a',
   },
   {
     id: 3,
     title: 'Networking',
     description: 'Bertemu dan berjejaring dengan developer, mentor, dan profesional industri.',
-    icon: '🤝',
+    icon: '/images/Assets/Group4.png',
     color: '#16a34a',
   },
   {
     id: 4,
     title: 'Workshop',
     description: 'Hands-on session untuk mempelajari tools dan framework terkini.',
-    icon: '🛠️',
+    icon: '/images/Assets/Group3.png',
     color: '#334155',
   },
 ]
@@ -82,8 +83,8 @@ const FeatureItem = ({ item, index }: ItemProps) => {
           },
         }}
       >
-        <Box sx={{ fontSize: 28, mb: 1.5 }}>
-          {item.icon}
+        <Box sx={{ mb: 1.5, width: 40, height: 40, position: 'relative' }}>
+          <Image src={item.icon} alt={item.title} width={40} height={40} style={{ objectFit: 'contain' }} />
         </Box>
         <Typography component='h6' variant='h6' sx={{ fontSize: 15, fontWeight: 700, mb: 0.5 }}>
           {item.title}
@@ -247,22 +248,28 @@ const HomeAbout = () => {
                     Diselenggarakan oleh
                   </Typography>
 
-                  <Box sx={{ mb: 3 }}>
-                    <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
-                      🖥️ Dipanegara Computer Club
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                      Organisasi mahasiswa di bidang teknologi informasi
-                    </Typography>
+                  <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Image src='/images/Logo/Organisasi/DccLogo.png' alt='DCC Logo' width={60} height={60} style={{ objectFit: 'contain' }} />
+                    <Box>
+                      <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
+                        Dipanegara Computer Club
+                      </Typography>
+                      <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
+                        Organisasi mahasiswa di bidang teknologi informasi
+                      </Typography>
+                    </Box>
                   </Box>
 
-                  <Box sx={{ mb: 3 }}>
-                    <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
-                      🎓 HMIF PNUP
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                      Himpunan Mahasiswa Informatika Politeknik Negeri Ujung Pandang
-                    </Typography>
+                  <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Image src='/images/Logo/Organisasi/himatik cuy.png' alt='HIMATIK PNUP Logo' width={60} height={60} style={{ objectFit: 'contain' }} />
+                    <Box>
+                      <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
+                        HIMATIK PNUP
+                      </Typography>
+                      <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
+                        Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang
+                      </Typography>
+                    </Box>
                   </Box>
 
                   <Box
@@ -270,10 +277,14 @@ const HomeAbout = () => {
                       pt: 2,
                       borderTop: '1px solid',
                       borderColor: 'divider',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
                     }}
                   >
+                    <Image src='/images/Assets/Group5.png' alt='GreenTech' width={20} height={20} style={{ objectFit: 'contain' }} />
                     <Typography sx={{ fontWeight: 600, color: 'primary.main', fontSize: '0.95rem' }}>
-                      🌿 Tema: GreenTech — Teknologi untuk Masa Depan Hijau
+                      Tema: GreenTech — Teknologi untuk Masa Depan Hijau
                     </Typography>
                   </Box>
                 </Box>

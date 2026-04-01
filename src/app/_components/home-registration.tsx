@@ -146,7 +146,7 @@ const HomeRegistration = () => {
                       color: '#fff',
                     }}
                   >
-                    {event.type === 'seminar' ? '🎤 Seminar' : '💻 Hackathon'}
+                    {event.type === 'seminar' ? 'Seminar' : 'Hackathon'}
                   </Box>
 
                   <Typography
@@ -168,7 +168,7 @@ const HomeRegistration = () => {
                       mb: 2,
                     }}
                   >
-                    📅 {event.date}
+                    {event.date}
                   </Typography>
 
                   <Typography
@@ -223,7 +223,7 @@ const HomeRegistration = () => {
                     }}
                   >
                     <Typography sx={{ fontSize: '0.85rem', color: 'text.secondary' }}>
-                      👥 {event.capacity}
+                      {event.capacity}
                     </Typography>
                     <Typography
                       sx={{
