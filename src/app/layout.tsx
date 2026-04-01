@@ -84,13 +84,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
-  other: {
-    'google-site-verification': 'your-verification-code',
-  },
 }
 
 export default function RootLayout({

@@ -1,9 +1,8 @@
 'use client'
 
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode, useCallback } from 'react'
 import { Box, Typography } from '@mui/material'
 import MuiLink from '@mui/material/Link'
-import RouterLink from 'next/link'
 import { Theme } from '@mui/material'
 import { FooterSectionTitle } from '@/components/footer'
 import { supportLinks } from '@/constants/menus'
@@ -15,11 +14,24 @@ interface LinkItemProps {
 }
 
 const LinkItem: FC<LinkItemProps> = ({ label, path, icon }) => {
+  const isAnchor = path.startsWith('#')
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (isAnchor) {
+        e.preventDefault()
+        const id = path.replace('#', '')
+        const el = document.getElementById(id)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+      }
+    },
+    [isAnchor, path]
+  )
+
   return (
     <MuiLink
-      component={RouterLink}
-      href={`/programs/${path}`}
-      target='_blank'
+      href={path}
+      onClick={handleClick}
       sx={{
         textDecoration: 'none',
         alignItems: 'center',
