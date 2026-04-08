@@ -12,6 +12,7 @@ export interface ICommunityStats {
   yearsExperience: number
   totalClassesCompleted?: number
   totalEvents?: number
+  activeLearners?: number
   createdAt?: string
   updatedAt?: string
 }

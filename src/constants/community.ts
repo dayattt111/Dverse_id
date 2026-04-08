@@ -17,6 +17,9 @@ import {
 // ========================================
 export const communityStats: ICommunityStats = {
   totalMembers: 150,
+  activeProjects: 50,
+  successRate: 95,
+  yearsExperience: 5,
   totalClassesCompleted: 520,
   totalEvents: 24,
   activeLearners: 85,
