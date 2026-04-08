@@ -10,6 +10,8 @@ export interface ICommunityStats {
   activeProjects: number
   successRate: number
   yearsExperience: number
+  totalClassesCompleted?: number
+  totalEvents?: number
   createdAt?: string
   updatedAt?: string
 }
