@@ -249,7 +249,9 @@ const HomeAbout = () => {
                   </Typography>
 
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Image src='/images/Logo/Organisasi/DccLogo.png' alt='DCC Logo' width={60} height={60} style={{ objectFit: 'contain' }} />
+                    <Box sx={{ width: 44, height: 44, flexShrink: 0, position: 'relative' }}>
+                      <Image src='/images/Logo/Organisasi/DccLogo.png' alt='DCC Logo' fill style={{ objectFit: 'contain' }} />
+                    </Box>
                     <Box>
                       <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
                         Dipanegara Computer Club
@@ -261,7 +263,9 @@ const HomeAbout = () => {
                   </Box>
 
                   <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Image src='/images/Logo/Organisasi/himatik cuy.png' alt='HIMATIK PNUP Logo' width={60} height={60} style={{ objectFit: 'contain' }} />
+                    <Box sx={{ width: 44, height: 44, flexShrink: 0, position: 'relative' }}>
+                      <Image src='/images/Logo/Organisasi/himatik cuy.png' alt='HIMATIK PNUP Logo' fill style={{ objectFit: 'contain' }} />
+                    </Box>
                     <Box>
                       <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
                         HIMATIK PNUP

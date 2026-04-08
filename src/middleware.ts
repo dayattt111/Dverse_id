@@ -16,6 +16,13 @@ const protectedRoutes = [
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Redirect /id (locale probe from browser) to root
+  if (pathname === '/id' || pathname.startsWith('/id/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname === '/id' ? '/' : pathname.replace(/^\/id/, '')
+    return NextResponse.redirect(url, 308)
+  }
+
   // Check if it's an admin route (excluding login)
   const isProtectedRoute = protectedRoutes.some(
     (route) => pathname === route || pathname.startsWith(route + '/')
@@ -80,5 +87,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dcn-admin/:path*'],
+  matcher: ['/id', '/id/:path*', '/dcn-admin/:path*'],
 }

@@ -1,7 +1,7 @@
 import { Theme } from '@emotion/react'
 import { SxProps } from '@mui/material'
 import {
-  AnimationControls,
+  animationControls,
   TargetAndTransition,
   Transition,
   VariantLabels,
@@ -11,7 +11,7 @@ type AnimateDecoration = {
   sxRoot: SxProps<Theme>
   sxImgContainer: SxProps<Theme>
   initial: TargetAndTransition | VariantLabels | boolean
-  animate: AnimationControls | TargetAndTransition | VariantLabels | boolean
+  animate: ReturnType<typeof animationControls> | TargetAndTransition | VariantLabels | boolean
   transition: Transition
   image: {
     imageUrl: string

@@ -11,7 +11,6 @@ import { useApp } from '@/hooks'
 
 const MuiThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { isDark } = useApp()
-  console.log('isDark', isDark)
 
   const theme = useMemo<Theme>(() => createTheme(isDark), [isDark])
 

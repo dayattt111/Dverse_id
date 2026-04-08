@@ -11,6 +11,10 @@ const AnimatedHamburgerMenu = () => {
     setIsOpen(!isOpen)
   }
 
+  const menuColor = theme.palette.mode === 'light' 
+    ? theme.palette.text.primary 
+    : '#fff'
+
   return (
     <Fragment>
       <IconButton
@@ -29,7 +33,7 @@ const AnimatedHamburgerMenu = () => {
             y1='10'
             x2='26'
             y2='10'
-            stroke={theme.palette.primary.main}
+            stroke={menuColor}
             strokeWidth='2'
             strokeLinecap='round'
             animate={{
@@ -48,7 +52,7 @@ const AnimatedHamburgerMenu = () => {
             y1='16'
             x2='26'
             y2='16'
-            stroke={theme.palette.primary.main}
+            stroke={menuColor}
             strokeWidth='2'
             strokeLinecap='round'
             animate={{
@@ -67,7 +71,7 @@ const AnimatedHamburgerMenu = () => {
             y1='22'
             x2='26'
             y2='22'
-            stroke={theme.palette.primary.main}
+            stroke={menuColor}
             strokeWidth='2'
             strokeLinecap='round'
             animate={{

@@ -49,7 +49,10 @@ const LinkItem: FC<LinkItemProps> = ({ label, path, icon }: LinkItemProps) => {
         overflow: 'hidden',
         alignItems: 'center',
         position: 'relative',
-        color: 'rgba(255,255,255,0.8)',
+        color: (theme: Theme) =>
+          theme.palette.mode === 'light'
+            ? 'rgba(15, 23, 42, 0.75)'
+            : 'rgba(255,255,255,0.8)',
         textDecoration: 'none',
         display: 'inline-block',
         // Icon

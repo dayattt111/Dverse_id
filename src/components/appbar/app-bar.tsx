@@ -41,7 +41,7 @@ const AppBar: FC = () => {
   const backgroundColor = useMemo(() => {
     if (shouldFloating) {
       return theme.palette.mode === 'light'
-        ? 'rgba(15, 23, 42, 0.88)'
+        ? 'rgba(255, 255, 255, 0.88)'
         : 'rgba(2, 6, 23, 0.88)'
     } else {
       return 'transparent'
@@ -104,7 +104,7 @@ const AppBar: FC = () => {
                   'background-color',
                   'padding',
                 ]),
-              backdropFilter: shouldFloating ? 'blur(8px)' : 'unset',
+              backdropFilter: shouldFloating ? 'blur(12px)' : 'unset',
               borderRadius: 10,
               padding: 0,
               '&.floating': {
@@ -113,7 +113,9 @@ const AppBar: FC = () => {
                   xs: '12px 16px',
                   md: '14px 20px',
                 },
-                boxShadow: 3,
+                boxShadow: theme.palette.mode === 'light'
+                  ? '0 4px 24px rgba(0, 0, 0, 0.08)'
+                  : '0 4px 24px rgba(0, 0, 0, 0.3)',
               },
             }}
           >
@@ -125,9 +127,11 @@ const AppBar: FC = () => {
                 width: 'auto',
                 cursor: 'pointer',
                 height: shouldFloating ? 32 : 40,
-                color: '#fff',
+                color: theme.palette.mode === 'light'
+                  ? (shouldFloating ? 'primary.main' : '#fff')
+                  : '#fff',
                 transition: (theme: Theme) =>
-                  theme.transitions.create(['transform', 'height']),
+                  theme.transitions.create(['transform', 'height', 'color']),
               }}
             />
             {mobileMatches ? (
