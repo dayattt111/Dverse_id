@@ -54,7 +54,7 @@ const StyledButtonRoot = styled('button', {
     borderRadius: '2rem',
   }),
   ...(!rounded && {
-    borderRadius: theme.shape.borderRadius * 2,
+    borderRadius: Number(theme.shape.borderRadius) * 2,
   }),
 
   // sizes and variants
