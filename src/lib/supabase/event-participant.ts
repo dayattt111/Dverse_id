@@ -1,0 +1,82 @@
+import { supabase } from './config'
+import { IEventParticipant } from '@/types/event-participant'
+
+/**
+ * Register a new event participant
+ */
+export async function registerEventParticipant(participant: Omit<IEventParticipant, 'id' | 'status' | 'createdAt' | 'updatedAt'>) {
+  const { data, error } = await supabase
+    .from('event_participant')
+    .insert({
+      event_id: participant.eventId,
+      name: participant.name,
+      email: participant.email,
+      phone: participant.phone,
+      institution: participant.institution,
+      pic_payment: participant.picPayment || null,
+      pic_follow: participant.picFollow || null,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error registering participant:', error)
+    throw error
+  }
+
+  return transformFromDB(data)
+}
+
+/**
+ * Check if email is already registered for an event
+ */
+export async function checkExistingRegistration(eventId: number, email: string) {
+  const { data, error } = await supabase
+    .from('event_participant')
+    .select('id')
+    .eq('event_id', eventId)
+    .eq('email', email)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Error checking registration:', error)
+    return false
+  }
+
+  return !!data
+}
+
+/**
+ * Get participants by event ID
+ */
+export async function getEventParticipants(eventId: number) {
+  const { data, error } = await supabase
+    .from('event_participant')
+    .select('*')
+    .eq('event_id', eventId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching participants:', error)
+    return []
+  }
+
+  return (data || []).map(transformFromDB)
+}
+
+// Transform from DB snake_case to camelCase
+function transformFromDB(data: Record<string, unknown>): IEventParticipant {
+  return {
+    id: data.id as number,
+    eventId: data.event_id as number,
+    name: data.name as string,
+    email: data.email as string,
+    phone: data.phone as string,
+    institution: data.institution as string,
+    picPayment: data.pic_payment as string | undefined,
+    picFollow: data.pic_follow as string | undefined,
+    status: data.status as IEventParticipant['status'],
+    createdAt: data.created_at as string,
+    updatedAt: data.updated_at as string,
+  }
+}

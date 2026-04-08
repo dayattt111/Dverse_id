@@ -286,7 +286,7 @@ const HomeAbout = () => {
                       gap: 1.5,
                     }}
                   >
-                    <Image src='/images/Assets/Group5.png' alt='GreenTech' width={20} height={20} style={{ objectFit: 'contain' }} />
+                    <Image src='/images/Assets/Full Body.png' alt='GreenTech' width={64} height={64} quality={100} style={{ objectFit: 'contain' }} />
                     <Typography sx={{ fontWeight: 600, color: 'primary.main', fontSize: '0.95rem' }}>
                       Tema: GreenTech — Teknologi untuk Masa Depan Hijau
                     </Typography>

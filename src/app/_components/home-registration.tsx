@@ -23,23 +23,23 @@ const events = [
     ],
     type: 'seminar',
     capacity: '300 peserta',
-    price: 'Gratis',
+    price: 'Rp 25.000',
   },
   {
     id: 2,
     title: 'Hackathon 48 Jam',
-    date: '2-3 Juni 2026',
+    date: '11 April 2026',
     description:
-      'Kompetisi hackathon selama 48 jam untuk membangun solusi teknologi inovatif yang menjawab permasalahan lingkungan. Tim terbaik akan mendapatkan hadiah dan kesempatan inkubasi.',
+      'TBA',
     highlights: [
-      'Hadiah jutaan rupiah',
-      'Mentoring dari expert',
-      'Kesempatan inkubasi',
-      'Sertifikat & portfolio',
+      'TBA',
+      // 'Mentoring dari expert',
+      // 'Kesempatan inkubasi',
+      // 'Sertifikat & portfolio',
     ],
     type: 'hackathon',
-    capacity: '50 tim (3-4 orang)',
-    price: 'Gratis',
+    capacity: 'TBA',
+    price: 'TBA',
   },
 ]
 
@@ -236,30 +236,40 @@ const HomeRegistration = () => {
                     </Typography>
                   </Box>
 
-                  {/* CTA Button */}
-                  <Box
-                    component='a'
-                    href='#'
-                    sx={{
-                      display: 'block',
-                      textAlign: 'center',
-                      py: 1.5,
-                      borderRadius: 2,
-                      fontWeight: 700,
-                      fontSize: '1rem',
-                      textDecoration: 'none',
-                      backgroundColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
-                      color: '#ffffff',
-                      transition: 'all 0.3s',
-                      '&:hover': {
-                        backgroundColor: event.type === 'seminar' ? 'primary.dark' : 'secondary.dark',
-                        transform: 'translateY(-2px)',
-                        boxShadow: 3,
-                      },
-                    }}
-                  >
-                    Daftar {event.type === 'seminar' ? 'Seminar' : 'Hackathon'}
-                  </Box>
+{/* CTA Button */}
+<Box
+  component={event.price === 'TBA' ? 'div' : 'a'} // Ubah jadi div jika TBA agar tidak berfungsi sebagai link
+  href={event.price === 'TBA' ? undefined : `/registration?event=${event.id}`}
+  sx={{
+    display: 'block',
+    textAlign: 'center',
+    py: 1.5,
+    borderRadius: 2,
+    fontWeight: 700,
+    fontSize: '1rem',
+    textDecoration: 'none',
+    // Logika warna: jika TBA pakai warna abu-abu, jika tidak pakai warna asli
+    backgroundColor: event.price === 'TBA' 
+      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : '#e0e0e0') 
+      : (event.type === 'seminar' ? 'primary.main' : 'secondary.main'),
+    color: event.price === 'TBA' 
+      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : '#9e9e9e') 
+      : '#ffffff',
+    cursor: event.price === 'TBA' ? 'not-allowed' : 'pointer', // Cursor dilarang
+    transition: 'all 0.3s',
+    pointerEvents: event.price === 'TBA' ? 'none' : 'auto', // Benar-benar mematikan klik
+    '&:hover': {
+      backgroundColor: event.price === 'TBA' 
+        ? undefined 
+        : (event.type === 'seminar' ? 'primary.dark' : 'secondary.dark'),
+      transform: event.price === 'TBA' ? 'none' : 'translateY(-2px)',
+      boxShadow: event.price === 'TBA' ? 'none' : 3,
+    },
+  }}
+>
+  {/* Logika Teks: Jika harga TBA, tulis TBA. Jika tidak, tulis Daftar... */}
+  {event.price === 'TBA' ? 'TBA (Segera Hadir)' : `Daftar ${event.type === 'seminar' ? 'Seminar' : 'Hackathon'}`}
+</Box>
                 </Box>
               </motion.div>
             </Grid>
