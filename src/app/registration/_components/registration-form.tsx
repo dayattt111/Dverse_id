@@ -157,8 +157,9 @@ export default function RegistrationForm() {
 
       setSuccess(true)
     } catch (err: unknown) {
-      console.error('Registration error:', err)
-      setError('Gagal mendaftar. Silakan coba lagi.')
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      console.error('Registration error:', message)
+      setError(message || 'Gagal mendaftar. Silakan coba lagi.')
     } finally {
       setLoading(false)
     }

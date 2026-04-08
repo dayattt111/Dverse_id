@@ -20,8 +20,8 @@ export async function registerEventParticipant(participant: Omit<IEventParticipa
     .single()
 
   if (error) {
-    console.error('Error registering participant:', error)
-    throw error
+    console.error('Error registering participant:', error.message, error.code, error.details)
+    throw new Error(error.message || 'Gagal menyimpan data pendaftaran')
   }
 
   return transformFromDB(data)
