@@ -12,7 +12,7 @@ const events = [
   {
     id: 1,
     title: 'Seminar GreenTech',
-    date: '1 Juni 2026',
+    date: '9 April 2026',
     description:
       'Seminar sehari penuh dengan keynote speakers dari industri teknologi, membahas inovasi Green Technology dan peran developer dalam keberlanjutan lingkungan.',
     highlights: [
@@ -24,22 +24,24 @@ const events = [
     type: 'seminar',
     capacity: '300 peserta',
     price: 'Rp 25.000',
+    disabled: false,
   },
   {
     id: 2,
-    title: 'Hackathon 48 Jam',
+    title: 'Lomba / Hackathon',
     date: '11 April 2026',
     description:
-      'TBA',
+      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi. Peserta yang lolos seleksi wajib melakukan konfirmasi dan membayar biaya komitmen sebesar Rp. 300.000,-/Tim.',
     highlights: [
-      'TBA',
-      // 'Mentoring dari expert',
-      // 'Kesempatan inkubasi',
-      // 'Sertifikat & portfolio',
+      'Kompetisi berbasis tim',
+      'Mentoring dari expert',
+      'Sertifikat & portfolio',
+      'Hadiah menarik untuk juara',
     ],
     type: 'hackathon',
-    capacity: 'TBA',
-    price: 'TBA',
+    capacity: 'Terbatas',
+    price: 'Rp. 300.000,-/Tim',
+    disabled: true, // set false untuk mengaktifkan pendaftaran hackathon
   },
 ]
 
@@ -238,8 +240,8 @@ const HomeRegistration = () => {
 
 {/* CTA Button */}
 <Box
-  component={event.price === 'TBA' ? 'div' : 'a'} // Ubah jadi div jika TBA agar tidak berfungsi sebagai link
-  href={event.price === 'TBA' ? undefined : `/registration?event=${event.id}`}
+  component={event.disabled ? 'div' : 'a'}
+  href={event.disabled ? undefined : `/registration?event=${event.id}`}
   sx={{
     display: 'block',
     textAlign: 'center',
@@ -248,33 +250,103 @@ const HomeRegistration = () => {
     fontWeight: 700,
     fontSize: '1rem',
     textDecoration: 'none',
-    // Logika warna: jika TBA pakai warna abu-abu, jika tidak pakai warna asli
-    backgroundColor: event.price === 'TBA' 
-      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : '#e0e0e0') 
+    backgroundColor: event.disabled
+      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : '#e0e0e0')
       : (event.type === 'seminar' ? 'primary.main' : 'secondary.main'),
-    color: event.price === 'TBA' 
-      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : '#9e9e9e') 
+    color: event.disabled
+      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : '#9e9e9e')
       : '#ffffff',
-    cursor: event.price === 'TBA' ? 'not-allowed' : 'pointer', // Cursor dilarang
+    cursor: event.disabled ? 'not-allowed' : 'pointer',
     transition: 'all 0.3s',
-    pointerEvents: event.price === 'TBA' ? 'none' : 'auto', // Benar-benar mematikan klik
+    pointerEvents: event.disabled ? 'none' : 'auto',
     '&:hover': {
-      backgroundColor: event.price === 'TBA' 
-        ? undefined 
+      backgroundColor: event.disabled
+        ? undefined
         : (event.type === 'seminar' ? 'primary.dark' : 'secondary.dark'),
-      transform: event.price === 'TBA' ? 'none' : 'translateY(-2px)',
-      boxShadow: event.price === 'TBA' ? 'none' : 3,
+      transform: event.disabled ? 'none' : 'translateY(-2px)',
+      boxShadow: event.disabled ? 'none' : 3,
     },
   }}
 >
-  {/* Logika Teks: Jika harga TBA, tulis TBA. Jika tidak, tulis Daftar... */}
-  {event.price === 'TBA' ? 'TBA (Segera Hadir)' : `Daftar ${event.type === 'seminar' ? 'Seminar' : 'Hackathon'}`}
+  {event.disabled ? 'Segera Hadir' : `Daftar ${event.type === 'seminar' ? 'Seminar' : 'Hackathon'}`}
 </Box>
                 </Box>
               </motion.div>
             </Grid>
           ))}
         </Grid>
+
+        {/* Payment Info & Instagram Follow */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <Box
+            sx={{
+              mt: 6,
+              p: { xs: 3, md: 4 },
+              borderRadius: 3,
+              border: '1px solid',
+              borderColor: 'divider',
+              background: palette.mode === 'dark'
+                ? 'rgba(15, 23, 42, 0.8)'
+                : 'rgba(240, 253, 244, 0.8)',
+            }}
+          >
+            <Typography variant='h6' sx={{ fontWeight: 700, mb: 3, textAlign: 'center' }}>
+              Syarat & Info Pembayaran
+            </Typography>
+
+            <Grid container spacing={3}>
+              {/* Instagram Follow */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ textAlign: { xs: 'left', md: 'center' } }}>
+                  <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                    Wajib Follow Instagram
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>
+                    @dverse.id
+                  </Typography>
+                  <Typography variant='caption' color='text.secondary'>
+                    Follow akun Instagram kami & upload screenshot sebagai bukti
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* BCA */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ textAlign: { xs: 'left', md: 'center' } }}>
+                  <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                    Transfer BCA
+                  </Typography>
+                  <Typography sx={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: 1 }}>
+                    1100782886
+                  </Typography>
+                  <Typography variant='caption' color='text.secondary'>
+                    a.n. Panitia DCN Undipa
+                  </Typography>
+                </Box>
+              </Grid>
+
+              {/* DANA */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box sx={{ textAlign: { xs: 'left', md: 'center' } }}>
+                  <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1, color: 'primary.main' }}>
+                    Transfer DANA
+                  </Typography>
+                  <Typography sx={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: 1 }}>
+                    081351687138
+                  </Typography>
+                  <Typography variant='caption' color='text.secondary'>
+                    a.n. Panitia DCN Undipa
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </motion.div>
       </Container>
     </Box>
   )

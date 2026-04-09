@@ -346,13 +346,64 @@ export default function RegistrationForm() {
               sx={{ mb: 3 }}
             />
 
+{/* Info Pembayaran */}
+<Box
+  sx={{
+    mb: 3,
+    p: 2.5,
+    borderRadius: 2,
+    border: '1px solid',
+    borderColor: 'primary.main', // Typo diperbaiki di sini
+    background: palette.mode === 'dark'
+      ? 'rgba(46, 125, 50, 0.08)'
+      : 'rgba(240, 253, 244, 0.9)',
+  }}
+>
+  <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1.5, color: 'primary.main' }}>
+    Info Transfer Pembayaran
+  </Typography>
+  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    {/* Baris BCA */}
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>BCA</Typography>
+      <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', letterSpacing: 0.5 }}>1100782886</Typography>
+    </Box>
+    
+    {/* Baris DANA */}
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>DANA</Typography>
+      <Typography sx={{ fontWeight: 800, fontSize: '0.95rem', letterSpacing: 0.5 }}>081351687138</Typography>
+    </Box>
+
+    {/* Baris Tambahan Atas Nama (a/n) */}
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        mt: 0.5,
+        pt: 1.5,
+        borderTop: '1px dashed',
+        borderColor: 'divider' // Memberikan garis pemisah yang halus menyesuaikan mode terang/gelap
+      }}
+    >
+      <Typography variant='caption' color='text.secondary' sx={{ fontWeight: 600 }}>
+        Atas Nama (a/n)
+      </Typography>
+      <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', textTransform: 'capitalize' }}>
+        Safira Muztasyifah Syah
+      </Typography>
+    </Box>
+  </Box>
+</Box>
+
             {/* Upload Bukti Pembayaran */}
             <Box sx={{ mb: 3 }}>
               <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 700 }}>
                 Bukti Pembayaran *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Upload foto/screenshot bukti pembayaran. Maks 2MB (JPG, PNG, WebP)
+                Upload foto/screenshot bukti transfer. Maks 2MB (JPG, PNG, WebP)
               </Typography>
               <input
                 ref={paymentInputRef}
@@ -419,10 +470,10 @@ export default function RegistrationForm() {
             {/* Upload Bukti Follow */}
             <Box sx={{ mb: 4 }}>
               <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 700 }}>
-                Bukti Follow *
+                Bukti Follow Instagram *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Upload foto/screenshot bukti sudah follow akun kami. Maks 2MB (JPG, PNG, WebP)
+                Wajib follow <strong><a href="https://www.instagram.com/dverse.id" target="_blank" rel="noopener noreferrer">@dverse.id</a></strong> di Instagram, lalu upload screenshot bukti follow. Maks 2MB (JPG, PNG, WebP)
               </Typography>
               <input
                 ref={followInputRef}

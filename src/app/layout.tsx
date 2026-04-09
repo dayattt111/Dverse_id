@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: '/Logo.svg',
   },
   manifest: '/site.webmanifest',
 }
