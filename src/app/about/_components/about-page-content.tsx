@@ -5,7 +5,6 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
 import { motion } from 'framer-motion'
 
 export default function AboutPageContent() {

@@ -12,7 +12,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Skeleton from '@mui/material/Skeleton'
 import Grid from '@mui/material/Grid'
 import { ICommunityStats } from '@/types/community'
-import { getCommunityStats, updateCommunityStats, initializeCommunityStats } from '@/lib/supabase/settings'
+import { getCommunityStats, updateCommunityStats } from '@/lib/supabase/settings'
 
 // Emoji icons
 const SaveIcon = () => <span>💾</span>
@@ -20,8 +20,6 @@ const PeopleIcon = () => <span style={{ fontSize: '1.5rem' }}>👥</span>
 const SchoolIcon = () => <span style={{ fontSize: '1.5rem' }}>📚</span>
 const EventIcon = () => <span style={{ fontSize: '1.5rem' }}>📅</span>
 const TrendingUpIcon = () => <span style={{ fontSize: '1.5rem' }}>📈</span>
-
-const STATS_DOC_ID = 'community_stats'
 
 const statFields = [
   { key: 'totalMembers', label: 'Total Members', icon: <PeopleIcon />, color: '#980f5a' },

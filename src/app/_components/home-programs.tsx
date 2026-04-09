@@ -13,7 +13,6 @@ import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import { getPrograms } from '@/lib/supabase/programs'
 import { ICommunityProgram } from '@/types/community'
-import { AppConfig } from '@/configs'
 
 type ProgramItemProps = {
   item: ICommunityProgram
