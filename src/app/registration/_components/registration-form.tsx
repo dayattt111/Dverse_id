@@ -155,6 +155,20 @@ export default function RegistrationForm() {
         picFollow: followUrl,
       })
 
+      // Kirim notifikasi Telegram via API route
+      fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          institution: form.institution,
+          picPayment: paymentUrl,
+          picFollow: followUrl,
+        }),
+      }).catch((err) => console.error('Telegram notification error:', err))
+
       setSuccess(true)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error'

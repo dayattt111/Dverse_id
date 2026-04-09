@@ -147,7 +147,7 @@ const HomeHeroContent = () => {
             Event teknologi bertema <strong>GreenTech</strong> yang menggabungkan{' '}
             <strong>Seminar</strong> dan <strong>Hackathon</strong>.
             <br />
-            Diselenggarakan oleh Dipanegara Computer Club & Himpunan Mahasiswa Informatika PNUP.
+            Diselenggarakan oleh Dipanegara Computer Club & Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang.
           </Typography>
           
           {/* CTA Buttons */}
