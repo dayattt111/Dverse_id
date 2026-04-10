@@ -12,7 +12,7 @@ const events = [
   {
     id: 1,
     title: 'Seminar GreenTech',
-    date: '5 Mei 2026',
+    date: '9 Mei 2026',
     description:
       'Seminar sehari penuh dengan keynote speakers dari industri teknologi, membahas inovasi Green Technology dan peran developer dalam keberlanjutan lingkungan.',
     highlights: [

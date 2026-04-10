@@ -80,7 +80,7 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='+62 851-xxxx-xxxx'
+        value='+62 819-0680-6724'
         label='Sen - Jum / 9am - 5pm'
         link='https://wa.me/6285100000000'
         icon={

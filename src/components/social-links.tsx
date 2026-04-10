@@ -6,22 +6,22 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 
 export const socialLinks: ISocialLink[] = [
-  {
-    name: 'Facebook',
-    link: 'https://www.facebook.com',
-  },
+  // {
+  //   name: 'Facebook',
+  //   link: 'https://www.facebook.com',
+  // },
   {
     name: 'Instagram',
-    link: 'https://www.instagram.com',
+    link: 'https://www.instagram.com/dverse.id?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==',
   },
   {
     name: 'WhatsApp',
-    link: '#',
+    link: 'https://wa.me/6281906806724',
   },
-  {
-    name: 'YouTube',
-    link: 'https://www.youtube.com',
-  },
+  // {
+  //   // name: 'YouTube',
+  //   // link: 'https://www.youtube.com',
+  // },
 ]
 
 interface SocialLinkItemProps {
