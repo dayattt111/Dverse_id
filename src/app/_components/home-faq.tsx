@@ -24,13 +24,13 @@ const faqItems = [
     id: 3,
     question: 'Apakah event ini gratis?',
     answer:
-      'Ya, baik Seminar maupun Hackathon dapat diikuti secara gratis. Peserta hanya perlu mendaftar melalui form pendaftaran yang tersedia.',
+      'Event ini bersifat berbayar. Untuk mengikuti lomba (hackathon), peserta dikenakan biaya pendaftaran sebesar Rp300.000 per tim. Sedangkan untuk seminar, biaya pendaftaran sebesar Rp25.000 per peserta. Peserta dapat mendaftar melalui form pendaftaran yang telah disediakan.',
   },
   {
     id: 4,
     question: 'Berapa jumlah anggota tim untuk Hackathon?',
     answer:
-      'Setiap tim Hackathon terdiri dari 3-4 orang. Kamu bisa mendaftar bersama timmu atau mendaftar individu dan kami akan bantu carikan tim.',
+      'Setiap tim Hackathon terdiri dari 4-5 orang. Kamu bisa mendaftar bersama timmu atau mendaftar individu dan kami akan bantu carikan tim.',
   },
   {
     id: 5,

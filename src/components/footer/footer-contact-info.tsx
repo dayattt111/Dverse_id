@@ -80,7 +80,7 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='+62 852-5601-9136'
+        value='+62 851-xxxx-xxxx'
         label='Sen - Jum / 9am - 5pm'
         link='https://wa.me/6285256019136?text=Halo%20Dverse%2C%20saya%20ingin%20bertanya%20tentang%20Dverse%20Festival'
         icon={

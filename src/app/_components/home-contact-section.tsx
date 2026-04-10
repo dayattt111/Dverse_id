@@ -79,7 +79,7 @@ const HomeContactSection = () => {
             >
               <Box
                 component='a'
-                href='mailto:dverseofc26@gmail.com'
+                href='mailto:dverse@pnup.ac.id'
                 sx={{
                   display: 'block',
                   textDecoration: 'none',
@@ -129,7 +129,7 @@ const HomeContactSection = () => {
             >
               <Box
                 component='a'
-                href='https://wa.me/62812000xxxx'
+                href='https://wa.me/6281906806724'
                 target='_blank'
                 rel='noopener noreferrer'
                 sx={{
@@ -165,7 +165,7 @@ const HomeContactSection = () => {
                 />
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>WhatsApp</Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                  +62 852-5601-9136
+                  +62 812 000 xxxx
                 </Typography>
               </Box>
             </motion.div>
