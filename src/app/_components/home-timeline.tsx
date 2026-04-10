@@ -40,7 +40,7 @@ const timelineEvents = [
     id: 5,
     date: '27–29 April 2026',
     title: 'Konfirmasi & Pembayaran Biaya Komitmen',
-    description: 'Peserta yang lolos melakukan konfirmasi ke panitia dan pembayaran biaya komitmen sebesar Rp. 300.000,-/Tim.',
+    description: 'Peserta yang lolos melakukan konfirmasi ke panitia dan pembayaran biaya komitmen sebesar (TBA).',
     status: 'upcoming' as const,
   },
   {

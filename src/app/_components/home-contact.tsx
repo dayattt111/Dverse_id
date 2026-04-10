@@ -234,7 +234,7 @@ const HomeContact = () => {
                         sx={{ mr: 1, width: 25, height: 25 }}
                       />
                       <Typography sx={{ mb: 0 }} variant='h5'>
-                        +62 8881212121212
+                        +62 852-5601-9136
                       </Typography>
                     </Box>
                     <Typography

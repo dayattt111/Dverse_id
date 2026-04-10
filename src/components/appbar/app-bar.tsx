@@ -15,7 +15,6 @@ import { useTheme, Theme } from '@mui/material/styles'
 import { usePathname, useRouter } from 'next/navigation'
 
 // assets
-import Logo from '@/assets/logo.svg'
 
 const AppBar: FC = () => {
   const theme = useTheme()
@@ -122,16 +121,15 @@ const AppBar: FC = () => {
             <Box
               onClick={onClickLogo}
               aria-label={'Back to home'}
-              component={Logo}
+              component='img'
+              src='/logo.svg'
+              alt='Logo'
               sx={{
                 width: 'auto',
                 cursor: 'pointer',
                 height: shouldFloating ? 32 : 40,
-                color: theme.palette.mode === 'light'
-                  ? (shouldFloating ? 'primary.main' : '#fff')
-                  : '#fff',
                 transition: (theme: Theme) =>
-                  theme.transitions.create(['transform', 'height', 'color']),
+                  theme.transitions.create(['transform', 'height']),
               }}
             />
             {mobileMatches ? (

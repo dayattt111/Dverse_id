@@ -9,7 +9,7 @@ export const AppConfig = {
     instagram: 'https://instagram.com/dverse.event',
     github: 'https://github.com/dcn-undipa',
     whatsapp: 'https://chat.whatsapp.com/your-group-link',
-    email: 'dverse@pnup.ac.id',
+    email: 'dverseofc26@gmail.com',
   },
   // SEO
   siteUrl: 'https://dverse-event.vercel.app',

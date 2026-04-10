@@ -30,7 +30,7 @@ const events = [
     title: 'Lomba / Hackathon',
     date: '11 April 2026',
     description:
-      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi. Peserta yang lolos seleksi wajib melakukan konfirmasi dan membayar biaya komitmen sebesar Rp. 300.000,-/Tim.',
+      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi.',
     highlights: [
       'Kompetisi berbasis tim',
       'Mentoring dari expert',
@@ -39,7 +39,7 @@ const events = [
     ],
     type: 'hackathon',
     capacity: 'Terbatas',
-    price: 'Rp. 300.000,-/Tim',
+    price: 'TBA',
     disabled: true, // set false untuk mengaktifkan pendaftaran hackathon
   },
 ]
@@ -324,7 +324,7 @@ const HomeRegistration = () => {
                     1100782886
                   </Typography>
                   <Typography variant='caption' color='text.secondary'>
-                    a.n. Panitia DCN Undipa
+                    Safira Muztasyifah Syah
                   </Typography>
                 </Box>
               </Grid>
@@ -339,7 +339,7 @@ const HomeRegistration = () => {
                     081351687138
                   </Typography>
                   <Typography variant='caption' color='text.secondary'>
-                    a.n. Panitia DCN Undipa
+                    Safira Muztasyifah Syah
                   </Typography>
                 </Box>
               </Grid>

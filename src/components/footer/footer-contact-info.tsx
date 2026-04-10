@@ -69,9 +69,9 @@ const FooterContactInfo: FC = () => {
     <Box sx={{ mb: { xs: 4, md: 0 } }}>
       <FooterSectionTitle title='Contact Info' />
       <ContactInfoItem
-        value='dverse@pnup.ac.id'
+        value='dverseofc26@gmail.com'
         label='Response within 24hrs'
-        link='mailto:dverse@pnup.ac.id'
+        link='mailto:dverseofc26@gmail.com'
         icon={
           <Box
             component={EmailIcon}
@@ -80,9 +80,9 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='+62 851-xxxx-xxxx'
+        value='+62 852-5601-9136'
         label='Sen - Jum / 9am - 5pm'
-        link='https://wa.me/6285100000000'
+        link='https://wa.me/6285256019136?text=Halo%20Dverse%2C%20saya%20ingin%20bertanya%20tentang%20Dverse%20Festival'
         icon={
           <Box
             component={PhoneIcon}

@@ -11,7 +11,6 @@ import {
   FooterSupportLinks,
 } from '@/components/footer'
 import { SocialLinks } from '@/components'
-import Logo from '@/assets/logo.svg'
 import HeartIcon from '@/assets/icons/ion--heart-sharp.svg'
 import { AppConfig } from '@/configs'
 
@@ -81,7 +80,7 @@ const Footer: FC = () => {
                   gap={2}
                   sx={{ alignItems: 'center', mb: 2 }}
                 >
-                  <Box component={Logo} sx={{ height: 32, width: 'auto' }} />
+                  <Box component='img' src='/logo.svg' alt='Logo' sx={{ height: 32, width: 'auto' }} />
                   <Typography
                     sx={{
                       fontWeight: '700',
@@ -123,7 +122,7 @@ const Footer: FC = () => {
                   sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
-                    © {year} | Made with
+                    © {year} | Made with Dayaa
                   </Typography>
                   <Box
                     component={HeartIcon}

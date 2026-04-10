@@ -134,16 +134,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Format data tidak valid' }, { status: 400 })
     }
 
+    // --- Strip null bytes & control characters ---
+    const CONTROL_RE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g
+    const cleanName = name.replace(CONTROL_RE, '')
+    const cleanEmail = email.replace(CONTROL_RE, '')
+    const cleanPhone = phone.replace(CONTROL_RE, '')
+    const cleanInstitution = institution.replace(CONTROL_RE, '')
+
+    // Re-check presence after stripping (e.g. field was only control chars)
+    if (!cleanName || !cleanEmail || !cleanPhone || !cleanInstitution) {
+      return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 })
+    }
+
     // --- Reject template placeholders ---
-    if ([name, email, phone, institution].some((v) => PLACEHOLDER_RE.test(v))) {
+    if ([cleanName, cleanEmail, cleanPhone, cleanInstitution].some((v) => PLACEHOLDER_RE.test(v))) {
       return NextResponse.json({ error: 'Data tidak valid' }, { status: 400 })
     }
 
-    // --- Field length ---
-    if (name.trim().length < 2 || name.trim().length > 100) {
+    // --- Field length (use cleaned values) ---
+    if (cleanName.trim().length < 2 || cleanName.trim().length > 100) {
       return NextResponse.json({ error: 'Nama tidak valid (2–100 karakter)' }, { status: 400 })
     }
-    if (institution.trim().length < 2 || institution.trim().length > 150) {
+    if (cleanInstitution.trim().length < 2 || cleanInstitution.trim().length > 150) {
       return NextResponse.json(
         { error: 'Instansi tidak valid (2–150 karakter)' },
         { status: 400 }
@@ -152,12 +164,12 @@ export async function POST(request: Request) {
 
     // --- Email format ---
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email) || email.length < 5 || email.length > 100) {
+    if (!emailRegex.test(cleanEmail) || cleanEmail.length < 5 || cleanEmail.length > 100) {
       return NextResponse.json({ error: 'Format email tidak valid' }, { status: 400 })
     }
 
     // --- Disposable email domain ---
-    const emailDomain = email.split('@')[1]?.toLowerCase()
+    const emailDomain = cleanEmail.split('@')[1]?.toLowerCase()
     if (!emailDomain || DISPOSABLE_DOMAINS.has(emailDomain)) {
       return NextResponse.json(
         { error: 'Email tidak dapat digunakan. Gunakan email pribadi yang valid.' },
@@ -166,7 +178,7 @@ export async function POST(request: Request) {
     }
 
     // --- Phone format ---
-    if (!PHONE_RE.test(phone)) {
+    if (!PHONE_RE.test(cleanPhone)) {
       return NextResponse.json(
         { error: 'Format nomor HP tidak valid' },
         { status: 400 }
@@ -179,10 +191,10 @@ export async function POST(request: Request) {
 
     if (telegramToken && telegramChatId) {
       // Escape all user-supplied strings before embedding in HTML message
-      const safeName = escapeHtml(name.trim())
-      const safeEmail = escapeHtml(email.trim())
-      const safePhone = escapeHtml(phone.trim())
-      const safeInstitution = escapeHtml(institution.trim())
+      const safeName = escapeHtml(cleanName.trim())
+      const safeEmail = escapeHtml(cleanEmail.trim())
+      const safePhone = escapeHtml(cleanPhone.trim())
+      const safeInstitution = escapeHtml(cleanInstitution.trim())
 
       // Only allow https:// Supabase Storage URLs for image links
       const supabaseUrlBase = process.env.NEXT_PUBLIC_SUPABASE_URL

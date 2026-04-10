@@ -79,7 +79,7 @@ const HomeContactSection = () => {
             >
               <Box
                 component='a'
-                href='mailto:dverse@pnup.ac.id'
+                href='mailto:dverseofc26@gmail.com'
                 sx={{
                   display: 'block',
                   textDecoration: 'none',
@@ -113,7 +113,7 @@ const HomeContactSection = () => {
                 />
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>Email</Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                  dverse@pnup.ac.id
+                  dverseofc26@gmail.com
                 </Typography>
               </Box>
             </motion.div>
@@ -165,7 +165,7 @@ const HomeContactSection = () => {
                 />
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>WhatsApp</Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                  +62 812 000 xxxx
+                  +62 852-5601-9136
                 </Typography>
               </Box>
             </motion.div>

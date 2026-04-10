@@ -20,8 +20,23 @@ const EVENTS: Record<number, string> = {
   2: 'Hackathon 48 Jam',
 }
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
-const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_FILE_SIZE = 1 * 1024 * 1024 // 1MB
+const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png']
+
+/** Map MIME type → safe file extension (no user-controlled extension). */
+const MIME_TO_EXT: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+}
+
+/**
+ * Strip null bytes and ASCII control characters from a text field value.
+ * Prevents command/injection attempts via crafted input.
+ */
+function sanitizeText(value: string): string {
+  // Remove null bytes (\x00) and non-printable control chars except normal whitespace
+  return value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+}
 
 const COOLDOWN_KEY = 'dcn_reg_cooldown_expires'
 const COOLDOWN_MS = 12 * 60 * 60 * 1000 // 12 hours
@@ -131,15 +146,15 @@ export default function RegistrationForm() {
   }, [cooldownExpiry])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    setForm((prev) => ({ ...prev, [e.target.name]: sanitizeText(e.target.value) }))
   }
 
   const validateFile = (file: File): string | null => {
     if (!VALID_IMAGE_TYPES.includes(file.type)) {
-      return 'Format file tidak valid. Gunakan JPG, PNG, atau WebP.'
+      return 'Format file tidak valid. Gunakan JPG atau PNG.'
     }
     if (file.size > MAX_FILE_SIZE) {
-      return 'Ukuran file terlalu besar. Maksimal 2MB.'
+      return 'Ukuran file terlalu besar. Maksimal 1MB.'
     }
     return null
   }
@@ -169,8 +184,9 @@ export default function RegistrationForm() {
   }
 
   const uploadFile = async (file: File, folder: string): Promise<string> => {
+    // Derive extension from MIME type — never from user-controlled filename
+    const ext = MIME_TO_EXT[file.type] ?? 'jpg'
     const timestamp = Date.now()
-    const ext = file.name.split('.').pop()
     const filename = `${timestamp}_${Math.random().toString(36).substring(2, 9)}.${ext}`
     const filePath = `${folder}/${filename}`
 
@@ -631,12 +647,12 @@ export default function RegistrationForm() {
                 Bukti Pembayaran *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Upload foto/screenshot bukti transfer. Maks 2MB (JPG, PNG, WebP)
+                Upload foto/screenshot bukti transfer. Maks 1MB (JPG atau PNG)
               </Typography>
               <input
                 ref={paymentInputRef}
                 type='file'
-                accept='image/jpeg,image/png,image/webp'
+                accept='image/jpeg,image/png'
                 onChange={(e) => handleFileSelect('payment', e)}
                 style={{ display: 'none' }}
               />
@@ -701,12 +717,12 @@ export default function RegistrationForm() {
                 Bukti Follow Instagram *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Wajib follow <strong><a href="https://www.instagram.com/dverse.id" target="_blank" rel="noopener noreferrer">@dverse.id</a></strong> di Instagram, lalu upload screenshot bukti follow. Maks 2MB (JPG, PNG, WebP)
+                Wajib follow <strong><a href="https://www.instagram.com/dverse.id" target="_blank" rel="noopener noreferrer">@dverse.id</a></strong> di Instagram, lalu upload screenshot bukti follow. Maks 1MB (JPG atau PNG)
               </Typography>
               <input
                 ref={followInputRef}
                 type='file'
-                accept='image/jpeg,image/png,image/webp'
+                accept='image/jpeg,image/png'
                 onChange={(e) => handleFileSelect('follow', e)}
                 style={{ display: 'none' }}
               />
