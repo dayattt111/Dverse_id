@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -23,6 +23,39 @@ const EVENTS: Record<number, string> = {
 const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
 const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
+const COOLDOWN_KEY = 'dcn_reg_cooldown_expires'
+const COOLDOWN_MS = 12 * 60 * 60 * 1000 // 12 hours
+
+/** Read cooldown expiry from localStorage (0 = no cooldown). */
+function getLocalCooldownExpiry(): number {
+  try {
+    const stored = localStorage.getItem(COOLDOWN_KEY)
+    return stored ? parseInt(stored, 10) : 0
+  } catch {
+    return 0
+  }
+}
+
+/** Set cooldown expiry in localStorage. */
+function setLocalCooldown(expiresAt: number): void {
+  try {
+    localStorage.setItem(COOLDOWN_KEY, String(expiresAt))
+  } catch { /* ignore */ }
+}
+
+/** Format remaining ms to "HH jam MM menit SS detik". */
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return ''
+  const hours = Math.floor(ms / (60 * 60 * 1000))
+  const minutes = Math.floor((ms % (60 * 60 * 1000)) / (60 * 1000))
+  const seconds = Math.floor((ms % (60 * 1000)) / 1000)
+  const parts: string[] = []
+  if (hours > 0) parts.push(`${hours} jam`)
+  if (minutes > 0) parts.push(`${minutes} menit`)
+  parts.push(`${seconds} detik`)
+  return parts.join(' ')
+}
+
 export default function RegistrationForm() {
   const { palette } = useTheme()
   const searchParams = useSearchParams()
@@ -43,9 +76,59 @@ export default function RegistrationForm() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [cooldownExpiry, setCooldownExpiry] = useState<number>(0)
+  const [countdownText, setCountdownText] = useState<string>('')
 
   const paymentInputRef = useRef<HTMLInputElement>(null)
   const followInputRef = useRef<HTMLInputElement>(null)
+
+  // --- Cooldown logic ---
+  const checkAndSetCooldown = useCallback(async () => {
+    // 1. Check localStorage first
+    const localExpiry = getLocalCooldownExpiry()
+    if (localExpiry > Date.now()) {
+      setCooldownExpiry(localExpiry)
+      return
+    }
+
+    // 2. Check server-side cooldown
+    try {
+      const res = await fetch('/api/register')
+      const data = await res.json()
+      if (!data.allowed && data.expiresAt > Date.now()) {
+        setCooldownExpiry(data.expiresAt)
+        setLocalCooldown(data.expiresAt)
+      }
+    } catch { /* ignore — allow form to show */ }
+  }, [])
+
+  // Check cooldown on mount
+  useEffect(() => {
+    checkAndSetCooldown()
+  }, [checkAndSetCooldown])
+
+  // Live countdown ticker
+  useEffect(() => {
+    if (!cooldownExpiry || cooldownExpiry <= Date.now()) {
+      setCountdownText('')
+      return
+    }
+
+    const tick = () => {
+      const remaining = cooldownExpiry - Date.now()
+      if (remaining <= 0) {
+        setCooldownExpiry(0)
+        setCountdownText('')
+        try { localStorage.removeItem(COOLDOWN_KEY) } catch { /* ignore */ }
+        return
+      }
+      setCountdownText(formatCountdown(remaining))
+    }
+
+    tick()
+    const interval = setInterval(tick, 1000)
+    return () => clearInterval(interval)
+  }, [cooldownExpiry])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -130,6 +213,17 @@ export default function RegistrationForm() {
     setLoading(true)
 
     try {
+      // --- Check cooldown BEFORE any DB/upload operations ---
+      const cooldownRes = await fetch('/api/register')
+      const cooldownData = await cooldownRes.json()
+      if (!cooldownData.allowed && cooldownData.expiresAt > Date.now()) {
+        setCooldownExpiry(cooldownData.expiresAt)
+        setLocalCooldown(cooldownData.expiresAt)
+        setError('Kamu sudah mendaftar sebelumnya. Silakan tunggu hingga cooldown selesai.')
+        setLoading(false)
+        return
+      }
+
       // Cek duplikat pendaftaran
       const exists = await checkExistingRegistration(eventId, form.email)
       if (exists) {
@@ -155,19 +249,35 @@ export default function RegistrationForm() {
         picFollow: followUrl,
       })
 
-      // Kirim notifikasi Telegram via API route
-      fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          institution: form.institution,
-          picPayment: paymentUrl,
-          picFollow: followUrl,
-        }),
-      }).catch((err) => console.error('Telegram notification error:', err))
+      // Kirim notifikasi Telegram via API route (also triggers server-side cooldown)
+      try {
+        const telegramRes = await fetch('/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            institution: form.institution,
+            picPayment: paymentUrl,
+            picFollow: followUrl,
+          }),
+        })
+
+        if (telegramRes.status === 429) {
+          const data = await telegramRes.json()
+          setError(data.error || 'Terlalu banyak permintaan.')
+          setLoading(false)
+          return
+        }
+      } catch (err) {
+        console.error('Telegram notification error:', err)
+      }
+
+      // Set client-side cooldown (12 hours)
+      const expiresAt = Date.now() + COOLDOWN_MS
+      setLocalCooldown(expiresAt)
+      setCooldownExpiry(expiresAt)
 
       setSuccess(true)
     } catch (err: unknown) {
@@ -177,6 +287,124 @@ export default function RegistrationForm() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // --- Cooldown screen with countdown ---
+  if (cooldownExpiry > Date.now() && countdownText && !success) {
+    return (
+      <Box
+        sx={{
+          minHeight: '80vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 8,
+          background:
+            palette.mode === 'dark'
+              ? 'linear-gradient(180deg, #0f172a 0%, #020617 100%)'
+              : 'linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%)',
+        }}
+      >
+        <Container maxWidth='sm'>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Box
+              sx={{
+                textAlign: 'center',
+                p: 5,
+                borderRadius: 3,
+                border: '2px solid',
+                borderColor: 'warning.main',
+                background:
+                  palette.mode === 'dark'
+                    ? 'rgba(15, 23, 42, 0.9)'
+                    : '#ffffff',
+              }}
+            >
+              <Typography variant='h4' sx={{ fontWeight: 800, mb: 2, color: 'warning.main' }}>
+                Pendaftaran Ditunda
+              </Typography>
+              <Typography color='text.secondary' sx={{ mb: 3 }}>
+                Kamu sudah melakukan pendaftaran sebelumnya. Silakan tunggu hingga cooldown selesai untuk mendaftar kembali.
+              </Typography>
+
+              {/* Countdown */}
+              <Box
+                sx={{
+                  p: 3,
+                  mb: 3,
+                  borderRadius: 2,
+                  background:
+                    palette.mode === 'dark'
+                      ? 'rgba(255, 167, 38, 0.1)'
+                      : 'rgba(255, 243, 224, 0.8)',
+                  border: '1px solid',
+                  borderColor: 'warning.light',
+                }}
+              >
+                <Typography variant='overline' sx={{ fontWeight: 700, letterSpacing: 1, color: 'warning.main', display: 'block', mb: 1 }}>
+                  Dapat mendaftar lagi dalam
+                </Typography>
+                <Typography variant='h5' sx={{ fontWeight: 900, fontFamily: 'monospace' }}>
+                  {countdownText}
+                </Typography>
+              </Box>
+
+              {/* Admin contact */}
+              <Box
+                sx={{
+                  p: 2.5,
+                  borderRadius: 2,
+                  background:
+                    palette.mode === 'dark'
+                      ? 'rgba(255, 255, 255, 0.05)'
+                      : 'rgba(0, 0, 0, 0.03)',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Typography variant='body2' color='text.secondary' sx={{ mb: 1 }}>
+                  Apabila terkendala, silakan hubungi admin:
+                </Typography>
+                <Typography
+                  component='a'
+                  href='https://wa.me/6281906806724'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  sx={{
+                    fontWeight: 800,
+                    fontSize: '1.05rem',
+                    color: 'primary.main',
+                    textDecoration: 'none',
+                    '&:hover': { textDecoration: 'underline' },
+                  }}
+                >
+                  +62 819-0680-6724 (ALFI)
+                </Typography>
+              </Box>
+
+              <Button
+                variant='outlined'
+                href='/'
+                sx={{
+                  mt: 3,
+                  py: 1.5,
+                  px: 4,
+                  borderRadius: 2,
+                  fontWeight: 700,
+                  textTransform: 'none',
+                }}
+              >
+                Kembali ke Beranda
+              </Button>
+            </Box>
+          </motion.div>
+        </Container>
+      </Box>
+    )
   }
 
   if (success) {
