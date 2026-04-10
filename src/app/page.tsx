@@ -42,10 +42,10 @@ const HomePage = (): JSX.Element => {
       <HomeHero />
       <HomeAbout />
       <HomePastEvents />
+      <HomeBenefits />
       <HomeProblemStatement />
       <HomeTimeline />
       <HomeRegistration />
-      <HomeBenefits />
       <HomeFAQ />
       <HomeContactSection />
       <HomeCTA />
