@@ -12,7 +12,7 @@ const events = [
   {
     id: 1,
     title: 'Seminar GreenTech',
-    date: '9 April 2026',
+    date: '5 Mei 2026',
     description:
       'Seminar sehari penuh dengan keynote speakers dari industri teknologi, membahas inovasi Green Technology dan peran developer dalam keberlanjutan lingkungan.',
     highlights: [
@@ -22,7 +22,6 @@ const events = [
       'Networking session',
     ],
     type: 'seminar',
-    capacity: '300 peserta',
     price: 'Rp 25.000',
     disabled: false,
   },
