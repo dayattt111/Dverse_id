@@ -83,8 +83,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml' }],
-    shortcut: '/icon.svg',
+    icon: [{ url: '/logo.svg', type: 'image/svg+xml' }],
+    shortcut: '/logo.svg',
   },
   manifest: '/site.webmanifest',
 }

@@ -11,6 +11,9 @@ const HomeHero = dynamic(() => import('./_components/home-hero'), {
 const HomeAbout = dynamic(() => import('./_components/home-about'), {
   loading: () => <PageLoader />,
 })
+const HomePastEvents = dynamic(() => import('./_components/home-past-events'), {
+  loading: () => <PageLoader />,
+})
 const HomeProblemStatement = dynamic(() => import('./_components/home-problem-statement'), {
   loading: () => <PageLoader />,
 })
@@ -38,6 +41,7 @@ const HomePage = (): JSX.Element => {
     <Stack component='main' direction='column'>
       <HomeHero />
       <HomeAbout />
+      <HomePastEvents />
       <HomeProblemStatement />
       <HomeTimeline />
       <HomeRegistration />
