@@ -152,9 +152,6 @@ const HomeCTA = () => {
         >
           <Grid container spacing={3} sx={{ mt: 6 }}>
             {[
-              { number: '2', label: 'Event Utama' },
-              { number: '500+', label: 'Target Peserta' },
-              { number: '10+', label: 'Speakers & Mentor' },
               { number: '48 Jam', label: 'Hackathon Marathon' },
             ].map((stat, index) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>

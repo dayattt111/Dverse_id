@@ -217,7 +217,7 @@ const HomeHeroContent = () => {
           </Box>
           
           {/* Quick Stats */}
-          <Box
+          {/* <Box
             sx={{
               display: 'flex',
               gap: { xs: 3, sm: 4, md: 5 },
@@ -227,8 +227,8 @@ const HomeHeroContent = () => {
               px: { xs: 2, sm: 0 },
               opacity: 0.85,
             }}
-          >
-            <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
+          > */}
+            {/* <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
               <Typography
                 sx={{
                   fontSize: { xs: 28, sm: 32, md: 36 },
@@ -242,8 +242,8 @@ const HomeHeroContent = () => {
               <Typography sx={{ fontSize: { xs: 12, md: 13 }, color: 'text.secondary', mt: 0.5 }}>
                 Events
               </Typography>
-            </Box>
-            <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
+            </Box> */}
+            {/* <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
               <Typography
                 sx={{
                   fontSize: { xs: 28, sm: 32, md: 36 },
@@ -257,8 +257,8 @@ const HomeHeroContent = () => {
               <Typography sx={{ fontSize: { xs: 12, md: 13 }, color: 'text.secondary', mt: 0.5 }}>
                 Target Peserta
               </Typography>
-            </Box>
-            <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
+            </Box> */}
+            {/* <Box sx={{ textAlign: 'center', minWidth: { xs: '80px', sm: 'auto' } }}>
               <Typography
                 sx={{
                   fontSize: { xs: 28, sm: 32, md: 36 },
@@ -273,7 +273,7 @@ const HomeHeroContent = () => {
                 Speakers
               </Typography>
             </Box>
-          </Box>
+          </Box> */}
 
 
         </Box>
