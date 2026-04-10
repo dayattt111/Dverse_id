@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.102.1",
     "@svgr/webpack": "^8.1.0",
     "dotenv": "^17.3.1",
+    "embla-carousel-auto-scroll": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.38.0",
