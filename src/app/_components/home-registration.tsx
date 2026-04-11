@@ -15,37 +15,44 @@ const events = [
     date: '9 Mei 2026',
     description:
       'Seminar sehari penuh dengan keynote speakers dari industri teknologi, membahas inovasi Green Technology dan peran developer dalam keberlanjutan lingkungan.',
-    highlights: [
+    benefits: [
       'Keynote dari praktisi industri',
       'Panel diskusi interaktif',
       'Sertifikat peserta',
       'Networking session',
+      'Merchandise eksklusif',
     ],
-    type: 'seminar',
-    price: 'Rp 25.000',
+    type: 'seminar' as const,
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/seminar.jpeg',
+    priceLabel: 'Mulai Rp 25.000',
     disabled: false,
+    ctaText: 'Daftar Seminar',
+    ctaHref: '/registration/packages?event=1',
   },
   {
     id: 2,
     title: 'Lomba / Hackathon',
-    date: '11 April 2026',
+    date: '8 Mei 2026',
     description:
-      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi.',
-    highlights: [
+      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi hijau. Tunjukkan skill coding kamu dan menangkan hadiah menarik!',
+    benefits: [
       'Kompetisi berbasis tim',
       'Mentoring dari expert',
       'Sertifikat & portfolio',
       'Hadiah menarik untuk juara',
     ],
-    type: 'hackathon',
-    capacity: 'Terbatas',
-    price: 'TBA',
-    disabled: true, // set false untuk mengaktifkan pendaftaran hackathon
+    type: 'hackathon' as const,
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Hack.jpeg',
+    priceLabel: 'TBA',
+    disabled: true,
+    ctaText: 'Segera Hadir',
+    ctaHref: '#',
   },
 ]
 
 const HomeRegistration = () => {
   const { palette } = useTheme()
+  const isDark = palette.mode === 'dark'
 
   return (
     <Box
@@ -55,13 +62,13 @@ const HomeRegistration = () => {
         width: '100%',
         py: { xs: 8, md: 14 },
         position: 'relative',
-        background:
-          palette.mode === 'dark'
-            ? 'linear-gradient(180deg, #0f172a 0%, #020617 100%)'
-            : 'linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%)',
+        background: isDark
+          ? 'linear-gradient(180deg, #0f172a 0%, #020617 100%)'
+          : 'linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%)',
       }}
     >
       <Container maxWidth='lg'>
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -101,179 +108,240 @@ const HomeRegistration = () => {
           </Box>
         </motion.div>
 
-        <Grid container spacing={4}>
+        {/* Event Cards — stacked rows */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           {events.map((event, index) => (
-            <Grid size={{ xs: 12, md: 6 }} key={event.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.15 }}
-              >
-                <Box
-                  sx={{
-                    p: { xs: 3, md: 4 },
-                    borderRadius: 3,
-                    height: '100%',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    border: '2px solid',
-                    borderColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
-                    background: palette.mode === 'dark'
-                      ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 78, 59, 0.2) 100%)'
-                      : 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: palette.mode === 'dark'
+            <motion.div
+              key={event.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
+            >
+              <Box
+                sx={{
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  border: '2px solid',
+                  borderColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
+                  background: isDark
+                    ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 78, 59, 0.2) 100%)'
+                    : 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
+                  transition: 'all 0.3s ease',
+                  opacity: event.disabled ? 0.7 : 1,
+                  '&:hover': {
+                    transform: event.disabled ? 'none' : 'translateY(-4px)',
+                    boxShadow: event.disabled
+                      ? 'none'
+                      : isDark
                         ? '0 16px 48px rgba(46, 125, 50, 0.3)'
                         : '0 16px 48px rgba(46, 125, 50, 0.15)',
-                    },
-                  }}
-                >
-                  {/* Badge */}
-                  <Box
-                    sx={{
-                      display: 'inline-block',
-                      px: 2,
-                      py: 0.5,
-                      borderRadius: 1.5,
-                      mb: 2,
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      textTransform: 'uppercase',
-                      letterSpacing: 0.5,
-                      backgroundColor: event.type === 'seminar' ? '#2e7d32' : '#0f172a',
-                      color: '#fff',
-                    }}
-                  >
-                    {event.type === 'seminar' ? 'Seminar' : 'Hackathon'}
-                  </Box>
-
-                  <Typography
-                    variant='h4'
-                    sx={{
-                      fontWeight: 800,
-                      mb: 1,
-                      fontSize: { xs: '1.5rem', md: '1.75rem' },
-                    }}
-                  >
-                    {event.title}
-                  </Typography>
-
-                  <Typography
-                    sx={{
-                      color: 'primary.main',
-                      fontWeight: 700,
-                      fontSize: '0.95rem',
-                      mb: 2,
-                    }}
-                  >
-                    {event.date}
-                  </Typography>
-
-                  <Typography
-                    sx={{
-                      color: 'text.secondary',
-                      fontSize: '0.95rem',
-                      lineHeight: 1.7,
-                      mb: 3,
-                    }}
-                  >
-                    {event.description}
-                  </Typography>
-
-                  {/* Highlights */}
-                  <Box sx={{ mb: 3 }}>
-                    {event.highlights.map((highlight, i) => (
-                      <Box
-                        key={i}
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          mb: 1,
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: '50%',
-                            backgroundColor: 'primary.main',
-                            flexShrink: 0,
-                          }}
-                        />
-                        <Typography sx={{ fontSize: '0.9rem', color: 'text.secondary' }}>
-                          {highlight}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-
-                  {/* Info Row */}
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      pt: 2,
-                      borderTop: '1px solid',
-                      borderColor: 'divider',
-                      mb: 3,
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '0.85rem', color: 'text.secondary' }}>
-                      {event.capacity}
-                    </Typography>
-                    <Typography
+                  },
+                }}
+              >
+                <Grid container>
+                  {/* Column 1 — Event Image */}
+                  <Grid size={{ xs: 12, md: 5 }}>
+                    <Box
                       sx={{
-                        fontSize: '1rem',
-                        fontWeight: 800,
-                        color: 'primary.main',
+                        height: { xs: 260, md: '100%' },
+                        minHeight: { md: 320 },
+                        position: 'relative',
+                        overflow: 'hidden',
                       }}
                     >
-                      {event.price}
-                    </Typography>
-                  </Box>
+                      <Box
+                        component='img'
+                        src={event.image}
+                        alt={event.title}
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center',
+                          display: 'block',
+                        }}
+                      />
+                      {/* Gradient overlay for text readability */}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 55%)',
+                        }}
+                      />
+                      {/* Title + date pinned at bottom */}
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          p: 2.5,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            color: '#fff',
+                            fontWeight: 800,
+                            fontSize: { xs: '1.1rem', md: '1.3rem' },
+                            lineHeight: 1.3,
+                            mb: 0.5,
+                            textShadow: '0 1px 4px rgba(0,0,0,0.5)',
+                          }}
+                        >
+                          {event.title}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            color: 'rgba(255,255,255,0.9)',
+                            fontWeight: 600,
+                            fontSize: '0.85rem',
+                            textShadow: '0 1px 3px rgba(0,0,0,0.5)',
+                          }}
+                        >
+                          {event.date}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
 
-{/* CTA Button */}
-<Box
-  component={event.disabled ? 'div' : 'a'}
-  href={event.disabled ? undefined : `/registration?event=${event.id}`}
-  sx={{
-    display: 'block',
-    textAlign: 'center',
-    py: 1.5,
-    borderRadius: 2,
-    fontWeight: 700,
-    fontSize: '1rem',
-    textDecoration: 'none',
-    backgroundColor: event.disabled
-      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.1)' : '#e0e0e0')
-      : (event.type === 'seminar' ? 'primary.main' : 'secondary.main'),
-    color: event.disabled
-      ? (palette.mode === 'dark' ? 'rgba(255,255,255,0.3)' : '#9e9e9e')
-      : '#ffffff',
-    cursor: event.disabled ? 'not-allowed' : 'pointer',
-    transition: 'all 0.3s',
-    pointerEvents: event.disabled ? 'none' : 'auto',
-    '&:hover': {
-      backgroundColor: event.disabled
-        ? undefined
-        : (event.type === 'seminar' ? 'primary.dark' : 'secondary.dark'),
-      transform: event.disabled ? 'none' : 'translateY(-2px)',
-      boxShadow: event.disabled ? 'none' : 3,
-    },
-  }}
->
-  {event.disabled ? 'Segera Hadir' : `Daftar ${event.type === 'seminar' ? 'Seminar' : 'Hackathon'}`}
-</Box>
-                </Box>
-              </motion.div>
-            </Grid>
+                  {/* Column 2 — Info, benefits, CTA */}
+                  <Grid size={{ xs: 12, md: 7 }}>
+                    <Box sx={{ p: { xs: 3, md: 4 }, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                      {/* Badge */}
+                      <Box
+                        sx={{
+                          display: 'inline-block',
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1.5,
+                          mb: 2,
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: 0.5,
+                          backgroundColor: event.type === 'seminar' ? '#2e7d32' : '#0f172a',
+                          color: '#fff',
+                          alignSelf: 'flex-start',
+                        }}
+                      >
+                        {event.type === 'seminar' ? 'Seminar' : 'Hackathon'}
+                      </Box>
+
+                      <Typography
+                        variant='h4'
+                        sx={{
+                          fontWeight: 800,
+                          mb: 1,
+                          fontSize: { xs: '1.5rem', md: '1.75rem' },
+                        }}
+                      >
+                        {event.title}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          color: 'text.secondary',
+                          fontSize: '0.95rem',
+                          lineHeight: 1.7,
+                          mb: 3,
+                        }}
+                      >
+                        {event.description}
+                      </Typography>
+
+                      {/* Benefits */}
+                      <Box sx={{ mb: 3, flex: 1 }}>
+                        {event.benefits.map((benefit, i) => (
+                          <Box
+                            key={i}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                              mb: 1,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: '50%',
+                                backgroundColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
+                                flexShrink: 0,
+                              }}
+                            />
+                            <Typography sx={{ fontSize: '0.9rem', color: 'text.secondary' }}>
+                              {benefit}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+
+                      {/* Price + CTA */}
+                      <Box
+                        sx={{
+                          pt: 2,
+                          borderTop: '1px solid',
+                          borderColor: 'divider',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 2,
+                          flexWrap: 'wrap',
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: '1.1rem',
+                            fontWeight: 800,
+                            color: event.disabled ? 'text.secondary' : 'primary.main',
+                          }}
+                        >
+                          {event.priceLabel}
+                        </Typography>
+
+                        <Box
+                          component={event.disabled ? 'div' : 'a'}
+                          href={event.disabled ? undefined : event.ctaHref}
+                          sx={{
+                            display: 'inline-block',
+                            textAlign: 'center',
+                            py: 1.5,
+                            px: 4,
+                            borderRadius: 2,
+                            fontWeight: 700,
+                            fontSize: '1rem',
+                            textDecoration: 'none',
+                            backgroundColor: event.disabled
+                              ? (isDark ? 'rgba(255,255,255,0.1)' : '#e0e0e0')
+                              : (event.type === 'seminar' ? 'primary.main' : 'secondary.main'),
+                            color: event.disabled
+                              ? (isDark ? 'rgba(255,255,255,0.3)' : '#9e9e9e')
+                              : '#ffffff',
+                            cursor: event.disabled ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.3s',
+                            pointerEvents: event.disabled ? 'none' : 'auto',
+                            '&:hover': {
+                              backgroundColor: event.disabled
+                                ? undefined
+                                : (event.type === 'seminar' ? 'primary.dark' : 'secondary.dark'),
+                              transform: event.disabled ? 'none' : 'translateY(-2px)',
+                              boxShadow: event.disabled ? 'none' : 3,
+                            },
+                          }}
+                        >
+                          {event.ctaText}
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </motion.div>
           ))}
-        </Grid>
+        </Box>
 
         {/* Payment Info & Instagram Follow */}
         <motion.div
@@ -289,7 +357,7 @@ const HomeRegistration = () => {
               borderRadius: 3,
               border: '1px solid',
               borderColor: 'divider',
-              background: palette.mode === 'dark'
+              background: isDark
                 ? 'rgba(15, 23, 42, 0.8)'
                 : 'rgba(240, 253, 244, 0.8)',
             }}

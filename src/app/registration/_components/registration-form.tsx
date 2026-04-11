@@ -7,13 +7,17 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
+import Chip from '@mui/material/Chip'
 import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/config'
 import { registerEventParticipant, checkExistingRegistration } from '@/lib/supabase/event-participant'
+import { getPackageById, getEarlyBirdConfig } from '@/lib/supabase/event-packages'
+import { getRegistrationCount } from '@/lib/supabase/event-participant'
+import type { IEventPackage } from '@/types/event-package'
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
@@ -71,12 +75,28 @@ function formatCountdown(ms: number): string {
   return parts.join(' ')
 }
 
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+
 export default function RegistrationForm() {
   const { palette } = useTheme()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const eventIdParam = searchParams.get('event')
   const eventId = eventIdParam ? parseInt(eventIdParam, 10) : 1
   const eventName = EVENTS[eventId] || EVENTS[1]
+  const packageIdParam = searchParams.get('package')
+  const packageId = packageIdParam ? parseInt(packageIdParam, 10) : null
+
+  const [selectedPackage, setSelectedPackage] = useState<IEventPackage | null>(null)
+  const [displayPrice, setDisplayPrice] = useState<number>(0)
+  const [packageLoading, setPackageLoading] = useState(!!packageId)
 
   const [form, setForm] = useState({
     name: '',
@@ -121,6 +141,38 @@ export default function RegistrationForm() {
   useEffect(() => {
     checkAndSetCooldown()
   }, [checkAndSetCooldown])
+
+  // Fetch package details
+  useEffect(() => {
+    if (!packageId) {
+      // No package selected — redirect to package selection page
+      router.replace(`/registration/packages?event=${eventId}`)
+      return
+    }
+
+    async function fetchPackage() {
+      try {
+        const [pkg, ebConfig, count] = await Promise.all([
+          getPackageById(packageId!),
+          getEarlyBirdConfig(),
+          getRegistrationCount(eventId),
+        ])
+        if (!pkg) {
+          router.replace(`/registration/packages?event=${eventId}`)
+          return
+        }
+        setSelectedPackage(pkg)
+
+        const isEb = ebConfig?.enabled && ebConfig.eventId === eventId && count < ebConfig.maxCount
+        setDisplayPrice(isEb && pkg.discountedPrice ? pkg.discountedPrice : pkg.price)
+      } catch {
+        router.replace(`/registration/packages?event=${eventId}`)
+      } finally {
+        setPackageLoading(false)
+      }
+    }
+    fetchPackage()
+  }, [packageId, eventId, router])
 
   // Live countdown ticker
   useEffect(() => {
@@ -257,6 +309,7 @@ export default function RegistrationForm() {
       // Simpan data
       await registerEventParticipant({
         eventId,
+        packageId: selectedPackage?.id,
         name: form.name,
         email: form.email,
         phone: form.phone,
@@ -275,6 +328,9 @@ export default function RegistrationForm() {
             email: form.email,
             phone: form.phone,
             institution: form.institution,
+            packageId: selectedPackage?.id,
+            packageName: selectedPackage?.name,
+            packagePrice: displayPrice,
             picPayment: paymentUrl,
             picFollow: followUrl,
           }),
@@ -305,7 +361,14 @@ export default function RegistrationForm() {
     }
   }
 
-  // --- Cooldown screen with countdown ---
+  if (packageLoading) {
+    return (
+      <Box sx={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   if (cooldownExpiry > Date.now() && countdownText && !success) {
     return (
       <Box
@@ -523,6 +586,51 @@ export default function RegistrationForm() {
             </Typography>
           </Box>
 
+          {/* Selected Package Info */}
+          {selectedPackage && (
+            <Box
+              sx={{
+                mb: 4,
+                p: 3,
+                borderRadius: 3,
+                border: '2px solid',
+                borderColor: 'primary.main',
+                background: palette.mode === 'dark'
+                  ? 'rgba(46, 125, 50, 0.08)'
+                  : 'rgba(240, 253, 244, 0.9)',
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5, flexWrap: 'wrap', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Typography variant='h6' sx={{ fontWeight: 800 }}>
+                    {selectedPackage.name}
+                  </Typography>
+                  <Chip label={selectedPackage.code} size='small' color='primary' sx={{ fontWeight: 700 }} />
+                </Box>
+                <Typography sx={{ fontSize: '1.25rem', fontWeight: 900, color: 'primary.main' }}>
+                  {formatPrice(displayPrice)}
+                </Typography>
+              </Box>
+              {selectedPackage.description && (
+                <Typography variant='body2' color='text.secondary' sx={{ mb: 1.5 }}>
+                  {selectedPackage.description}
+                </Typography>
+              )}
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selectedPackage.items.map((item, i) => (
+                  <Chip key={i} label={item} size='small' variant='outlined' sx={{ fontSize: '0.75rem' }} />
+                ))}
+              </Box>
+              <Button
+                href={`/registration/packages?event=${eventId}`}
+                size='small'
+                sx={{ mt: 1.5, textTransform: 'none', fontWeight: 600, fontSize: '0.8rem' }}
+              >
+                ← Ganti paket
+              </Button>
+            </Box>
+          )}
+
           {/* Form */}
           <Box
             component='form'
@@ -604,7 +712,7 @@ export default function RegistrationForm() {
   }}
 >
   <Typography variant='subtitle2' sx={{ fontWeight: 700, mb: 1.5, color: 'primary.main' }}>
-    Info Transfer Pembayaran
+    Info Transfer Pembayaran {selectedPackage ? `— ${formatPrice(displayPrice)}` : ''}
   </Typography>
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
     {/* Baris BCA */}

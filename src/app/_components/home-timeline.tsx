@@ -40,12 +40,12 @@ const timelineEvents = [
     id: 5,
     date: '27–29 April 2026',
     title: 'Konfirmasi & Pembayaran Biaya Komitmen',
-    description: 'Peserta yang lolos melakukan konfirmasi ke panitia dan pembayaran biaya komitmen sebesar (TBA).',
+    description: 'Peserta yang lolos melakukan konfirmasi ke panitia dan pembayaran biaya komitmen sebesar (Rp300.000 per tim).',
     status: 'upcoming' as const,
   },
   {
     id: 6,
-    date: '9 Mei 2026',
+    date: '5 Mei 2026',
     title: 'Technical Meeting',
     description: 'Technical meeting untuk peserta yang lolos ke tahap selanjutnya.',
     status: 'upcoming' as const,
@@ -54,7 +54,7 @@ const timelineEvents = [
     id: 7,
     date: '8 Mei 2026',
     title: 'Presentasi Akhir / Kompetisi Luring',
-    description: 'Presentasi akhir dan kompetisi tatap muka di Kampus 2 PNUP.',
+    description: 'Presentasi akhir dan kompetisi tatap muka di Kampus 2 Politeknik Negeri Ujung Pandang.',
     status: 'upcoming' as const,
   },
   {

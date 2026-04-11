@@ -117,7 +117,7 @@ export async function POST(request: Request) {
 
     // --- Parse body ---
     const body = await request.json()
-    const { name, email, phone, institution, picPayment, picFollow } = body
+    const { name, email, phone, institution, picPayment, picFollow, packageId, packageName, packagePrice } = body
 
     // --- Field presence ---
     if (!name || !email || !phone || !institution) {
@@ -211,13 +211,20 @@ export async function POST(request: Request) {
         ? `<a href="${picFollow}">Lihat</a>`
         : '-'
 
+      // Build package info line for Telegram
+      const safePackageName = packageName ? escapeHtml(String(packageName)) : '-'
+      const safePackagePrice = packagePrice
+        ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(packagePrice))
+        : '-'
+
       const message =
         `<b>Pendaftar Baru Masuk!</b>\n` +
         `------------------------------\n` +
         `<b>Nama:</b> ${safeName}\n` +
         `<b>Email:</b> ${safeEmail}\n` +
         `<b>No. HP:</b> ${safePhone}\n` +
-        `<b>Instansi:</b> ${safeInstitution}\n\n` +
+        `<b>Instansi:</b> ${safeInstitution}\n` +
+        `<b>Paket:</b> ${safePackageName} (${safePackagePrice})\n\n` +
         `<b>Bukti Pembayaran:</b> ${paymentLink}\n` +
         `<b>Bukti Follow:</b> ${followLink}`
 

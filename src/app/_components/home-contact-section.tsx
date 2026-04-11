@@ -79,7 +79,7 @@ const HomeContactSection = () => {
             >
               <Box
                 component='a'
-                href='mailto:dverse@pnup.ac.id'
+                href='mailto:dverseofc26@gmail.com'
                 sx={{
                   display: 'block',
                   textDecoration: 'none',
@@ -165,7 +165,7 @@ const HomeContactSection = () => {
                 />
                 <Typography sx={{ fontWeight: 700, mb: 0.5 }}>WhatsApp</Typography>
                 <Typography sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                  +62 812 000 xxxx
+                  +62 819-0680-6724
                 </Typography>
               </Box>
             </motion.div>

@@ -179,7 +179,7 @@ const HomeContact = () => {
                     },
                   })}
                   component='a'
-                  href='mailto:hello@example.com'
+                  href='dverseofc26@gmail.com'
                 >
                   <>
                     <Box

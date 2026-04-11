@@ -9,6 +9,7 @@ export async function registerEventParticipant(participant: Omit<IEventParticipa
     .from('event_participant')
     .insert({
       event_id: participant.eventId,
+      package_id: participant.packageId || null,
       name: participant.name,
       email: participant.email,
       phone: participant.phone,
@@ -64,11 +65,29 @@ export async function getEventParticipants(eventId: number) {
   return (data || []).map(transformFromDB)
 }
 
+/**
+ * Count total registrations for an event
+ */
+export async function getRegistrationCount(eventId: number): Promise<number> {
+  const { count, error } = await supabase
+    .from('event_participant')
+    .select('*', { count: 'exact', head: true })
+    .eq('event_id', eventId)
+
+  if (error) {
+    console.error('Error counting registrations:', error)
+    return 0
+  }
+
+  return count || 0
+}
+
 // Transform from DB snake_case to camelCase
 function transformFromDB(data: Record<string, unknown>): IEventParticipant {
   return {
     id: data.id as number,
     eventId: data.event_id as number,
+    packageId: data.package_id as number | undefined,
     name: data.name as string,
     email: data.email as string,
     phone: data.phone as string,

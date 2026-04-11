@@ -122,16 +122,16 @@ const Footer: FC = () => {
                   sx={{ display: 'flex', alignItems: 'center' }}
                 >
                   <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
-                    © {year} | Made with Dayaa
+                    © {year} | Made with D-Verse
                   </Typography>
                   <Box
-                    component={HeartIcon}
-                    sx={{
-                      width: 18,
-                      height: 'auto',
-                      color: '#ff0808',
-                      mx: 0.2,
-                    }}
+                    // component={HeartIcon}
+                    // sx={{
+                    //   width: 18,
+                    //   height: 'auto',
+                    //   color: '#ff0808',
+                    //   mx: 0.2,
+                    // }}
                   />
                 </Stack>
               </Box>

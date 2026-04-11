@@ -5,6 +5,7 @@
 export interface IEventParticipant {
   id?: number
   eventId: number
+  packageId?: number
   name: string
   email: string
   phone: string
