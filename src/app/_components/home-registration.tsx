@@ -28,7 +28,7 @@ const events = [
   {
     id: 2,
     title: 'Lomba / Hackathon',
-    date: '11 April 2026',
+    date: '8 Mei 2026',
     description:
       'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi.',
     highlights: [
