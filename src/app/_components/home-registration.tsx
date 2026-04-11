@@ -117,6 +117,7 @@ const HomeRegistration = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15 }}
+              style={{ maxWidth: 900, margin: '0 auto', width: '100%' }}
             >
               <Box
                 sx={{
@@ -141,11 +142,11 @@ const HomeRegistration = () => {
               >
                 <Grid container>
                   {/* Column 1 — Event Image */}
-                  <Grid size={{ xs: 12, md: 5 }}>
+                  <Grid size={{ xs: 12, md: 4 }}>
                     <Box
                       sx={{
-                        height: { xs: 260, md: '100%' },
-                        minHeight: { md: 320 },
+                        height: { xs: 180, md: '100%' },
+                        minHeight: { md: 200 },
                         position: 'relative',
                         overflow: 'hidden',
                       }}
@@ -207,8 +208,8 @@ const HomeRegistration = () => {
                   </Grid>
 
                   {/* Column 2 — Info, benefits, CTA */}
-                  <Grid size={{ xs: 12, md: 7 }}>
-                    <Box sx={{ p: { xs: 3, md: 4 }, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                  <Grid size={{ xs: 12, md: 8 }}>
+                    <Box sx={{ p: { xs: 2, md: 2.5 }, display: 'flex', flexDirection: 'column', height: '100%' }}>
                       {/* Badge */}
                       <Box
                         sx={{
@@ -233,8 +234,8 @@ const HomeRegistration = () => {
                         variant='h4'
                         sx={{
                           fontWeight: 800,
-                          mb: 1,
-                          fontSize: { xs: '1.5rem', md: '1.75rem' },
+                          mb: 0.75,
+                          fontSize: { xs: '1.2rem', md: '1.35rem' },
                         }}
                       >
                         {event.title}
@@ -243,16 +244,16 @@ const HomeRegistration = () => {
                       <Typography
                         sx={{
                           color: 'text.secondary',
-                          fontSize: '0.95rem',
-                          lineHeight: 1.7,
-                          mb: 3,
+                          fontSize: '0.85rem',
+                          lineHeight: 1.6,
+                          mb: 1.5,
                         }}
                       >
                         {event.description}
                       </Typography>
 
                       {/* Benefits */}
-                      <Box sx={{ mb: 3, flex: 1 }}>
+                      <Box sx={{ mb: 1.5, flex: 1 }}>
                         {event.benefits.map((benefit, i) => (
                           <Box
                             key={i}
