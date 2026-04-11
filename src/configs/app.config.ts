@@ -1,20 +1,20 @@
 export const AppConfig = {
-  appName: 'Dverse - Developer Universe',
+  appName: 'D-Verse - Developer Universe',
   appSlogan: 'Where Technology Meets Nature',
   appDescription:
-    'Dverse (Developer Universe) adalah event teknologi yang menggabungkan Seminar dan Hackathon bertema GreenTech, diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang',
+    'D-Verse (Developer Universe) adalah event teknologi yang menggabungkan Seminar dan Hackathon bertema GreenTech, diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang',
   authorGithubUrl: 'https://github.com/dcn-undipa',
   // Social Links
   socialLinks: {
-    instagram: 'https://instagram.com/dverse.event',
+    instagram: 'https://instagram.com/dverse.id',
     github: 'https://github.com/dcn-undipa',
-    whatsapp: 'https://chat.whatsapp.com/your-group-link',
+    // whatsapp: 'https://chat.whatsapp.com/your-group-link',
     email: 'dverseofc26@gmail.com',
   },
   // SEO
-  siteUrl: 'https://dverse-event.vercel.app',
+  siteUrl: 'https://dverse.my.id',
   keywords: [
-    'dverse',
+    'D-Verse',
     'developer universe',
     'greentech',
     'seminar teknologi',

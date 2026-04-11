@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+
 const events = [
   {
     id: 1,
@@ -23,7 +25,7 @@ const events = [
       'Merchandise eksklusif',
     ],
     type: 'seminar' as const,
-    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/seminar.jpeg',
+    image: `${SUPABASE_URL}/storage/v1/object/public/event_images/seminar.jpeg`,
     priceLabel: 'Mulai Rp 25.000',
     disabled: false,
     ctaText: 'Daftar Seminar',
@@ -42,7 +44,7 @@ const events = [
       'Hadiah menarik untuk juara',
     ],
     type: 'hackathon' as const,
-    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Hack.jpeg',
+    image: `${SUPABASE_URL}/storage/v1/object/public/event_images/Hack.jpeg`,
     priceLabel: 'TBA',
     disabled: true,
     ctaText: 'Segera Hadir',

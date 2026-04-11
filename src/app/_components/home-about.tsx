@@ -137,7 +137,7 @@ const HomeAbout = () => {
                 component='h2'
                 sx={{ mb: { xs: 2, md: 3 }, fontWeight: '800', fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' } }}
               >
-                Dverse — Developer Universe
+                D-Verse — Developer Universe
               </Typography>
             </Box>
             <Box sx={{ position: 'relative', zIndex: 2 }}>
@@ -160,7 +160,7 @@ const HomeAbout = () => {
                   lineHeight: 1.8,
                 }}
               >
-                <strong>Dverse (Developer Universe)</strong> adalah event yang menggabungkan
+                <strong>D-Verse (Developer Universe)</strong> adalah event yang menggabungkan
                 Seminar dan Hackathon bertema <strong>Green Technology</strong>. Diselenggarakan
                 oleh kolaborasi antara <strong>Dipanegara Computer Club</strong> dan{' '}
                 <strong>Himpunan Mahasiswa Informatika PNUP</strong>.
@@ -288,7 +288,7 @@ const HomeAbout = () => {
                   >
                     <Image src='/images/Assets/Full Body.png' alt='GreenTech' width={64} height={64} quality={100} style={{ objectFit: 'contain' }} />
                     <Typography sx={{ fontWeight: 600, color: 'primary.main', fontSize: '0.95rem' }}>
-                      Tema: GreenTech — Teknologi untuk Masa Depan Hijau
+                      “GreenTech Era: Explore the Future of Eco-Digital Innovation”
                     </Typography>
                   </Box>
                 </Box>

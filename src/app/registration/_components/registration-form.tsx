@@ -368,7 +368,12 @@ export default function RegistrationForm() {
       setLocalCooldown(expiresAt)
       setCooldownExpiry(expiresAt)
 
-      setSuccess(true)
+      // Redirect to success page with params
+      const successParams = new URLSearchParams({
+        name: form.name,
+        ...(selectedPackage?.name ? { package: selectedPackage.name } : {}),
+      })
+      router.push(`/success?${successParams.toString()}`)
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error'
       console.error('Registration error:', message)

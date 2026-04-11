@@ -1,6 +1,6 @@
 import { PaletteOptions } from '@mui/material'
 
-// Dverse GreenTech Color Scheme
+// D-Verse GreenTech Color Scheme
 // Primary: Fresh Green (#2e7d32) - Nature/GreenTech accent
 // Secondary: Navy Blue (#0f172a) - Deep Ocean / Professional base
 const paletteBase: Partial<PaletteOptions> = {

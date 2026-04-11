@@ -82,7 +82,7 @@ const FooterContactInfo: FC = () => {
       <ContactInfoItem
         value='+62 8525 6019 136'
         label='Sen - Jum / 9am - 5pm'
-        link='https://wa.me/6285256019136?text=Halo%20Dverse%2C%20saya%20ingin%20bertanya%20tentang%20Dverse%20Festival'
+        link='https://wa.me/6285256019136?text=Halo%20D-Verse%2C%20saya%20ingin%20bertanya%20tentang%20D-Verse%20Festival'
         icon={
           <Box
             component={PhoneIcon}
@@ -91,9 +91,9 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='Kampus PNUP, Jl. Perintis Kemerdekaan KM.10, Makassar'
+        value='Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.'
         label='Lokasi Event'
-        link='https://maps.google.com/?q=Politeknik+Negeri+Ujung+Pandang'
+        link='https://maps.app.goo.gl/daPztQbNBEYNgyT38'
         icon={
           <Box
             component={LocationIcon}

@@ -453,7 +453,7 @@ export default function PackageSelection() {
                       Wajib Follow Instagram
                     </Typography>
                     <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>
-                      @dverse.id
+                      @D-Verse.id
                     </Typography>
                     <Typography variant='caption' color='text.secondary'>
                       Screenshot bukti follow wajib diupload saat pendaftaran

@@ -118,7 +118,7 @@ const HomeTimeline = () => {
               color='text.secondary'
               sx={{ maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}
             >
-              Rangkaian acara Dverse dari pendaftaran hingga pengumuman pemenang
+              Rangkaian acara D-Verse dari pendaftaran hingga pengumuman pemenang
             </Typography>
           </Box>
         </motion.div>
