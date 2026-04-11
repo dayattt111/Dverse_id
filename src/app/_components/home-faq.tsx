@@ -10,9 +10,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 const faqItems = [
   {
     id: 1,
-    question: 'Apa itu Dverse?',
+    question: 'Apa itu D-Verse?',
     answer:
-      'Dverse (Developer Universe) adalah event teknologi bertema GreenTech yang menggabungkan Seminar dan Hackathon. Event ini diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang.',
+      'D-Verse (Developer Universe) adalah event teknologi bertema GreenTech yang menggabungkan Seminar dan Hackathon. Event ini diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang.',
   },
   {
     id: 2,
@@ -99,7 +99,7 @@ const HomeFAQ = () => {
               color='text.secondary'
               sx={{ maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}
             >
-              Temukan jawaban untuk pertanyaan umum seputar event Dverse
+              Temukan jawaban untuk pertanyaan umum seputar event D-Verse
             </Typography>
           </Box>
         </motion.div>

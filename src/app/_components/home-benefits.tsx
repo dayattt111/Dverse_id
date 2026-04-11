@@ -112,7 +112,7 @@ const HomeBenefits = () => {
               color='text.secondary'
               sx={{ maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}
             >
-              Banyak manfaat yang bisa kamu dapatkan dengan mengikuti event Dverse
+              Banyak manfaat yang bisa kamu dapatkan dengan mengikuti event D-Verse
             </Typography>
           </Box>
         </motion.div>

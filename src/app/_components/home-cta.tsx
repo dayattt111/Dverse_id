@@ -72,7 +72,7 @@ const HomeCTA = () => {
                     mb: 2,
                   }}
                 >
-                  Siap Jadi Bagian dari Dverse?
+                  Siap Jadi Bagian dari D-Verse?
                 </Typography>
                 <Typography
                   variant="h6"
@@ -83,7 +83,7 @@ const HomeCTA = () => {
                     fontWeight: 400,
                   }}
                 >
-                  Daftarkan dirimu sekarang di Dverse — Developer Universe. Ikuti seminar GreenTech,
+                  Daftarkan dirimu sekarang di D-Verse (Developer Universe). Ikuti seminar GreenTech,
                   tantang dirimu di Hackathon 48 Jam, dan bangun solusi teknologi hijau bersama developer lainnya.
                 </Typography>
               </Grid>
@@ -135,7 +135,7 @@ const HomeCTA = () => {
                       transition: 'all 0.3s ease',
                     }}
                   >
-                    Tentang Dverse
+                    Tentang D-Verse
                   </Button>
                 </Box>
               </Grid>

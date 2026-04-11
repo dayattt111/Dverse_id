@@ -63,7 +63,7 @@ const HomeContactSection = () => {
               color='text.secondary'
               sx={{ maxWidth: 600, mx: 'auto', fontSize: { xs: '1rem', md: '1.1rem' } }}
             >
-              Punya pertanyaan? Jangan ragu untuk menghubungi tim panitia Dverse
+              Punya pertanyaan? Jangan ragu untuk menghubungi tim panitia D-Verse
             </Typography>
           </Box>
         </motion.div>

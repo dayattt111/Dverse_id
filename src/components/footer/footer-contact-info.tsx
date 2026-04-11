@@ -91,9 +91,9 @@ const FooterContactInfo: FC = () => {
         }
       />
       <ContactInfoItem
-        value='Kampus PNUP, Jl. Perintis Kemerdekaan KM.10, Makassar'
+        value='Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.'
         label='Lokasi Event'
-        link='https://maps.google.com/?q=Politeknik+Negeri+Ujung+Pandang'
+        link='https://maps.app.goo.gl/daPztQbNBEYNgyT38'
         icon={
           <Box
             component={LocationIcon}

@@ -32,7 +32,7 @@ const Footer = () => {
           component='p'
           sx={{ fontSize: 13, color: 'text.secondary', textAlign: 'center', m: 0 }}
         >
-          Dverse — Developer Universe by Dipanegara Computer Club &amp; HIMATIK PNUP
+          D-Verse (Developer Universe) by Dipanegara Computer Club &amp; HIMATIK PNUP
         </Box>
       </Stack>
     </Box>

@@ -123,7 +123,7 @@ const HomeHeroContent = () => {
               fontWeight: '800',
             }}
           >
-            Dverse
+            D-Verse
             <br />
             <Box component='span' sx={{ color: 'primary.main' }}>Developer Universe</Box>
           </Typography>
