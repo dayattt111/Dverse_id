@@ -18,13 +18,15 @@ import { registerEventParticipant, checkExistingRegistration } from '@/lib/supab
 import { getPackageById, getEarlyBirdConfig } from '@/lib/supabase/event-packages'
 import { getRegistrationCount } from '@/lib/supabase/event-participant'
 import type { IEventPackage } from '@/types/event-package'
+import { compressImage } from '@/utils/compress-image'
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
   2: 'Hackathon 48 Jam',
 }
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024 // 1MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB (akan dikompresi otomatis ke <1MB)
+const COMPRESS_TARGET = 1 * 1024 * 1024 // 1MB target setelah kompresi
 const VALID_IMAGE_TYPES = ['image/jpeg', 'image/png']
 
 /** Map MIME type → safe file extension (no user-controlled extension). */
@@ -108,6 +110,7 @@ export default function RegistrationForm() {
   const [picFollow, setPicFollow] = useState<File | null>(null)
   const [picPaymentPreview, setPicPaymentPreview] = useState<string | null>(null)
   const [picFollowPreview, setPicFollowPreview] = useState<string | null>(null)
+  const [compressing, setCompressing] = useState<'payment' | 'follow' | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -206,12 +209,12 @@ export default function RegistrationForm() {
       return 'Format file tidak valid. Gunakan JPG atau PNG.'
     }
     if (file.size > MAX_FILE_SIZE) {
-      return 'Ukuran file terlalu besar. Maksimal 1MB.'
+      return 'Ukuran file terlalu besar. Maksimal 5MB.'
     }
     return null
   }
 
-  const handleFileSelect = (
+  const handleFileSelect = async (
     type: 'payment' | 'follow',
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -225,12 +228,26 @@ export default function RegistrationForm() {
     }
     setError(null)
 
-    const previewUrl = URL.createObjectURL(file)
+    // Compress image if over 1MB
+    let finalFile = file
+    if (file.size > COMPRESS_TARGET) {
+      setCompressing(type)
+      try {
+        finalFile = await compressImage(file, { targetSize: COMPRESS_TARGET })
+      } catch {
+        setError('Gagal mengompres gambar. Coba gambar lain.')
+        setCompressing(null)
+        return
+      }
+      setCompressing(null)
+    }
+
+    const previewUrl = URL.createObjectURL(finalFile)
     if (type === 'payment') {
-      setPicPayment(file)
+      setPicPayment(finalFile)
       setPicPaymentPreview(previewUrl)
     } else {
-      setPicFollow(file)
+      setPicFollow(finalFile)
       setPicFollowPreview(previewUrl)
     }
   }
@@ -755,7 +772,7 @@ export default function RegistrationForm() {
                 Bukti Pembayaran *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Upload foto/screenshot bukti transfer. Maks 1MB (JPG atau PNG)
+                Upload foto/screenshot bukti transfer. Maks 5MB, otomatis dikompresi (JPG atau PNG)
               </Typography>
               <input
                 ref={paymentInputRef}
@@ -805,6 +822,7 @@ export default function RegistrationForm() {
                 <Button
                   variant='outlined'
                   onClick={() => paymentInputRef.current?.click()}
+                  disabled={compressing === 'payment'}
                   sx={{
                     width: '100%',
                     py: 4,
@@ -814,7 +832,14 @@ export default function RegistrationForm() {
                     fontWeight: 600,
                   }}
                 >
-                  Klik untuk upload bukti pembayaran
+                  {compressing === 'payment' ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} color='inherit' />
+                      Mengompresi gambar...
+                    </Box>
+                  ) : (
+                    'Klik untuk upload bukti pembayaran'
+                  )}
                 </Button>
               )}
             </Box>
@@ -825,7 +850,7 @@ export default function RegistrationForm() {
                 Bukti Follow Instagram *
               </Typography>
               <Typography variant='caption' color='text.secondary' sx={{ display: 'block', mb: 1.5 }}>
-                Wajib follow <strong><a href="https://www.instagram.com/dverse.id" target="_blank" rel="noopener noreferrer">@dverse.id</a></strong> di Instagram, lalu upload screenshot bukti follow. Maks 1MB (JPG atau PNG)
+                Wajib follow <strong><a href="https://www.instagram.com/dverse.id" target="_blank" rel="noopener noreferrer">@dverse.id</a></strong> di Instagram, lalu upload screenshot bukti follow. Maks 5MB, otomatis dikompresi (JPG atau PNG)
               </Typography>
               <input
                 ref={followInputRef}
@@ -875,6 +900,7 @@ export default function RegistrationForm() {
                 <Button
                   variant='outlined'
                   onClick={() => followInputRef.current?.click()}
+                  disabled={compressing === 'follow'}
                   sx={{
                     width: '100%',
                     py: 4,
@@ -884,7 +910,14 @@ export default function RegistrationForm() {
                     fontWeight: 600,
                   }}
                 >
-                  Klik untuk upload bukti follow
+                  {compressing === 'follow' ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} color='inherit' />
+                      Mengompresi gambar...
+                    </Box>
+                  ) : (
+                    'Klik untuk upload bukti follow'
+                  )}
                 </Button>
               )}
             </Box>
@@ -894,7 +927,7 @@ export default function RegistrationForm() {
               type='submit'
               variant='contained'
               fullWidth
-              disabled={loading}
+              disabled={loading || !!compressing}
               sx={{
                 py: 1.5,
                 borderRadius: 2,
