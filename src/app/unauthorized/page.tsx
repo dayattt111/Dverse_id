@@ -70,24 +70,24 @@ export default function UnauthorizedPage() {
         Halaman ini hanya bisa diakses oleh admin.
       </Typography>
 
-      <Button
-        component={Link}
-        href="/"
-        variant="contained"
-        sx={{
-          py: 1.5,
-          px: 4,
-          borderRadius: 2,
-          fontWeight: 700,
-          textTransform: 'none',
-          background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #16a34a, #15803d)',
-          },
-        }}
-      >
-        Kembali ke Beranda
-      </Button>
+      <Link href="/" passHref>
+        <Button
+          variant="contained"
+          sx={{
+            py: 1.5,
+            px: 4,
+            borderRadius: 2,
+            fontWeight: 700,
+            textTransform: 'none',
+            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #16a34a, #15803d)',
+            },
+          }}
+        >
+          Kembali ke Beranda
+        </Button>
+      </Link>
     </Box>
   )
 }
