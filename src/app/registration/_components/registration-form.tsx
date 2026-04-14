@@ -145,36 +145,53 @@ export default function RegistrationForm() {
     checkAndSetCooldown()
   }, [checkAndSetCooldown])
 
-  // Fetch package details
+  // Fetch package details or set default for seminar
   useEffect(() => {
-    if (!packageId) {
-      // No package selected — redirect to package selection page
-      router.replace(`/registration/packages?event=${eventId}`)
-      return
-    }
+    if (packageId) {
+      // Package selected — fetch details
+      async function fetchPackage() {
+        try {
+          const [pkg, ebConfig, count] = await Promise.all([
+            getPackageById(packageId!),
+            getEarlyBirdConfig(),
+            getRegistrationCount(eventId),
+          ])
+          if (!pkg) {
+            router.replace(`/registration/packages?event=${eventId}`)
+            return
+          }
+          setSelectedPackage(pkg)
 
-    async function fetchPackage() {
-      try {
-        const [pkg, ebConfig, count] = await Promise.all([
-          getPackageById(packageId!),
-          getEarlyBirdConfig(),
-          getRegistrationCount(eventId),
-        ])
-        if (!pkg) {
+          const isEb = ebConfig?.enabled && ebConfig.eventId === eventId && count < ebConfig.maxCount
+          setDisplayPrice(isEb && pkg.discountedPrice ? pkg.discountedPrice : pkg.price)
+        } catch {
           router.replace(`/registration/packages?event=${eventId}`)
-          return
+        } finally {
+          setPackageLoading(false)
         }
-        setSelectedPackage(pkg)
-
-        const isEb = ebConfig?.enabled && ebConfig.eventId === eventId && count < ebConfig.maxCount
-        setDisplayPrice(isEb && pkg.discountedPrice ? pkg.discountedPrice : pkg.price)
-      } catch {
-        router.replace(`/registration/packages?event=${eventId}`)
-      } finally {
-        setPackageLoading(false)
       }
+      fetchPackage()
+    } else {
+      // No package selected — use default seminar package
+      setSelectedPackage({
+        id: 1,
+        eventId: eventId,
+        name: 'Seminar GreenTech',
+        code: 'SEMINAR',
+        price: 35000,
+        discountedPrice: undefined,
+        description: 'Pendaftaran Seminar GreenTech',
+        items: ['Merch', 'Makanan Berat', 'Makanan Ringan', 'Kesempatan mendapatkan doorprize menarik'],
+        image: undefined,
+        isBundle: false,
+        sortOrder: 1,
+        active: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      setDisplayPrice(35000)
+      setPackageLoading(false)
     }
-    fetchPackage()
   }, [packageId, eventId, router])
 
   // Live countdown ticker
@@ -346,7 +363,7 @@ export default function RegistrationForm() {
             phone: form.phone,
             institution: form.institution,
             packageId: selectedPackage?.id,
-            packageName: selectedPackage?.name,
+            packageName: selectedPackage?.name || 'Seminar GreenTech',
             packagePrice: displayPrice,
             picPayment: paymentUrl,
             picFollow: followUrl,

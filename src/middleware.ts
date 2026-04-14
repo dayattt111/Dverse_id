@@ -1,19 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { createMiddlewareClient } from '@/lib/supabase/middleware'
 
-const COOKIE_NAME = 'dcn_admin_session'
-
-// Protected admin routes (except login page)
-const protectedRoutes = [
-  '/dcn-admin',
-  '/dcn-admin/programs',
-  '/dcn-admin/portfolio',
-  '/dcn-admin/career',
-  '/dcn-admin/leaderboard',
-  '/dcn-admin/settings',
-]
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Redirect /id (locale probe from browser) to root
@@ -23,69 +12,56 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308)
   }
 
-  // Check if it's an admin route (excluding login)
-  const isProtectedRoute = protectedRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route + '/')
-  )
-  const isLoginPage = pathname === '/dcn-admin/login'
+  // --- Admin route protection ---
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isLoginPage = pathname === '/admin/login'
 
-  if (isProtectedRoute && !isLoginPage) {
-    // Check for auth cookie
-    const sessionCookie = request.cookies.get(COOKIE_NAME)
+  if (isAdminRoute) {
+    const { supabase, user, supabaseResponse } = await createMiddlewareClient(request)
 
-    if (!sessionCookie) {
-      // Redirect to login if no session
-      const loginUrl = new URL('/dcn-admin/login', request.url)
-      return NextResponse.redirect(loginUrl)
-    }
+    // Prevent admin pages from being indexed
+    supabaseResponse.headers.set('X-Robots-Tag', 'noindex, nofollow')
 
-    try {
-      // Validate session
-      const session = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString())
-
-      if (!session.authenticated || session.expires < Date.now()) {
-        // Session expired, redirect to login
-        const loginUrl = new URL('/dcn-admin/login', request.url)
-        const response = NextResponse.redirect(loginUrl)
-        response.cookies.delete(COOKIE_NAME)
-        return response
+    if (!isLoginPage) {
+      // Protected admin page — must be authenticated admin
+      if (!user) {
+        const loginUrl = new URL('/admin/login', request.url)
+        return NextResponse.redirect(loginUrl)
       }
-    } catch {
-      // Invalid session, redirect to login
-      const loginUrl = new URL('/dcn-admin/login', request.url)
-      const response = NextResponse.redirect(loginUrl)
-      response.cookies.delete(COOKIE_NAME)
-      return response
-    }
-  }
 
-  // If authenticated user tries to access login page, redirect to dashboard
-  if (isLoginPage) {
-    const sessionCookie = request.cookies.get(COOKIE_NAME)
-    if (sessionCookie) {
-      try {
-        const session = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString())
-        if (session.authenticated && session.expires > Date.now()) {
-          const dashboardUrl = new URL('/dcn-admin', request.url)
+      // Check role
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
+
+      if (roleData?.role !== 'admin') {
+        const unauthorizedUrl = new URL('/unauthorized', request.url)
+        return NextResponse.redirect(unauthorizedUrl)
+      }
+    } else {
+      // Login page — redirect authenticated admin to dashboard
+      if (user) {
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+
+        if (roleData?.role === 'admin') {
+          const dashboardUrl = new URL('/admin', request.url)
           return NextResponse.redirect(dashboardUrl)
         }
-      } catch {
-        // Invalid session, allow access to login
       }
     }
+
+    return supabaseResponse
   }
 
-  // Add security headers
-  const response = NextResponse.next()
-
-  // Prevent admin pages from being indexed
-  if (pathname.startsWith('/dcn-admin')) {
-    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
-  }
-
-  return response
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/id', '/id/:path*', '/dcn-admin/:path*'],
+  matcher: ['/id', '/id/:path*', '/admin/:path*'],
 }

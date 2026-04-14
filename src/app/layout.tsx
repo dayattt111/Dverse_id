@@ -11,6 +11,7 @@ import { AppConfig } from '@/configs'
 // import AppBar from '@/components/appbar/app-bar'
 import Footer from '@/components/footer/footer'
 import FooterGithubBanner from '@/components/footer-github-banner'
+import PublicOnly from '@/components/public-only'
 
 // @mui provider
 import MuiThemeProvider from '@/plugins/@mui/components/@mui-theme.provider'
@@ -100,10 +101,10 @@ export default function RootLayout({
         <AppRouterCacheProvider options={{ key: 'css' }}>
           <AppContextProvider>
             <MuiThemeProvider>
-              <AppBar />
+              <PublicOnly><AppBar /></PublicOnly>
               {children}
-              <Footer />
-              <FooterGithubBanner />
+              <PublicOnly><Footer /></PublicOnly>
+              <PublicOnly><FooterGithubBanner /></PublicOnly>
             </MuiThemeProvider>
           </AppContextProvider>
         </AppRouterCacheProvider>

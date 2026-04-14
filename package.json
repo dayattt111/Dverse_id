@@ -22,6 +22,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/material-nextjs": "^7.3.9",
+    "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.102.1",
     "@svgr/webpack": "^8.1.0",
     "dotenv": "^17.3.1",

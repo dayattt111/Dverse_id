@@ -333,7 +333,7 @@ function SuccessContent() {
                     Lokasi
                   </Typography>
                   <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem' }}>
-                    PNUP, Makassar
+                    Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.
                   </Typography>
                 </Box>
               </Box>

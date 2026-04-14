@@ -16,9 +16,8 @@ type Event = {
   id: string
   name: string
   description: string | null
-  pic_event: string | null
-  time_start: string | null
-  time_end: string | null
+  image_url: string | null
+  event_date: string | null
 }
 
 const FALLBACK_IMAGE = '/images/about-1.jpg'
@@ -33,7 +32,7 @@ const HomePastEvents = () => {
   useEffect(() => {
     supabase
       .from('events')
-      .select('id, name, description, pic_event, time_start, time_end')
+      .select('id, name, description, image_url, event_date')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         if (data) setEvents(data as Event[])
@@ -188,7 +187,7 @@ const HomePastEvents = () => {
                     }}
                   >
                     <Image
-                      src={event.pic_event || FALLBACK_IMAGE}
+                      src={event.image_url || FALLBACK_IMAGE}
                       alt={event.name}
                       fill
                       sizes='(max-width: 600px) 280px, (max-width: 900px) 340px, 400px'
