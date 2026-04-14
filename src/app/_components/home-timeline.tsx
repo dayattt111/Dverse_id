@@ -45,7 +45,7 @@ const timelineEvents = [
   },
   {
     id: 6,
-    date: '9 Mei 2026',
+    date: '5 Mei 2026',
     title: 'Technical Meeting',
     description: 'Technical meeting untuk peserta yang lolos ke tahap selanjutnya.',
     status: 'upcoming' as const,
