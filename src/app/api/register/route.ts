@@ -147,7 +147,7 @@ function remainingCooldownText(ip: string): string {
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
-  2: 'Hackathon 48 Jam',
+  2: 'Hackathon',
 }
 
 // ---------------------------------------------------------------------------

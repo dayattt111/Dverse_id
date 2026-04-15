@@ -25,7 +25,7 @@ export async function totalCommand(): Promise<string> {
 
   const EVENT_NAMES: Record<number, string> = {
     1: 'Seminar GreenTech',
-    2: 'Hackathon 48 Jam',
+    2: 'Hackathon',
   }
 
   let detail = ''

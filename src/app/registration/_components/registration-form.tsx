@@ -22,7 +22,7 @@ import { compressImage } from '@/utils/compress-image'
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
-  2: 'Hackathon 48 Jam',
+  2: 'Hackathon',
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB (akan dikompresi otomatis ke <1MB)

@@ -84,7 +84,7 @@ const HomeCTA = () => {
                   }}
                 >
                   Daftarkan dirimu sekarang di D-Verse — Developer Universe. Ikuti seminar GreenTech,
-                  tantang dirimu di Hackathon 48 Jam, dan bangun solusi teknologi hijau bersama developer lainnya.
+                  tantang dirimu di Hackathon, dan bangun solusi teknologi hijau bersama developer lainnya.
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>

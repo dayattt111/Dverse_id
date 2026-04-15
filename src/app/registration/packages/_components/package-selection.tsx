@@ -18,7 +18,7 @@ import type { IEventPackage, IEarlyBirdConfig } from '@/types/event-package'
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
-  2: 'Hackathon 48 Jam',
+  2: 'Hackathon',
 }
 
 function formatPrice(price: number): string {

@@ -45,9 +45,9 @@ const events = [
     type: 'hackathon' as const,
     image: `${SUPABASE_URL}/storage/v1/object/public/event_images/Hack.jpeg`,
     priceLabel: 'TBA',
-    disabled: true,
-    ctaText: 'Segera Hadir',
-    ctaHref: '#',
+    disabled: false,
+    ctaText: 'Daftar Hackathon',
+    ctaHref: '/registration/hackathon',
   },
 ]
 

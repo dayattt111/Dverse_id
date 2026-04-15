@@ -12,7 +12,7 @@ import ArrowIcon from '@/assets/icons/material-symbols--call-made.svg'
 
 const eventLinks = [
   { label: 'Seminar GreenTech', href: '#home-registration' },
-  { label: 'Hackathon 48 Jam', href: '#home-registration' },
+  { label: 'Hackathon', href: '#home-registration' },
   { label: 'Timeline', href: '#home-timeline' },
   { label: 'Benefits', href: '#home-benefits' },
 ]
