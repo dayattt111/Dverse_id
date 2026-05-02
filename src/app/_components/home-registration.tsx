@@ -32,22 +32,22 @@ const events = [
   },
   {
     id: 2,
-    title: 'Lomba / Hackathon',
-    date: '8 Mei 2026',
+    title: 'Competitive Programming',
+    date: '16 Mei 2026',
     description:
-      'Kompetisi tim untuk membangun solusi inovatif berbasis teknologi hijau. Tunjukkan skill coding kamu dan menangkan hadiah menarik!',
+      'Kompetisi tim/individu untuk membangun solusi inovatif berbasis teknologi hijau. Tunjukkan skill coding dan problem solving kamu dan menangkan hadiah menarik!',
     benefits: [
-      'Kompetisi berbasis tim',
-      'Mentoring dari expert',
+      'Kompetisi berbasis tim/individu',
+      'Networking dari berbagai kalangan',
       'Sertifikat & portfolio',
       'Hadiah menarik untuk juara',
     ],
-    type: 'hackathon' as const,
+    type: 'competition' as const,
     image: `${SUPABASE_URL}/storage/v1/object/public/event_images/Hack.jpeg`,
-    priceLabel: 'TBA',
-    disabled: true,
-    ctaText: 'Daftar Hackathon',
-    ctaHref: '/registration/hackathon',
+    priceLabel: 'Rp 50.000',
+    disabled: false,
+    ctaText: 'Daftar Competition',
+    ctaHref: '/registration?event=2',
   },
 ]
 
@@ -125,7 +125,7 @@ const HomeRegistration = () => {
                   borderRadius: 3,
                   overflow: 'hidden',
                   border: '2px solid',
-                  borderColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
+                  borderColor: event.disabled ? 'secondary.main' : 'primary.main',
                   background: isDark
                     ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(6, 78, 59, 0.2) 100%)'
                     : 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
@@ -223,12 +223,12 @@ const HomeRegistration = () => {
                           fontWeight: 700,
                           textTransform: 'uppercase',
                           letterSpacing: 0.5,
-                          backgroundColor: event.type === 'seminar' ? '#2e7d32' : '#0f172a',
+                          backgroundColor: event.disabled ? '#0f172a' : '#2e7d32',
                           color: '#fff',
                           alignSelf: 'flex-start',
                         }}
                       >
-                        {event.type === 'seminar' ? 'Seminar' : 'Hackathon'}
+                        {event.type === 'seminar' ? 'Seminar' : 'Competition'}
                       </Box>
 
                       <Typography
@@ -270,7 +270,7 @@ const HomeRegistration = () => {
                                 width: 6,
                                 height: 6,
                                 borderRadius: '50%',
-                                backgroundColor: event.type === 'seminar' ? 'primary.main' : 'secondary.main',
+                                backgroundColor: event.disabled ? 'secondary.main' : 'primary.main',
                                 flexShrink: 0,
                               }}
                             />
@@ -280,6 +280,30 @@ const HomeRegistration = () => {
                           </Box>
                         ))}
                       </Box>
+
+                      {/* Competition System Info */}
+                      {event.type === 'competition' && (
+                        <Box
+                          sx={{
+                            mb: 1,
+                            p: 1.5,
+                            borderRadius: 2,
+                            backgroundColor: isDark
+                              ? 'rgba(255,255,255,0.05)'
+                              : 'rgba(0,0,0,0.03)',
+                            border: '1px dashed',
+                            borderColor: 'divider',
+                          }}
+                        >
+                          <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'secondary.main', mb: 0.5 }}>
+                            Sistem Lomba
+                          </Typography>
+                          <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary', lineHeight: 1.5 }}>
+                            Peserta akan bersaing melalui sistem <b>leaderboard</b> untuk menentukan 16 besar terbaik.
+                            Selanjutnya, 16 besar akan bertanding menggunakan sistem <b>bracket (bagan)</b> hingga menentukan pemenang.
+                          </Typography>
+                        </Box>
+                      )}
 
                       {/* Price + CTA */}
                       <Box
@@ -318,7 +342,7 @@ const HomeRegistration = () => {
                             textDecoration: 'none',
                             backgroundColor: event.disabled
                               ? (isDark ? 'rgba(255,255,255,0.1)' : '#e0e0e0')
-                              : (event.type === 'seminar' ? 'primary.main' : 'secondary.main'),
+                              : 'primary.main',
                             color: event.disabled
                               ? (isDark ? 'rgba(255,255,255,0.3)' : '#9e9e9e')
                               : '#ffffff',
@@ -328,7 +352,7 @@ const HomeRegistration = () => {
                             '&:hover': {
                               backgroundColor: event.disabled
                                 ? undefined
-                                : (event.type === 'seminar' ? 'primary.dark' : 'secondary.dark'),
+                                : 'primary.dark',
                               transform: event.disabled ? 'none' : 'translateY(-2px)',
                               boxShadow: event.disabled ? 'none' : 3,
                             },
