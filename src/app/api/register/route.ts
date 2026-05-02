@@ -67,6 +67,14 @@ const registerSchema = z.object({
   packagePrice: z.number().nonnegative().optional(),
   picPayment: z.string().url().optional(),
   picFollow: z.string().url().optional(),
+  registrationType: z.enum(['individual', 'team']).optional(),
+  teamMemberName: z.string().max(100).optional(),
+  teamMemberEmail: z.string().email().max(100).optional().or(z.literal('')),
+  teamMemberPhone: z.string().max(20).optional(),
+  teamMemberInstitution: z.string().max(150).optional(),
+  picKtm: z.string().url().optional(),
+  teamMemberPicKtm: z.string().url().optional(),
+  eventId: z.number().int().positive().optional(),
 })
 
 // ---------------------------------------------------------------------------
@@ -147,7 +155,7 @@ function remainingCooldownText(ip: string): string {
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
-  2: 'Hackathon',
+  2: 'Competitive Programming',
 }
 
 // ---------------------------------------------------------------------------
@@ -427,6 +435,14 @@ async function sendTelegramNotification(params: {
   packagePrice?: number
   picPayment?: string
   picFollow?: string
+  registrationType?: 'individual' | 'team'
+  teamMemberName?: string
+  teamMemberEmail?: string
+  teamMemberPhone?: string
+  teamMemberInstitution?: string
+  picKtm?: string
+  teamMemberPicKtm?: string
+  eventName?: string
 }): Promise<void> {
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN
   const telegramChatId = process.env.TELEGRAM_CHAT_ID
@@ -455,6 +471,12 @@ async function sendTelegramNotification(params: {
   const followLink = isSafeUrl(params.picFollow)
     ? `<a href="${params.picFollow}">Lihat</a>`
     : '-'
+  const ktmLink = isSafeUrl(params.picKtm)
+    ? `<a href="${params.picKtm}">Lihat</a>`
+    : '-'
+  const teamMemberKtmLink = isSafeUrl(params.teamMemberPicKtm)
+    ? `<a href="${params.teamMemberPicKtm}">Lihat</a>`
+    : '-'
 
   const safePackageName = params.packageName
     ? escapeHtml(String(params.packageName))
@@ -467,16 +489,36 @@ async function sendTelegramNotification(params: {
       }).format(Number(params.packagePrice))
     : '-'
 
-  const message =
-    `<b>Pendaftar Baru Masuk!</b>\n` +
-    `------------------------------\n` +
-    `<b>Nama:</b> ${safeName}\n` +
-    `<b>Email:</b> ${safeEmail}\n` +
-    `<b>No. HP:</b> ${safePhone}\n` +
-    `<b>Instansi:</b> ${safeInstitution}\n` +
-    `<b>Paket:</b> ${safePackageName} (${safePackagePrice})\n\n` +
-    `<b>Bukti Pembayaran:</b> ${paymentLink}\n` +
-    `<b>Bukti Follow:</b> ${followLink}`
+  const eventLabel = params.eventName || 'Seminar GreenTech'
+
+  let message = `🎉 <b>Pendaftaran Baru: ${eventLabel}</b> 🎉\n\n`
+  message += `👤 <b>Data Pendaftar (Ketua/Individu)</b>\n`
+  message += `Nama: ${safeName}\n`
+  message += `Email: ${safeEmail}\n`
+  message += `No. HP: ${safePhone}\n`
+  message += `Instansi: ${safeInstitution}\n`
+  
+  if (params.eventName === 'Competitive Programming') {
+    message += `\nBukti KTM/Siswa (Ketua/Individu): ${ktmLink}\n`
+  }
+
+  if (params.registrationType === 'team') {
+    message += `\n👥 <b>Data Anggota Tim</b>\n`
+    message += `Nama Anggota: ${escapeHtml(params.teamMemberName || '-')}\n`
+    message += `Email Anggota: ${escapeHtml(params.teamMemberEmail || '-')}\n`
+    message += `No. HP Anggota: ${escapeHtml(params.teamMemberPhone || '-')}\n`
+    message += `Instansi Anggota: ${escapeHtml(params.teamMemberInstitution || '-')}\n`
+    if (params.eventName === 'Competitive Programming') {
+      message += `Bukti KTM/Siswa Anggota: ${teamMemberKtmLink}\n`
+    }
+  }
+
+  if (params.packageName) {
+    message += `\n📦 <b>Paket</b>: ${escapeHtml(params.packageName)} (${safePackagePrice})\n`
+  }
+
+  message += `\n<b>Bukti Pembayaran:</b> ${paymentLink}\n`
+  message += `<b>Bukti Follow:</b> ${followLink}`
 
   const res = await fetch(
     `https://api.telegram.org/bot${telegramToken}/sendMessage`,
@@ -554,7 +596,9 @@ export async function POST(request: Request) {
     const {
       name, email, phone, institution,
       packageName, packagePrice,
-      picPayment, picFollow,
+      picPayment, picFollow, picKtm, teamMemberPicKtm,
+      registrationType, teamMemberName, teamMemberEmail, teamMemberPhone, teamMemberInstitution,
+      eventId
     } = parsed.data
 
     // --- Reject template placeholders (post-sanitisation) ---
@@ -572,7 +616,7 @@ export async function POST(request: Request) {
     }
 
     // --- Determine event name ---
-    const eventName = EVENTS[1] // Active event: Seminar GreenTech
+    const eventName = eventId ? EVENTS[eventId] || EVENTS[1] : EVENTS[1]
 
     // --- Send email + Telegram in parallel ---
     const [emailResult, telegramResult] = await Promise.allSettled([
@@ -591,6 +635,14 @@ export async function POST(request: Request) {
         packagePrice,
         picPayment,
         picFollow,
+        picKtm,
+        teamMemberPicKtm,
+        registrationType,
+        teamMemberName,
+        teamMemberEmail,
+        teamMemberPhone,
+        teamMemberInstitution,
+        eventName,
       }),
     ])
 

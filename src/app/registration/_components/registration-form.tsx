@@ -10,6 +10,9 @@ import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
 import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
+import Radio from '@mui/material/Radio'
+import RadioGroup from '@mui/material/RadioGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import { useTheme } from '@mui/material/styles'
 import { motion } from 'framer-motion'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -22,7 +25,7 @@ import { compressImage } from '@/utils/compress-image'
 
 const EVENTS: Record<number, string> = {
   1: 'Seminar GreenTech',
-  2: 'Hackathon',
+  2: 'Competitive Programming',
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB (akan dikompresi otomatis ke <1MB)
@@ -105,12 +108,21 @@ export default function RegistrationForm() {
     email: '',
     phone: '',
     institution: '',
+    registrationType: 'individual',
+    teamMemberName: '',
+    teamMemberEmail: '',
+    teamMemberPhone: '',
+    teamMemberInstitution: '',
   })
   const [picPayment, setPicPayment] = useState<File | null>(null)
   const [picFollow, setPicFollow] = useState<File | null>(null)
+  const [picKtm, setPicKtm] = useState<File | null>(null)
+  const [teamMemberPicKtm, setTeamMemberPicKtm] = useState<File | null>(null)
   const [picPaymentPreview, setPicPaymentPreview] = useState<string | null>(null)
   const [picFollowPreview, setPicFollowPreview] = useState<string | null>(null)
-  const [compressing, setCompressing] = useState<'payment' | 'follow' | null>(null)
+  const [picKtmPreview, setPicKtmPreview] = useState<string | null>(null)
+  const [teamMemberPicKtmPreview, setTeamMemberPicKtmPreview] = useState<string | null>(null)
+  const [compressing, setCompressing] = useState<'payment' | 'follow' | 'ktm' | 'team_ktm' | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -119,6 +131,8 @@ export default function RegistrationForm() {
 
   const paymentInputRef = useRef<HTMLInputElement>(null)
   const followInputRef = useRef<HTMLInputElement>(null)
+  const ktmInputRef = useRef<HTMLInputElement>(null)
+  const teamMemberKtmInputRef = useRef<HTMLInputElement>(null)
 
   // --- Cooldown logic ---
   const checkAndSetCooldown = useCallback(async () => {
@@ -232,7 +246,7 @@ export default function RegistrationForm() {
   }
 
   const handleFileSelect = async (
-    type: 'payment' | 'follow',
+    type: 'payment' | 'follow' | 'ktm' | 'team_ktm',
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0]
@@ -263,9 +277,15 @@ export default function RegistrationForm() {
     if (type === 'payment') {
       setPicPayment(finalFile)
       setPicPaymentPreview(previewUrl)
-    } else {
+    } else if (type === 'follow') {
       setPicFollow(finalFile)
       setPicFollowPreview(previewUrl)
+    } else if (type === 'ktm') {
+      setPicKtm(finalFile)
+      setPicKtmPreview(previewUrl)
+    } else if (type === 'team_ktm') {
+      setTeamMemberPicKtm(finalFile)
+      setTeamMemberPicKtmPreview(previewUrl)
     }
   }
 
@@ -292,8 +312,19 @@ export default function RegistrationForm() {
 
     // Validasi
     if (!form.name || !form.email || !form.phone || !form.institution) {
-      setError('Semua field harus diisi.')
+      setError('Semua field utama harus diisi.')
       return
+    }
+
+    if (eventId === 2 && form.registrationType === 'team') {
+      if (!form.teamMemberName || !form.teamMemberEmail || !form.teamMemberPhone || !form.teamMemberInstitution) {
+        setError('Semua field anggota tim harus diisi.')
+        return
+      }
+      if (!emailRegex.test(form.teamMemberEmail)) {
+        setError('Format email anggota tim tidak valid.')
+        return
+      }
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -310,6 +341,17 @@ export default function RegistrationForm() {
     if (!picFollow) {
       setError('Bukti follow harus diupload.')
       return
+    }
+
+    if (eventId === 2) {
+      if (!picKtm) {
+        setError('Bukti KTM / Kartu Siswa (Ketua) harus diupload.')
+        return
+      }
+      if (form.registrationType === 'team' && !teamMemberPicKtm) {
+        setError('Bukti KTM / Kartu Siswa (Anggota Tim) harus diupload.')
+        return
+      }
     }
 
     setLoading(true)
@@ -335,9 +377,11 @@ export default function RegistrationForm() {
       }
 
       // Upload foto
-      const [paymentUrl, followUrl] = await Promise.all([
+      const [paymentUrl, followUrl, ktmUrl, teamKtmUrl] = await Promise.all([
         uploadFile(picPayment, 'event-participant/payment'),
         uploadFile(picFollow, 'event-participant/follow'),
+        picKtm ? uploadFile(picKtm, 'event-participant/ktm') : Promise.resolve(undefined),
+        teamMemberPicKtm ? uploadFile(teamMemberPicKtm, 'event-participant/ktm') : Promise.resolve(undefined),
       ])
 
       // Simpan data
@@ -348,8 +392,15 @@ export default function RegistrationForm() {
         email: form.email,
         phone: form.phone,
         institution: form.institution,
+        registrationType: eventId === 2 ? (form.registrationType as 'individual' | 'team') : 'individual',
+        teamMemberName: eventId === 2 && form.registrationType === 'team' ? form.teamMemberName : undefined,
+        teamMemberEmail: eventId === 2 && form.registrationType === 'team' ? form.teamMemberEmail : undefined,
+        teamMemberPhone: eventId === 2 && form.registrationType === 'team' ? form.teamMemberPhone : undefined,
+        teamMemberInstitution: eventId === 2 && form.registrationType === 'team' ? form.teamMemberInstitution : undefined,
         picPayment: paymentUrl,
         picFollow: followUrl,
+        picKtm: ktmUrl,
+        teamMemberPicKtm: teamKtmUrl,
       })
 
       // Kirim notifikasi Telegram via API route (also triggers server-side cooldown)
@@ -363,10 +414,18 @@ export default function RegistrationForm() {
             phone: form.phone,
             institution: form.institution,
             packageId: selectedPackage?.id,
-            packageName: selectedPackage?.name || 'Seminar GreenTech',
+            packageName: selectedPackage?.name || (eventId === 2 ? 'Competitive Programming' : 'Seminar GreenTech'),
             packagePrice: displayPrice,
             picPayment: paymentUrl,
             picFollow: followUrl,
+            picKtm: ktmUrl,
+            teamMemberPicKtm: teamKtmUrl,
+            registrationType: eventId === 2 ? form.registrationType : 'individual',
+            teamMemberName: eventId === 2 && form.registrationType === 'team' ? form.teamMemberName : undefined,
+            teamMemberEmail: eventId === 2 && form.registrationType === 'team' ? form.teamMemberEmail : undefined,
+            teamMemberPhone: eventId === 2 && form.registrationType === 'team' ? form.teamMemberPhone : undefined,
+            teamMemberInstitution: eventId === 2 && form.registrationType === 'team' ? form.teamMemberInstitution : undefined,
+            eventId: eventId,
           }),
         })
 
@@ -625,8 +684,8 @@ export default function RegistrationForm() {
             </Typography>
           </Box>
 
-          {/* Selected Package Info */}
-          {selectedPackage && (
+          {/* Selected Package Info (Only for non-competition) */}
+          {eventId !== 2 && selectedPackage && (
             <Box
               sx={{
                 mb: 4,
@@ -670,6 +729,30 @@ export default function RegistrationForm() {
             </Box>
           )}
 
+          {/* Competition System Info (Only for Competition) */}
+          {eventId === 2 && (
+            <Box
+              sx={{
+                mb: 4,
+                p: 3,
+                borderRadius: 3,
+                backgroundColor: palette.mode === 'dark'
+                  ? 'rgba(255,255,255,0.05)'
+                  : 'rgba(0,0,0,0.03)',
+                border: '1px dashed',
+                borderColor: 'divider',
+              }}
+            >
+              <Typography variant='h6' sx={{ fontWeight: 800, color: 'secondary.main', mb: 1 }}>
+                Sistem Lomba & Panduan
+              </Typography>
+              <Typography sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                Peserta akan bersaing melalui sistem <b>leaderboard</b> untuk menentukan 16 besar terbaik.
+                Selanjutnya, 16 besar akan bertanding menggunakan sistem <b>bracket (bagan)</b> hingga menentukan pemenang.
+              </Typography>
+            </Box>
+          )}
+
           {/* Form */}
           <Box
             component='form'
@@ -690,14 +773,37 @@ export default function RegistrationForm() {
             }}
           >
             {error && (
-              <Alert severity='error' sx={{ mb: 3 }} onClose={() => setError(null)}>
+              <Alert severity='error' sx={{ mb: 3 }}>
                 {error}
               </Alert>
             )}
 
+            {eventId === 2 && (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant='subtitle2' sx={{ mb: 1.5, fontWeight: 700 }}>
+                  Pendaftaran Sebagai:
+                </Typography>
+                <RadioGroup
+                  row
+                  name="registrationType"
+                  value={form.registrationType}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel value="individual" control={<Radio />} label="Individu" />
+                  <FormControlLabel value="team" control={<Radio />} label="Tim (Maks. 2 Orang)" />
+                </RadioGroup>
+              </Box>
+            )}
+
+            {eventId === 2 && form.registrationType === 'team' && (
+              <Typography variant='subtitle1' sx={{ mb: 2, fontWeight: 700, color: 'primary.main' }}>
+                Biodata Ketua Tim
+              </Typography>
+            )}
+
             <TextField
               fullWidth
-              label='Nama Lengkap'
+              label={eventId === 2 && form.registrationType === 'team' ? 'Nama Lengkap Ketua' : 'Nama Lengkap'}
               name='name'
               value={form.name}
               onChange={handleChange}
@@ -736,6 +842,115 @@ export default function RegistrationForm() {
               required
               sx={{ mb: 3 }}
             />
+
+            {eventId === 2 && (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 700 }}>
+                  Upload Kartu Pelajar / KTM (Ketua/Individu) *
+                </Typography>
+                <Button variant='outlined' component='label' fullWidth sx={{ mb: 1 }}>
+                  Pilih File
+                  <input
+                    type='file'
+                    hidden
+                    accept='image/jpeg,image/png'
+                    onChange={(e) => handleFileSelect('ktm', e)}
+                    ref={ktmInputRef}
+                  />
+                </Button>
+                {compressing === 'ktm' && (
+                  <Typography variant='caption' color='warning.main'>
+                    Mengompresi gambar...
+                  </Typography>
+                )}
+                {picKtmPreview && (
+                  <Box sx={{ mt: 1, position: 'relative', width: 120, height: 120, border: '1px solid #ccc', borderRadius: 1, overflow: 'hidden' }}>
+                    <img src={picKtmPreview} alt='KTM Ketua' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <IconButton size='small' onClick={() => { setPicKtm(null); setPicKtmPreview(null); if (ktmInputRef.current) ktmInputRef.current.value = '' }} sx={{ position: 'absolute', top: 2, right: 2, bgcolor: 'rgba(0,0,0,0.5)', color: 'white', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}>
+                      ×
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            {eventId === 2 && form.registrationType === 'team' && (
+              <Box sx={{ mt: 4, mb: 2, pt: 3, borderTop: '1px dashed', borderColor: 'divider' }}>
+                <Typography variant='subtitle1' sx={{ mb: 2.5, fontWeight: 700, color: 'primary.main' }}>
+                  Biodata Anggota Tim
+                </Typography>
+                
+                <TextField
+                  fullWidth
+                  label='Nama Lengkap Anggota'
+                  name='teamMemberName'
+                  value={form.teamMemberName}
+                  onChange={handleChange}
+                  required={form.registrationType === 'team'}
+                  sx={{ mb: 2.5 }}
+                />
+
+                <TextField
+                  fullWidth
+                  label='Email Anggota'
+                  name='teamMemberEmail'
+                  type='email'
+                  value={form.teamMemberEmail}
+                  onChange={handleChange}
+                  required={form.registrationType === 'team'}
+                  sx={{ mb: 2.5 }}
+                />
+
+                <TextField
+                  fullWidth
+                  label='No. Telepon / WhatsApp Anggota'
+                  name='teamMemberPhone'
+                  value={form.teamMemberPhone}
+                  onChange={handleChange}
+                  required={form.registrationType === 'team'}
+                  sx={{ mb: 2.5 }}
+                />
+
+                <TextField
+                  fullWidth
+                  label='Institusi / Kampus Anggota'
+                  name='teamMemberInstitution'
+                  value={form.teamMemberInstitution}
+                  onChange={handleChange}
+                  required={form.registrationType === 'team'}
+                  sx={{ mb: 3 }}
+                />
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant='subtitle2' sx={{ mb: 1, fontWeight: 700 }}>
+                    Upload Kartu Pelajar / KTM (Anggota) *
+                  </Typography>
+                  <Button variant='outlined' component='label' fullWidth sx={{ mb: 1 }}>
+                    Pilih File
+                    <input
+                      type='file'
+                      hidden
+                      accept='image/jpeg,image/png'
+                      onChange={(e) => handleFileSelect('team_ktm', e)}
+                      ref={teamMemberKtmInputRef}
+                    />
+                  </Button>
+                  {compressing === 'team_ktm' && (
+                    <Typography variant='caption' color='warning.main'>
+                      Mengompresi gambar...
+                    </Typography>
+                  )}
+                  {teamMemberPicKtmPreview && (
+                    <Box sx={{ mt: 1, position: 'relative', width: 120, height: 120, border: '1px solid #ccc', borderRadius: 1, overflow: 'hidden' }}>
+                      <img src={teamMemberPicKtmPreview} alt='KTM Anggota' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <IconButton size='small' onClick={() => { setTeamMemberPicKtm(null); setTeamMemberPicKtmPreview(null); if (teamMemberKtmInputRef.current) teamMemberKtmInputRef.current.value = '' }} sx={{ position: 'absolute', top: 2, right: 2, bgcolor: 'rgba(0,0,0,0.5)', color: 'white', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}>
+                        ×
+                      </IconButton>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+            )}
 
 {/* Info Pembayaran */}
 <Box
