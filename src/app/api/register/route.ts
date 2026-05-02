@@ -158,6 +158,27 @@ const EVENTS: Record<number, string> = {
   2: 'Competitive Programming',
 }
 
+const EVENTS_CONFIG: Record<number, { image: string; calendar: any }> = {
+  1: {
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg',
+    calendar: {
+      text: 'Seminar GreenTech — D-Verse',
+      dates: '20260509T010000Z/20260509T090000Z',
+      details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Politeknik Negeri Ujung Pandang, Makassar',
+    }
+  },
+  2: {
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/CP.jpeg',
+    calendar: {
+      text: 'Competitive Programming — D-Verse',
+      dates: '20260510T010000Z/20260510T090000Z',
+      details: 'Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Online / Politeknik Negeri Ujung Pandang',
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Nodemailer transporter (Gmail) — credentials from env, NEVER hardcoded
 // ---------------------------------------------------------------------------
@@ -179,8 +200,10 @@ async function sendConfirmationEmail(params: {
   name: string
   eventName: string
   packageName?: string
+  eventId?: number
+  registrationType?: string
 }): Promise<void> {
-  const { to, name, eventName, packageName } = params
+  const { to, name, eventName, packageName, eventId, registrationType } = params
 
   // Skip if email credentials not configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -189,9 +212,13 @@ async function sendConfirmationEmail(params: {
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dverse.my.id'
-  const eventImageUrl = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg'
-  const ticketUrl = `${siteUrl}/success?name=${encodeURIComponent(name)}${packageName ? `&package=${encodeURIComponent(packageName)}` : ''}`
-  const calendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Seminar%20GreenTech%20%E2%80%94%20D-Verse&dates=20260509T010000Z%2F20260509T090000Z&details=Seminar%20GreenTech%20oleh%20D-Verse%20(Developer%20Universe).%0AInfo%3A%20https%3A%2F%2Fdverse.my.id&location=Politeknik%20Negeri%20Ujung%20Pandang%2C%20Makassar'
+  
+  const config = EVENTS_CONFIG[eventId || 1] || EVENTS_CONFIG[1]
+  const eventImageUrl = config.image
+  const ticketUrl = `${siteUrl}/success?name=${encodeURIComponent(name)}${packageName ? `&package=${encodeURIComponent(packageName)}` : ''}${eventId ? `&event=${eventId}` : ''}${registrationType ? `&type=${registrationType}` : ''}`
+  
+  const calParams = new URLSearchParams(config.calendar)
+  const calendarUrl = `https://www.google.com/calendar/render?${calParams.toString()}`
   const year = new Date().getFullYear()
 
   const html = `
@@ -625,6 +652,8 @@ export async function POST(request: Request) {
         name,
         eventName,
         packageName,
+        eventId: parsed.data.eventId,
+        registrationType: parsed.data.registrationType,
       }),
       sendTelegramNotification({
         name,

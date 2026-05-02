@@ -14,19 +14,36 @@ import { motion } from 'framer-motion'
 // Constants
 // ---------------------------------------------------------------------------
 
-const EVENT_DATE = new Date('2026-05-09T09:00:00+08:00') // 9 Mei 2026, 09:00 WITA
-const EVENT_IMAGE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminar.jpeg`
-
-const GOOGLE_CALENDAR_URL = (() => {
-  const params = new URLSearchParams({
-    action: 'TEMPLATE',
-    text: 'Seminar GreenTech — D-Verse',
-    dates: '20260509T010000Z/20260509T090000Z', // 09:00–17:00 WITA = 01:00–09:00 UTC
-    details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
-    location: 'Politeknik Negeri Ujung Pandang, Makassar',
-  })
-  return `https://www.google.com/calendar/render?${params.toString()}`
-})()
+const EVENTS_DATA: Record<number, any> = {
+  1: {
+    name: 'Seminar GreenTech',
+    fullName: 'Seminar GreenTech 2026',
+    date: new Date('2026-05-09T09:00:00+08:00'),
+    dateString: '9 Mei 2026',
+    location: 'Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.',
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg',
+    calendar: {
+      text: 'Seminar GreenTech — D-Verse',
+      dates: '20260509T010000Z/20260509T090000Z',
+      details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Politeknik Negeri Ujung Pandang, Makassar',
+    }
+  },
+  2: {
+    name: 'Competitive Programming',
+    fullName: 'Competitive Programming',
+    date: new Date('2026-05-16T09:00:00+08:00'),
+    dateString: '16 Mei 2026',
+    location: 'Universitas Dipa Makassar',
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/CP.jpeg',
+    calendar: {
+      text: 'Competitive Programming — D-Verse',
+      dates: '20260516T010000Z/20260516T090000Z',
+      details: 'Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Universitas Dipa Makassar',
+    }
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Countdown Hook
@@ -147,8 +164,24 @@ function CountdownBlock({ value, label }: { value: number; label: string }) {
 function SuccessContent() {
   const searchParams = useSearchParams()
   const name = searchParams.get('name') || 'Peserta'
-  const packageName = searchParams.get('package') || 'Seminar'
-  const countdown = useCountdown(EVENT_DATE)
+  const packageName = searchParams.get('package') || 'Umum'
+  const eventId = parseInt(searchParams.get('event') || '1', 10)
+  const regType = searchParams.get('type') || 'individual'
+  
+  const eventData = EVENTS_DATA[eventId] || EVENTS_DATA[1]
+  const countdown = useCountdown(eventData.date)
+
+  const displayPackage = eventId === 2 
+    ? (regType === 'team' ? 'Tim' : 'Individu')
+    : packageName
+  
+  const googleCalendarUrl = (() => {
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      ...eventData.calendar
+    })
+    return `https://www.google.com/calendar/render?${params.toString()}`
+  })()
 
   return (
     <Box
@@ -222,7 +255,7 @@ function SuccessContent() {
             }}
           >
             Halo <strong style={{ color: '#22c55e' }}>{name}</strong>, tiket kamu untuk{' '}
-            <strong style={{ color: '#fff' }}>Seminar GreenTech D-Verse</strong> sudah diamankan.
+            <strong style={{ color: '#fff' }}>{eventData.name} D-Verse</strong> sudah diamankan.
           </Typography>
         </motion.div>
 
@@ -254,8 +287,8 @@ function SuccessContent() {
             >
               <Box
                 component="img"
-                src={EVENT_IMAGE_URL}
-                alt="Seminar GreenTech D-Verse"
+                src={eventData.image}
+                alt={eventData.fullName}
                 sx={{
                   width: '100%',
                   height: '100%',
@@ -282,7 +315,7 @@ function SuccessContent() {
                   Dverse — Developer Universe
                 </Typography>
                 <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: { xs: '1.1rem', md: '1.3rem' } }}>
-                  Seminar GreenTech 2026
+                  {eventData.fullName}
                 </Typography>
               </Box>
             </Box>
@@ -306,7 +339,7 @@ function SuccessContent() {
                     Paket Tiket
                   </Typography>
                   <Chip
-                    label={packageName}
+                    label={displayPackage}
                     size="small"
                     sx={{
                       background: 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(163,230,53,0.2))',
@@ -325,7 +358,7 @@ function SuccessContent() {
                     Tanggal
                   </Typography>
                   <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem' }}>
-                    9 Mei 2026
+                    {eventData.dateString}
                   </Typography>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 120 }}>
@@ -333,7 +366,7 @@ function SuccessContent() {
                     Lokasi
                   </Typography>
                   <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem' }}>
-                    Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.
+                    {eventData.location}
                   </Typography>
                 </Box>
               </Box>
@@ -395,7 +428,7 @@ function SuccessContent() {
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 4 }}>
             <Button
-              href={GOOGLE_CALENDAR_URL}
+              href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
               variant="contained"
