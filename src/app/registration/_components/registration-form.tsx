@@ -316,6 +316,8 @@ export default function RegistrationForm() {
       return
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
     if (eventId === 2 && form.registrationType === 'team') {
       if (!form.teamMemberName || !form.teamMemberEmail || !form.teamMemberPhone || !form.teamMemberInstitution) {
         setError('Semua field anggota tim harus diisi.')
@@ -327,7 +329,6 @@ export default function RegistrationForm() {
       }
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(form.email)) {
       setError('Format email tidak valid.')
       return
