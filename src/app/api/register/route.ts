@@ -174,7 +174,7 @@ const EVENTS_CONFIG: Record<number, { image: string; calendar: any }> = {
       text: 'Competitive Programming — D-Verse',
       dates: '20260510T010000Z/20260510T090000Z',
       details: 'Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
-      location: 'Online / Politeknik Negeri Ujung Pandang',
+      location: 'Universitas Dipa Makassar',
     }
   }
 }
