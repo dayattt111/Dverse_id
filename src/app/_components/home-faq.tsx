@@ -12,7 +12,7 @@ const faqItems = [
     id: 1,
     question: 'Apa itu D-Verse?',
     answer:
-      'D-Verse (Developer Universe) adalah event teknologi bertema GreenTech yang menggabungkan Seminar dan Hackathon. Event ini diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang.',
+      'D-Verse (Developer Universe) adalah event teknologi bertema GreenTech yang menggabungkan Seminar Nasional dan Competitive Programming. Event ini diselenggarakan oleh Dipanegara Computer Club dan Himpunan Mahasiswa Teknik Informatika dan Komputer Politeknik Negeri Ujung Pandang.',
   },
   {
     id: 2,
@@ -24,17 +24,17 @@ const faqItems = [
     id: 3,
     question: 'Apakah event ini gratis?',
     answer:
-      'Event ini bersifat berbayar. Untuk mengikuti lomba (hackathon), peserta dikenakan biaya pendaftaran sebesar Rp300.000 per tim. Sedangkan untuk seminar, biaya pendaftaran sebesar Rp25.000 per peserta. Peserta dapat mendaftar melalui form pendaftaran yang telah disediakan.',
+      'Event ini bersifat berbayar. Untuk mengikuti lomba (Competitive Programming), peserta dikenakan biaya pendaftaran sebesar Rp50.000 per tim/individu. Sedangkan untuk seminar, biaya pendaftaran sebesar Rp35.000 per peserta. Peserta dapat mendaftar melalui form pendaftaran yang telah disediakan.',
   },
   {
     id: 4,
-    question: 'Berapa jumlah anggota tim untuk Hackathon?',
+    question: 'Berapa jumlah anggota tim untuk Competitive Programming?',
     answer:
-      'Setiap tim Hackathon terdiri dari 2-3 orang. Kamu bisa mendaftar bersama timmu atau mendaftar individu dan kami akan bantu carikan tim.',
+      'Setiap tim Competitive Programming terdiri dari 2 orang. Kamu bisa mendaftar bersama timmu atau mendaftar individu.',
   },
   {
     id: 5,
-    question: 'Apa saja yang perlu disiapkan untuk Hackathon?',
+    question: 'Apa saja yang perlu disiapkan untuk Competitive Programming?',
     answer:
       'Peserta perlu membawa laptop, charger, dan semangat! Kami akan menyediakan koneksi internet, makanan, dan minuman selama event berlangsung.',
   },
@@ -42,7 +42,7 @@ const faqItems = [
     id: 6,
     question: 'Apakah ada hadiah untuk pemenang?',
     answer:
-      'Ya! Pemenang Hackathon akan mendapatkan hadiah uang tunai, sertifikat, dan kesempatan inkubasi untuk mengembangkan solusi mereka lebih lanjut.',
+      'Ya! Pemenang Competitive Programming akan mendapatkan hadiah uang tunai, sertifikat, dan kesempatan inkubasi untuk mengembangkan solusi mereka lebih lanjut.',
   },
 ]
 
