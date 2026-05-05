@@ -18,9 +18,9 @@ const events = [
     description:
       'Seminar sehari penuh dengan keynote speakers dari industri teknologi, membahas inovasi Green Technology dan peran developer dalam keberlanjutan lingkungan.',
     benefits: [
-      'Merch',
-      'Makanan Berat',
-      'Makanan Ringan',
+      'Merchandise',
+      'Makanan Berat & Makanan Ringan',
+      'Sertifikat Nasional',
       'Kesempatan mendapatkan doorprize menarik',
     ],
     type: 'seminar' as const,

@@ -14,36 +14,33 @@ import { motion } from 'framer-motion'
 // Constants
 // ---------------------------------------------------------------------------
 
-const EVENTS_DATA: Record<number, any> = {
-  1: {
-    name: 'Seminar GreenTech',
-    fullName: 'Seminar GreenTech 2026',
-    date: new Date('2026-05-09T09:00:00+08:00'),
-    dateString: '9 Mei 2026',
-    location: 'Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.',
-    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg',
-    calendar: {
-      text: 'Seminar GreenTech — D-Verse',
-      dates: '20260509T010000Z/20260509T090000Z',
-      details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
-      location: 'Politeknik Negeri Ujung Pandang, Makassar',
-    }
-  },
-  2: {
-    name: 'Competitive Programming',
-    fullName: 'Competitive Programming',
-    date: new Date('2026-05-16T09:00:00+08:00'),
-    dateString: '16 Mei 2026',
+const SEMINAR_DATE = new Date('2026-05-09T09:00:00+08:00')  // 9 Mei 2026, 09:00 WITA
+const CP_DATE      = new Date('2026-05-16T08:00:00+08:00')  // 16 Mei 2026, 08:00 WITA
+
+const SEMINAR_IMAGE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminar.jpeg`
+const CP_IMAGE_URL      = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Lomba_CP.jpg'
+
+const SEMINAR_CALENDAR_URL = (() => {
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: 'Seminar GreenTech — D-Verse',
+    dates: '20260509T010000Z/20260509T090000Z',
+    details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+    location: 'Politeknik Negeri Ujung Pandang, Makassar',
+  })
+  return `https://www.google.com/calendar/render?${params.toString()}`
+})()
+
+const CP_CALENDAR_URL = (() => {
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: 'Competitive Programming — D-Verse',
+    dates: '20260516T000000Z/20260516T080000Z',
+    details: 'Lomba Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
     location: 'Universitas Dipa Makassar',
-    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/CP.jpeg',
-    calendar: {
-      text: 'Competitive Programming — D-Verse',
-      dates: '20260516T010000Z/20260516T090000Z',
-      details: 'Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
-      location: 'Universitas Dipa Makassar',
-    }
-  }
-}
+  })
+  return `https://www.google.com/calendar/render?${params.toString()}`
+})()
 
 // ---------------------------------------------------------------------------
 // Countdown Hook
@@ -164,30 +161,27 @@ function CountdownBlock({ value, label }: { value: number; label: string }) {
 function SuccessContent() {
   const searchParams = useSearchParams()
   const name = searchParams.get('name') || 'Peserta'
-  const packageName = searchParams.get('package') || 'Umum'
-  const eventId = parseInt(searchParams.get('event') || '1', 10)
-  const regType = searchParams.get('type') || 'individual'
-  
-  const eventData = EVENTS_DATA[eventId] || EVENTS_DATA[1]
-  const countdown = useCountdown(eventData.date)
+  const packageName = searchParams.get('package') || 'Seminar'
 
-  const displayPackage = eventId === 2 
-    ? (regType === 'team' ? 'Tim' : 'Individu')
-    : packageName
-  
-  const googleCalendarUrl = (() => {
-    const params = new URLSearchParams({
-      action: 'TEMPLATE',
-      ...eventData.calendar
-    })
-    return `https://www.google.com/calendar/render?${params.toString()}`
-  })()
+  const isCP = packageName.toLowerCase().includes('competitive programming')
+
+  const eventDate     = isCP ? CP_DATE : SEMINAR_DATE
+  const eventImageUrl = isCP ? CP_IMAGE_URL : SEMINAR_IMAGE_URL
+  const calendarUrl   = isCP ? CP_CALENDAR_URL : SEMINAR_CALENDAR_URL
+  const accentColor   = isCP ? '#818cf8' : '#22c55e'
+  const accentColor2  = isCP ? '#a5b4fc' : '#a3e635'
+  const eventLabel    = isCP ? 'Competitive Programming 2026' : 'Seminar GreenTech 2026'
+  const eventDate2    = isCP ? '16 Mei 2026' : '9 Mei 2026'
+
+  const countdown = useCountdown(eventDate)
 
   return (
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(180deg, #0a0f1e 0%, #0f172a 40%, #020617 100%)',
+        background: isCP
+          ? 'linear-gradient(180deg, #08091a 0%, #0d1117 40%, #020617 100%)'
+          : 'linear-gradient(180deg, #0a0f1e 0%, #0f172a 40%, #020617 100%)',
         position: 'relative',
         overflow: 'hidden',
         py: { xs: 6, md: 10 },
@@ -203,7 +197,9 @@ function SuccessContent() {
           width: '600px',
           height: '600px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)',
+          background: isCP
+            ? 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)',
           pointerEvents: 'none',
         }}
       />
@@ -254,8 +250,8 @@ function SuccessContent() {
               px: 2,
             }}
           >
-            Halo <strong style={{ color: '#22c55e' }}>{name}</strong>, tiket kamu untuk{' '}
-            <strong style={{ color: '#fff' }}>{eventData.name} D-Verse</strong> sudah diamankan.
+            Halo <strong style={{ color: accentColor }}>{name}</strong>, tiket kamu untuk{' '}
+            <strong style={{ color: '#fff' }}>{eventLabel}</strong> sudah diamankan.
           </Typography>
         </motion.div>
 
@@ -287,8 +283,8 @@ function SuccessContent() {
             >
               <Box
                 component="img"
-                src={eventData.image}
-                alt={eventData.fullName}
+                src={eventImageUrl}
+                alt={eventLabel}
                 sx={{
                   width: '100%',
                   height: '100%',
@@ -311,11 +307,11 @@ function SuccessContent() {
                   right: 20,
                 }}
               >
-                <Typography sx={{ color: '#a3e635', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: 2, mb: 0.5 }}>
+                <Typography sx={{ color: accentColor2, fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: 2, mb: 0.5 }}>
                   Dverse — Developer Universe
                 </Typography>
                 <Typography sx={{ color: '#fff', fontWeight: 900, fontSize: { xs: '1.1rem', md: '1.3rem' } }}>
-                  {eventData.fullName}
+                  {eventLabel}
                 </Typography>
               </Box>
             </Box>
@@ -339,7 +335,7 @@ function SuccessContent() {
                     Paket Tiket
                   </Typography>
                   <Chip
-                    label={displayPackage}
+                    label={packageName}
                     size="small"
                     sx={{
                       background: 'linear-gradient(135deg, rgba(34,197,94,0.2), rgba(163,230,53,0.2))',
@@ -358,7 +354,7 @@ function SuccessContent() {
                     Tanggal
                   </Typography>
                   <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem' }}>
-                    {eventData.dateString}
+                    {eventDate2}
                   </Typography>
                 </Box>
                 <Box sx={{ flex: 1, minWidth: 120 }}>
@@ -366,7 +362,7 @@ function SuccessContent() {
                     Lokasi
                   </Typography>
                   <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '0.9rem' }}>
-                    {eventData.location}
+                    {isCP ? 'Universitas Dipa Makassar' : 'Kampus II i Jl. Tamalanrea Raya (BTP) / Moncongloe Maros.'}
                   </Typography>
                 </Box>
               </Box>
@@ -382,7 +378,7 @@ function SuccessContent() {
         >
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Typography sx={{ color: 'rgba(255,255,255,0.5)', fontWeight: 700, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: 2, mb: 2 }}>
-              {countdown.isOver ? 'Event Telah Dimulai' : 'Event Dimulai Dalam'}
+              {countdown.isOver ? 'Event Telah Dimulai' : (isCP ? 'Lomba Dimulai Dalam' : 'Event Dimulai Dalam')}
             </Typography>
             {!countdown.isOver && (
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 1, md: 2 } }}>
@@ -428,7 +424,7 @@ function SuccessContent() {
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 4 }}>
             <Button
-              href={googleCalendarUrl}
+              href={calendarUrl}
               target="_blank"
               rel="noopener noreferrer"
               variant="contained"
@@ -439,11 +435,16 @@ function SuccessContent() {
                 fontWeight: 800,
                 fontSize: '0.95rem',
                 textTransform: 'none',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                boxShadow: '0 4px 20px rgba(34,197,94,0.3)',
+                background: isCP
+                  ? 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)'
+                  : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                boxShadow: isCP
+                  ? '0 4px 20px rgba(99,102,241,0.3)'
+                  : '0 4px 20px rgba(34,197,94,0.3)',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
-                  boxShadow: '0 6px 28px rgba(34,197,94,0.4)',
+                  background: isCP
+                    ? 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)'
+                    : 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)',
                 },
               }}
             >

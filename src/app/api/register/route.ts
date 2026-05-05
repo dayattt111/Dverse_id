@@ -126,10 +126,15 @@ const PLACEHOLDER_RE = /\{\{.+?\}\}/
 // Cooldown — in-memory, per IP
 // ---------------------------------------------------------------------------
 
+// ⚠️ UBAH KE "true" SAAT DEVELOPMENT / TESTING LOKAL UNTUK MEMATIKAN BLOKIR
+// ⚠️ KEMBALIKAN KE "false" SAAT PRODUCTION
+const DISABLE_COOLDOWN_FOR_TESTING = false
+
 const registrationCooldownMap = new Map<string, number>()
 const COOLDOWN_MS = 12 * 60 * 60 * 1000 // 12 hours
 
 function checkCooldown(ip: string): boolean {
+  if (DISABLE_COOLDOWN_FOR_TESTING) return true
   const expiresAt = registrationCooldownMap.get(ip)
   return !expiresAt || Date.now() > expiresAt
 }
@@ -200,10 +205,12 @@ async function sendConfirmationEmail(params: {
   name: string
   eventName: string
   packageName?: string
-  eventId?: number
-  registrationType?: string
+  institution?: string
+  registrationType?: 'individual' | 'team'
+  teamMemberName?: string
+  teamMemberInstitution?: string
 }): Promise<void> {
-  const { to, name, eventName, packageName, eventId, registrationType } = params
+  const { to, name, eventName, packageName, registrationType, teamMemberName } = params
 
   // Skip if email credentials not configured
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
@@ -211,15 +218,271 @@ async function sendConfirmationEmail(params: {
     return
   }
 
+  const isCP = eventName === 'Competitive Programming'
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://dverse.my.id'
-  
-  const config = EVENTS_CONFIG[eventId || 1] || EVENTS_CONFIG[1]
-  const eventImageUrl = config.image
-  const ticketUrl = `${siteUrl}/success?name=${encodeURIComponent(name)}${packageName ? `&package=${encodeURIComponent(packageName)}` : ''}${eventId ? `&event=${eventId}` : ''}${registrationType ? `&type=${registrationType}` : ''}`
-  
-  const calParams = new URLSearchParams(config.calendar)
-  const calendarUrl = `https://www.google.com/calendar/render?${calParams.toString()}`
+  const ticketUrl = `${siteUrl}/success?name=${encodeURIComponent(name)}${packageName ? `&package=${encodeURIComponent(packageName)}` : ''}`
   const year = new Date().getFullYear()
+
+  // ── Competitive Programming email ──────────────────────────────────────────
+  if (isCP) {
+    const eventImageUrl = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Lomba_CP.jpg'
+    const calendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Competitive%20Programming%20%E2%80%94%20D-Verse&dates=20260516T010000Z%2F20260516T090000Z&details=Lomba%20Competitive%20Programming%20oleh%20D-Verse%20(Developer%20Universe).%0AInfo%3A%20https%3A%2F%2Fdverse.my.id&location=Universitas%20Dipa%20Makassar'
+    const isTeam = registrationType === 'team'
+    const ticketId = `#DV-CP-${Date.now().toString(36).toUpperCase().slice(-6)}`
+
+    const html = `
+<!DOCTYPE html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#08091a;font-family:'Segoe UI',Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+
+<!-- Outer wrapper -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#08091a;">
+<tr><td align="center" style="padding:24px 16px;">
+
+<!-- Main card -->
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#0d1117;border-radius:16px;overflow:hidden;border:1px solid #1e2a3a;">
+
+  <!-- Hero Image -->
+  <tr>
+    <td style="padding:0;">
+      <img src="${eventImageUrl}" alt="Competitive Programming D-Verse 2026" width="600" style="width:100%;display:block;" />
+    </td>
+  </tr>
+
+  <!-- Brand Bar -->
+  <tr>
+    <td style="background:linear-gradient(135deg,#0d1117 0%,#131f35 100%);padding:20px 32px 16px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <p style="margin:0 0 6px;color:#818cf8;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;">D-Verse &bull; Developer Universe</p>
+            <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:800;line-height:1.3;">Competitive Programming 2026</h1>
+          </td>
+          <td width="60" align="right" valign="top">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#4f46e5);text-align:center;line-height:48px;font-size:22px;">&#128187;</div>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Greeting -->
+  <tr>
+    <td style="padding:8px 32px 0;">
+      <p style="color:#e2e8f0;font-size:15px;line-height:1.7;margin:0 0 6px;">
+        Halo <strong style="color:#818cf8;">${escapeHtml(name)}</strong>,
+      </p>
+      <p style="color:#94a3b8;font-size:14px;line-height:1.7;margin:0 0 4px;">
+        Pendaftaran ${isTeam ? 'tim kamu' : 'kamu'} untuk <strong style="color:#e2e8f0;">Competitive Programming</strong> telah kami terima. Slot peserta sudah diamankan! &#127881;
+      </p>
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding:20px 32px 0;">
+      <div style="border-top:1px solid #1e2a3a;"></div>
+    </td>
+  </tr>
+
+  <!-- Ticket Card -->
+  <tr>
+    <td style="padding:20px 32px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#161b27;border:1px solid #2d3748;border-radius:12px;overflow:hidden;">
+        <!-- Ticket Header -->
+        <tr>
+          <td style="background:linear-gradient(135deg,#6366f115,#4f46e510);padding:14px 20px;border-bottom:1px solid #2d3748;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td>
+                  <p style="margin:0;color:#818cf8;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">&#127915; E-Ticket</p>
+                </td>
+                <td align="right">
+                  <p style="margin:0;color:#475569;font-size:11px;font-weight:600;">${ticketId}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Ticket Row 1: Nama & Event -->
+        <tr>
+          <td style="padding:16px 20px 10px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Peserta / Ketua</p>
+                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">${escapeHtml(name)}</p>
+                </td>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Event</p>
+                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">Competitive Programming</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- Ticket Row: Instansi -->
+        <tr>
+          <td style="padding:0 20px 12px;">
+            <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Instansi</p>
+            <p style="margin:0;color:#cbd5e1;font-size:13px;font-weight:600;">${escapeHtml(params.institution ?? '-')}</p>
+          </td>
+        </tr>
+        ${isTeam && teamMemberName ? `
+        <!-- Ticket: Team Member -->
+        <tr>
+          <td style="padding:0 20px;">
+            <div style="border-top:1px dashed #2d3748;"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:12px 20px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">&#128101; Anggota Tim</p>
+                  <p style="margin:0;color:#a5b4fc;font-size:14px;font-weight:600;">${escapeHtml(teamMemberName)}</p>
+                </td>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Instansi Anggota</p>
+                  <p style="margin:0;color:#cbd5e1;font-size:13px;font-weight:600;">${escapeHtml(params.teamMemberInstitution ?? '-')}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        ` : ''}
+        <!-- Ticket Dashed Divider -->
+        <tr>
+          <td style="padding:0 20px;">
+            <div style="border-top:2px dashed #2d3748;"></div>
+          </td>
+        </tr>
+        <!-- Ticket Row 2: Tanggal, Waktu, Tipe -->
+        <tr>
+          <td style="padding:16px 20px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="33%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Tanggal</p>
+                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">16 Mei 2026</p>
+                </td>
+                <td width="33%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Waktu</p>
+                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">08:00 WITA</p>
+                </td>
+                <td width="34%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Tipe</p>
+                  <p style="margin:0;color:#a5b4fc;font-size:14px;font-weight:700;">${isTeam ? 'Tim (2 Orang)' : 'Individu'}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 20px 16px;">
+            <p style="margin:0;color:#64748b;font-size:12px;">Universitas Dipa Makassar</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Status Alert -->
+  <tr>
+    <td style="padding:20px 32px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#130d1f;border:1px solid #3730a3;border-radius:10px;">
+        <tr>
+          <td style="padding:16px 20px;">
+            <p style="margin:0 0 6px;font-size:14px;color:#a5b4fc;font-weight:700;">&#9202; Menunggu Verifikasi Pembayaran</p>
+            <p style="margin:0;font-size:13px;color:#818cf8;line-height:1.6;">
+              Tim kami akan memverifikasi pembayaran kamu dalam 1x24 jam. Konfirmasi akan dikirim melalui email ini.
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- CTA Buttons -->
+  <tr>
+    <td style="padding:24px 32px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <!-- Primary Button -->
+        <tr>
+          <td align="center" style="padding-bottom:12px;">
+            <a href="${ticketUrl}" style="display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;border-radius:10px;letter-spacing:0.3px;">
+              Lihat Tiket Digital &rarr;
+            </a>
+          </td>
+        </tr>
+        <!-- Secondary Button -->
+        <tr>
+          <td align="center">
+            <a href="${calendarUrl}" style="display:inline-block;padding:12px 32px;background:transparent;color:#818cf8;font-size:13px;font-weight:700;text-decoration:none;border-radius:10px;border:1px solid #6366f1;">
+              &#128197; Tambah ke Google Calendar
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <!-- Divider -->
+  <tr>
+    <td style="padding:24px 32px 0;">
+      <div style="border-top:1px solid #1e2a3a;"></div>
+    </td>
+  </tr>
+
+  <!-- Contact -->
+  <tr>
+    <td style="padding:16px 32px;">
+      <p style="color:#64748b;font-size:12px;line-height:1.8;margin:0;text-align:center;">
+        Ada pertanyaan? Hubungi kami via WhatsApp:<br/>
+        <a href="https://wa.me/6281906806724" style="color:#818cf8;text-decoration:none;font-weight:600;">+62 819-0680-6724 (ALFI)</a>
+      </p>
+    </td>
+  </tr>
+
+  <!-- Footer -->
+  <tr>
+    <td style="background:#08091a;padding:16px 32px;border-top:1px solid #1e2a3a;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center">
+            <p style="margin:0 0 4px;color:#334155;font-size:11px;">&copy; ${year} Developer Universe (D-Verse)</p>
+            <p style="margin:0;color:#1e293b;font-size:10px;">Dipanegara Computer Club &mdash; Politeknik Negeri Ujung Pandang</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+</table>
+<!-- /Main card -->
+
+</td></tr>
+</table>
+<!-- /Outer wrapper -->
+
+</body>
+</html>
+    `
+
+    await emailTransporter.sendMail({
+      from: `"Developer Universe (D-Verse)" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Konfirmasi Pendaftaran Competitive Programming — D-Verse 2026`,
+      html,
+    })
+    return
+  }
+
+  // ── Seminar GreenTech email (existing template) ────────────────────────────
+  const eventImageUrl = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg'
+  const calendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Seminar%20GreenTech%20%E2%80%94%20D-Verse&dates=20260509T010000Z%2F20260509T090000Z&details=Seminar%20GreenTech%20oleh%20D-Verse%20(Developer%20Universe).%0AInfo%3A%20https%3A%2F%2Fdverse.my.id&location=Politeknik%20Negeri%20Ujung%20Pandang%2C%20Makassar'
 
   const html = `
 <!DOCTYPE html>
@@ -652,8 +915,10 @@ export async function POST(request: Request) {
         name,
         eventName,
         packageName,
-        eventId: parsed.data.eventId,
-        registrationType: parsed.data.registrationType,
+        institution,
+        registrationType,
+        teamMemberName,
+        teamMemberInstitution,
       }),
       sendTelegramNotification({
         name,
