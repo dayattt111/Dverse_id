@@ -186,24 +186,46 @@ export default function RegistrationForm() {
       }
       fetchPackage()
     } else {
-      // No package selected — use default seminar package
-      setSelectedPackage({
-        id: 1,
-        eventId: eventId,
-        name: 'Seminar GreenTech',
-        code: 'SEMINAR',
-        price: 35000,
-        discountedPrice: undefined,
-        description: 'Pendaftaran Seminar GreenTech',
-        items: ['Merch', 'Makanan Berat', 'Makanan Ringan', 'Kesempatan mendapatkan doorprize menarik'],
-        image: undefined,
-        isBundle: false,
-        sortOrder: 1,
-        active: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
-      setDisplayPrice(35000)
+      // No package selected — use default package based on event
+      if (eventId === 2) {
+        // Competitive Programming default package
+        setSelectedPackage({
+          id: 2,
+          eventId: eventId,
+          name: 'Competitive Programming',
+          code: 'COMPROG',
+          price: 50000,
+          discountedPrice: undefined,
+          description: 'Pendaftaran Competitive Programming',
+          items: ['Akses Platform Kompetisi', 'Sertifikat Digital', 'Kesempatan mendapatkan hadiah menarik'],
+          image: undefined,
+          isBundle: false,
+          sortOrder: 1,
+          active: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        })
+        setDisplayPrice(50000)
+      } else {
+        // Default Seminar GreenTech package
+        setSelectedPackage({
+          id: 1,
+          eventId: eventId,
+          name: 'Seminar GreenTech',
+          code: 'SEMINAR',
+          price: 35000,
+          discountedPrice: undefined,
+          description: 'Pendaftaran Seminar GreenTech',
+          items: ['Merch', 'Makanan Berat', 'Makanan Ringan', 'Kesempatan mendapatkan doorprize menarik'],
+          image: undefined,
+          isBundle: false,
+          sortOrder: 1,
+          active: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        })
+        setDisplayPrice(35000)
+      }
       setPackageLoading(false)
     }
   }, [packageId, eventId, router])
