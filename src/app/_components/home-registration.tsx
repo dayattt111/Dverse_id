@@ -20,7 +20,7 @@ const events = [
     benefits: [
       'Merchandise',
       'Makanan Berat & Makanan Ringan',
-      'Sertifikat Nasional',
+      'Sertifikat Seminar Nasional',
       'Kesempatan mendapatkan doorprize menarik',
     ],
     type: 'seminar' as const,
@@ -35,11 +35,11 @@ const events = [
     title: 'Competitive Programming',
     date: '16 Mei 2026',
     description:
-      'Kompetisi tim/individu untuk membangun solusi inovatif berbasis teknologi hijau. Tunjukkan skill coding dan problem solving kamu dan menangkan hadiah menarik!',
+      'Kompetisi berbasis tim/individu untuk membangun solusi inovatif berbasis teknologi hijau. Tunjukkan skill coding dan problem solving kamu dan menangkan hadiah menarik!',
     benefits: [
       'Kompetisi berbasis tim/individu',
       'Networking dari berbagai kalangan',
-      'Sertifikat & portfolio',
+      'Sertifikat Competition',
       'Hadiah menarik untuk juara',
     ],
     type: 'competition' as const,

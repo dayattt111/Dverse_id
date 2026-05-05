@@ -258,6 +258,39 @@ function SuccessContent() {
           </Typography>
         </motion.div>
 
+        {/* Tombol Grup WA — ditampilkan paling atas setelah judul */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+        >
+          <Button
+            href={isCP ? CP_WA_GROUP_URL : SEMINAR_WA_GROUP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="contained"
+            fullWidth
+            sx={{
+              py: 2,
+              borderRadius: 3,
+              mb: 4,
+              fontWeight: 800,
+              fontSize: '1rem',
+              textTransform: 'none',
+              background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)',
+              boxShadow: '0 4px 28px rgba(37,211,102,0.35)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #1ebe5e 0%, #0e6b60 100%)',
+                boxShadow: '0 6px 36px rgba(37,211,102,0.5)',
+                transform: 'translateY(-1px)',
+              },
+              transition: 'all 0.2s ease',
+            }}
+          >
+            💬 Bergabung ke Grup WhatsApp {isCP ? 'Competitive Programming' : 'Seminar'}
+          </Button>
+        </motion.div>
+
         {/* Event Banner / Boarding Pass Card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -452,30 +485,6 @@ function SuccessContent() {
               }}
             >
               Tambahkan ke Google Calendar
-            </Button>
-
-            {/* Tombol Grup WA */}
-            <Button
-              href={isCP ? CP_WA_GROUP_URL : SEMINAR_WA_GROUP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="contained"
-              fullWidth
-              sx={{
-                py: 1.8,
-                borderRadius: 3,
-                fontWeight: 800,
-                fontSize: '0.95rem',
-                textTransform: 'none',
-                background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)',
-                boxShadow: '0 4px 20px rgba(37,211,102,0.3)',
-                '&:hover': {
-                  background: 'linear-gradient(135deg, #1ebe5e 0%, #0e6b60 100%)',
-                  boxShadow: '0 6px 28px rgba(37,211,102,0.4)',
-                },
-              }}
-            >
-              💬 Bergabung ke Grup WhatsApp {isCP ? 'Lomba' : 'Seminar'}
             </Button>
             <Button
               href="/"
