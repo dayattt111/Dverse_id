@@ -47,11 +47,16 @@ function sanitizeText(value: string): string {
   return value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
 }
 
+// ⚠️ UBAH KE "true" SAAT DEVELOPMENT / TESTING LOKAL UNTUK MEMATIKAN BLOKIR
+// ⚠️ KEMBALIKAN KE "false" SAAT PRODUCTION
+const DISABLE_COOLDOWN_FOR_TESTING = false
+
 const COOLDOWN_KEY = 'dcn_reg_cooldown_expires'
 const COOLDOWN_MS = 12 * 60 * 60 * 1000 // 12 hours
 
 /** Read cooldown expiry from localStorage (0 = no cooldown). */
 function getLocalCooldownExpiry(): number {
+  if (DISABLE_COOLDOWN_FOR_TESTING) return 0
   try {
     const stored = localStorage.getItem(COOLDOWN_KEY)
     return stored ? parseInt(stored, 10) : 0

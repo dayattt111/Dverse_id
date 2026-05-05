@@ -126,10 +126,15 @@ const PLACEHOLDER_RE = /\{\{.+?\}\}/
 // Cooldown — in-memory, per IP
 // ---------------------------------------------------------------------------
 
+// ⚠️ UBAH KE "true" SAAT DEVELOPMENT / TESTING LOKAL UNTUK MEMATIKAN BLOKIR
+// ⚠️ KEMBALIKAN KE "false" SAAT PRODUCTION
+const DISABLE_COOLDOWN_FOR_TESTING = false
+
 const registrationCooldownMap = new Map<string, number>()
 const COOLDOWN_MS = 12 * 60 * 60 * 1000 // 12 hours
 
 function checkCooldown(ip: string): boolean {
+  if (DISABLE_COOLDOWN_FOR_TESTING) return true
   const expiresAt = registrationCooldownMap.get(ip)
   return !expiresAt || Date.now() > expiresAt
 }
@@ -179,8 +184,10 @@ async function sendConfirmationEmail(params: {
   name: string
   eventName: string
   packageName?: string
+  institution?: string
   registrationType?: 'individual' | 'team'
   teamMemberName?: string
+  teamMemberInstitution?: string
 }): Promise<void> {
   const { to, name, eventName, packageName, registrationType, teamMemberName } = params
 
@@ -197,8 +204,8 @@ async function sendConfirmationEmail(params: {
 
   // ── Competitive Programming email ──────────────────────────────────────────
   if (isCP) {
-    const eventImageUrl = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/CP.jpeg'
-    const calendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Competitive%20Programming%20%E2%80%94%20D-Verse&dates=20260509T010000Z%2F20260509T090000Z&details=Lomba%20Competitive%20Programming%20oleh%20D-Verse%20(Developer%20Universe).%0AInfo%3A%20https%3A%2F%2Fdverse.my.id&location=Politeknik%20Negeri%20Ujung%20Pandang%2C%20Makassar'
+    const eventImageUrl = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Lomba_CP.jpg'
+    const calendarUrl = 'https://www.google.com/calendar/render?action=TEMPLATE&text=Competitive%20Programming%20%E2%80%94%20D-Verse&dates=20260516T010000Z%2F20260516T090000Z&details=Lomba%20Competitive%20Programming%20oleh%20D-Verse%20(Developer%20Universe).%0AInfo%3A%20https%3A%2F%2Fdverse.my.id&location=Universitas%20Dipa%20Makassar'
     const isTeam = registrationType === 'team'
     const ticketId = `#DV-CP-${Date.now().toString(36).toUpperCase().slice(-6)}`
 
@@ -218,7 +225,7 @@ async function sendConfirmationEmail(params: {
   <!-- Hero Image -->
   <tr>
     <td style="padding:0;">
-      <img src="${eventImageUrl}" alt="Competitive Programming D-Verse 2026" width="600" style="width:100%;max-height:260px;object-fit:cover;display:block;" />
+      <img src="${eventImageUrl}" alt="Competitive Programming D-Verse 2026" width="600" style="width:100%;display:block;" />
     </td>
   </tr>
 
@@ -277,9 +284,9 @@ async function sendConfirmationEmail(params: {
             </table>
           </td>
         </tr>
-        <!-- Ticket Row 1 -->
+        <!-- Ticket Row 1: Nama & Event -->
         <tr>
-          <td style="padding:16px 20px;">
+          <td style="padding:16px 20px 10px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td width="50%" valign="top">
@@ -294,6 +301,13 @@ async function sendConfirmationEmail(params: {
             </table>
           </td>
         </tr>
+        <!-- Ticket Row: Instansi -->
+        <tr>
+          <td style="padding:0 20px 12px;">
+            <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Instansi</p>
+            <p style="margin:0;color:#cbd5e1;font-size:13px;font-weight:600;">${escapeHtml(params.institution ?? '-')}</p>
+          </td>
+        </tr>
         ${isTeam && teamMemberName ? `
         <!-- Ticket: Team Member -->
         <tr>
@@ -303,8 +317,18 @@ async function sendConfirmationEmail(params: {
         </tr>
         <tr>
           <td style="padding:12px 20px;">
-            <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">&#128101; Anggota Tim</p>
-            <p style="margin:0;color:#a5b4fc;font-size:14px;font-weight:600;">${escapeHtml(teamMemberName)}</p>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">&#128101; Anggota Tim</p>
+                  <p style="margin:0;color:#a5b4fc;font-size:14px;font-weight:600;">${escapeHtml(teamMemberName)}</p>
+                </td>
+                <td width="50%" valign="top">
+                  <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Instansi Anggota</p>
+                  <p style="margin:0;color:#cbd5e1;font-size:13px;font-weight:600;">${escapeHtml(params.teamMemberInstitution ?? '-')}</p>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
         ` : ''}
@@ -314,14 +338,14 @@ async function sendConfirmationEmail(params: {
             <div style="border-top:2px dashed #2d3748;"></div>
           </td>
         </tr>
-        <!-- Ticket Row 2 -->
+        <!-- Ticket Row 2: Tanggal, Waktu, Tipe -->
         <tr>
           <td style="padding:16px 20px;">
             <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td width="33%" valign="top">
                   <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Tanggal</p>
-                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">9 Mei 2026</p>
+                  <p style="margin:0;color:#f1f5f9;font-size:14px;font-weight:700;">16 Mei 2026</p>
                 </td>
                 <td width="33%" valign="top">
                   <p style="margin:0 0 3px;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:1px;font-weight:700;">Waktu</p>
@@ -337,7 +361,7 @@ async function sendConfirmationEmail(params: {
         </tr>
         <tr>
           <td style="padding:0 20px 16px;">
-            <p style="margin:0;color:#64748b;font-size:12px;">Politeknik Negeri Ujung Pandang, Makassar</p>
+            <p style="margin:0;color:#64748b;font-size:12px;">Universitas Dipa Makassar</p>
           </td>
         </tr>
       </table>
@@ -870,8 +894,10 @@ export async function POST(request: Request) {
         name,
         eventName,
         packageName,
+        institution,
         registrationType,
         teamMemberName,
+        teamMemberInstitution,
       }),
       sendTelegramNotification({
         name,
