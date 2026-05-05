@@ -42,6 +42,10 @@ const CP_CALENDAR_URL = (() => {
   return `https://www.google.com/calendar/render?${params.toString()}`
 })()
 
+// ⚠️ GANTI URL INI DENGAN LINK GRUP WA YANG SEBENARNYA
+const SEMINAR_WA_GROUP_URL = 'https://chat.whatsapp.com/FkvzPRpvrTG1c8qOsgYYMu'
+const CP_WA_GROUP_URL      = 'https://chat.whatsapp.com/ERGT4SdMOfa5N4vSKnav1S'
+
 // ---------------------------------------------------------------------------
 // Countdown Hook
 // ---------------------------------------------------------------------------
@@ -449,6 +453,30 @@ function SuccessContent() {
               }}
             >
               Tambahkan ke Google Calendar
+            </Button>
+
+            {/* Tombol Grup WA */}
+            <Button
+              href={isCP ? CP_WA_GROUP_URL : SEMINAR_WA_GROUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="contained"
+              fullWidth
+              sx={{
+                py: 1.8,
+                borderRadius: 3,
+                fontWeight: 800,
+                fontSize: '0.95rem',
+                textTransform: 'none',
+                background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)',
+                boxShadow: '0 4px 20px rgba(37,211,102,0.3)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #1ebe5e 0%, #0e6b60 100%)',
+                  boxShadow: '0 6px 28px rgba(37,211,102,0.4)',
+                },
+              }}
+            >
+              💬 Bergabung ke Grup WhatsApp {isCP ? 'Lomba' : 'Seminar'}
             </Button>
             <Button
               href="/"
