@@ -18,7 +18,7 @@ const SEMINAR_DATE = new Date('2026-05-09T09:00:00+08:00')  // 9 Mei 2026, 09:00
 const CP_DATE      = new Date('2026-05-16T08:00:00+08:00')  // 16 Mei 2026, 08:00 WITA
 
 const SEMINAR_IMAGE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminar.jpeg`
-const CP_IMAGE_URL      = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Lomba_CP.jpg'
+const CP_IMAGE_URL      = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminarlombacp.jpeg`
 
 const SEMINAR_CALENDAR_URL = (() => {
   const params = new URLSearchParams({
@@ -42,7 +42,6 @@ const CP_CALENDAR_URL = (() => {
   return `https://www.google.com/calendar/render?${params.toString()}`
 })()
 
-// ⚠️ GANTI URL INI DENGAN LINK GRUP WA YANG SEBENARNYA
 const SEMINAR_WA_GROUP_URL = 'https://chat.whatsapp.com/FkvzPRpvrTG1c8qOsgYYMu'
 const CP_WA_GROUP_URL      = 'https://chat.whatsapp.com/ERGT4SdMOfa5N4vSKnav1S'
 
