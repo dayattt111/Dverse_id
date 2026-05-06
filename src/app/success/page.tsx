@@ -18,7 +18,7 @@ const SEMINAR_DATE = new Date('2026-05-09T09:00:00+08:00')  // 9 Mei 2026, 09:00
 const CP_DATE      = new Date('2026-05-16T08:00:00+08:00')  // 16 Mei 2026, 08:00 WITA
 
 const SEMINAR_IMAGE_URL = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminar.jpeg`
-const CP_IMAGE_URL      = 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Lomba_CP.jpg'
+const CP_IMAGE_URL      = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/event_images/seminarlombacp.jpeg`
 
 const SEMINAR_CALENDAR_URL = (() => {
   const params = new URLSearchParams({
@@ -41,6 +41,9 @@ const CP_CALENDAR_URL = (() => {
   })
   return `https://www.google.com/calendar/render?${params.toString()}`
 })()
+
+const SEMINAR_WA_GROUP_URL = 'https://chat.whatsapp.com/FkvzPRpvrTG1c8qOsgYYMu'
+const CP_WA_GROUP_URL      = 'https://chat.whatsapp.com/ERGT4SdMOfa5N4vSKnav1S'
 
 // ---------------------------------------------------------------------------
 // Countdown Hook
@@ -253,6 +256,39 @@ function SuccessContent() {
             Halo <strong style={{ color: accentColor }}>{name}</strong>, tiket kamu untuk{' '}
             <strong style={{ color: '#fff' }}>{eventLabel}</strong> sudah diamankan.
           </Typography>
+        </motion.div>
+
+        {/* Tombol Grup WA — ditampilkan paling atas setelah judul */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.45 }}
+        >
+          <Button
+            href={isCP ? CP_WA_GROUP_URL : SEMINAR_WA_GROUP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="contained"
+            fullWidth
+            sx={{
+              py: 2,
+              borderRadius: 3,
+              mb: 4,
+              fontWeight: 800,
+              fontSize: '1rem',
+              textTransform: 'none',
+              background: 'linear-gradient(135deg, #25d366 0%, #128c7e 100%)',
+              boxShadow: '0 4px 28px rgba(37,211,102,0.35)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #1ebe5e 0%, #0e6b60 100%)',
+                boxShadow: '0 6px 36px rgba(37,211,102,0.5)',
+                transform: 'translateY(-1px)',
+              },
+              transition: 'all 0.2s ease',
+            }}
+          >
+            💬 Bergabung ke Grup WhatsApp {isCP ? 'Competitive Programming' : 'Seminar'}
+          </Button>
         </motion.div>
 
         {/* Event Banner / Boarding Pass Card */}

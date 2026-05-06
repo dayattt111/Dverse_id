@@ -17,6 +17,12 @@ export async function middleware(request: NextRequest) {
   const isLoginPage = pathname === '/admin/login'
 
   if (isAdminRoute) {
+    // Skip auth if Supabase URL is not configured (build-time / local dev without env)
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl.includes('dummy-url') || supabaseUrl.includes('placeholder')) {
+      return NextResponse.next()
+    }
+
     const { supabase, user, supabaseResponse } = await createMiddlewareClient(request)
 
     // Prevent admin pages from being indexed

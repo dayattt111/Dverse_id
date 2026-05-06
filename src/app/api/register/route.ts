@@ -163,6 +163,27 @@ const EVENTS: Record<number, string> = {
   2: 'Competitive Programming',
 }
 
+const EVENTS_CONFIG: Record<number, { image: string; calendar: any }> = {
+  1: {
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/Sem.jpeg',
+    calendar: {
+      text: 'Seminar GreenTech — D-Verse',
+      dates: '20260509T010000Z/20260509T090000Z',
+      details: 'Seminar GreenTech oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Politeknik Negeri Ujung Pandang, Makassar',
+    }
+  },
+  2: {
+    image: 'https://omwdnhmxmanhdzuznrks.supabase.co/storage/v1/object/public/event_images/CP.jpeg',
+    calendar: {
+      text: 'Competitive Programming — D-Verse',
+      dates: '20260510T010000Z/20260510T090000Z',
+      details: 'Competitive Programming oleh D-Verse (Developer Universe).\nInfo: https://dverse.my.id',
+      location: 'Universitas Dipa Makassar',
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Nodemailer transporter (Gmail) — credentials from env, NEVER hardcoded
 // ---------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'

@@ -34,8 +34,8 @@ const features: FeatureData[] = [
   },
   {
     id: 2,
-    title: 'Hackathon',
-    description: 'Kompetisi membangun solusi teknologi untuk masalah lingkungan & keberlanjutan.',
+    title: 'Competitive Programming',
+    description: 'Lomba pemecahan masalah dengan algoritma dan logika tingkat tinggi.',
     icon: '/images/Assets/Group1.png',
     color: '#0f172a',
   },
